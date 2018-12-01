@@ -6,25 +6,32 @@ highlighter:      pygments
 permalink:        pretty
 
 # Setup
-title:            Hyde
-tagline:          'A Jekyll theme'
-description:      'A brazen two-column <a href="http://jekyllrb.com" target="_blank">Jekyll</a> theme that pairs a prominent sidebar with uncomplicated content. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
-url:              http://hyde.getpoole.com
+title:            Benedict Egima
+tagline:          'Coder, Blogger, Teacher'
+description:      'I am here to share what I learn'
+url:              https://egimaben.github.io
 baseurl:          /
 
 author:
-  name:           'Mark Otto'
-  url:            https://twitter.com/mdo
+  name:           'Benedict Egima Ayiko'
+  url:            https://egimaben.github.io
+  github:         egimaben
+  twitter:        egimaben
+  email:          benikod@gmail.com
+  phone:          +256(0)-772247408
+  stackoverflow:  3067615/egimaben
 
 paginate:         5
 
 # Custom vars
-version:          2.1.0
+version:          1.0.0
 
 github:
-  repo:           https://github.com/poole/hyde
+  repo:           https://github.com/egimaben/egimaben.github.io
 repository:       egimaben/egimaben.github.io
 
 #plugins
 plugins:         [jekyll-paginate,jekyll-gist,jekyll-github-metadata]
 paginate_path: "page:num"
+
+animation: true

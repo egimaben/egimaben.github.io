@@ -1,0 +1,46 @@
+<div class="profile-container">
+
+    {% if site.author.name %}
+    <img class="avatar" src="{{ site.baseurl }}public/profile.png" alt="profile picture" /> {% endif %} {% if site.author.name %}
+    <h2 class="uname">{{ site.author.name }}</h2>
+    {% endif %} {% if site.description %}
+    <h3 class="tagline">{{ site.description }}</h3>
+    {% endif %}
+</div>
+<!-- <div class="contact-container container-block">
+        <ul class="list-unstyled contact-list">
+          {% if site.author.email %}
+          <li class="email"><i class="fas fa-envelope"></i>
+            <a href="mailto:{{ sidebar.email }}">{{ site.author.email }}</a>
+          </li>
+          {% endif %}
+      
+          {% if site.author.phone %}
+          <li class="phone"><i class="fas fa-phone"></i>
+            <a href="tel:{{ site.author.phone }}">{{ site.author.phone }}</a>
+          </li>
+          {% endif %}
+          {% if site.author.linkedin %}
+          <li class="linkedin"><i class="fab fa-linkedin"></i>
+            <a href="https://linkedin.com/in/{{ site.author.linkedin }}" target="_blank">{{ site.author.linkedin }}</a>
+          </li>
+          {% endif %}
+      
+          {% if site.author.github %}
+          <li class="github"><i class="fab fa-github"></i>
+            <a href="http://github.com/{{ site.author.github }}" target="_blank">{{ site.author.github }}</a>
+          </li>
+          {% endif %}
+          {% if site.author.twitter %}
+          <li class="twitter"><i class="fab fa-twitter"></i>
+            <a href="https://twitter.com/{{ site.author.twitter }}" target="_blank">{{ site.author.twitter }}</a>
+          </li>
+          {% endif %}
+      
+          {% if site.author.stackoverflow %}
+          <li class="stack-overflow"><i class="fab fa-stack-overflow"></i>
+            <a href="https://stackoverflow.com/users/{{ site.author.stackoverflow }}" target="_blank">{{ site.author.stackoverflow }}</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div> -->
