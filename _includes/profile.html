@@ -10,36 +10,32 @@
 <div class="contact-container container-block">
   <ul class="list-unstyled contact-list">
     {% if site.author.email %}
-    <a href="mailto:{{ sidebar.email }}"></a>
+    <a href="mailto:{{ sidebar.email }}">
     <li class="email">
       <i class="fas fa-envelope"></i>
-
     </li>
     </a>
-    {% endif %} {% if site.author.phone %}
+    {% endif %} 
+    {% if site.author.phone %}
     <li class="phone">
-      <i class="fas fa-phone"></i>
-      <a href="tel:{{ site.author.phone }}"></a>
+      <a href="tel:{{ site.author.phone }}"><i class="fas fa-phone"></i></a>
     </li>
     {% endif %} {% if site.author.linkedin %}
     <li class="linkedin">
-      <i class="fab fa-linkedin"></i>
-      <a href="https://linkedin.com/in/{{ site.author.linkedin }}" target="_blank"></a>
+      <a href="https://linkedin.com/in/{{ site.author.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i></a>
     </li>
     {% endif %} {% if site.author.github %}
     <li class="github">
-      <i class="fab fa-github"></i>
-      <a href="http://github.com/{{ site.author.github }}" target="_blank"></a>
+      
+      <a href="http://github.com/{{ site.author.github }}" target="_blank"><i class="fab fa-github"></i></a>
     </li>
     {% endif %} {% if site.author.twitter %}
     <li class="twitter">
-      <i class="fab fa-twitter"></i>
-      <a href="https://twitter.com/{{ site.author.twitter }}" target="_blank"></a>
+      <a href="https://twitter.com/{{ site.author.twitter }}" target="_blank"><i class="fab fa-twitter"></i></a>
     </li>
     {% endif %} {% if site.author.stackoverflow %}
     <li class="stack-overflow">
-      <i class="fab fa-stack-overflow"></i>
-      <a href="https://stackoverflow.com/users/{{ site.author.stackoverflow }}" target="_blank"></a>
+      <a href="https://stackoverflow.com/users/{{ site.author.stackoverflow }}" target="_blank"><i class="fab fa-stack-overflow"></i></a>
     </li>
     {% endif %}
   </ul>

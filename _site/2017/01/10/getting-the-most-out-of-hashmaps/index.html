@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Getting The Most Out of HashMaps &middot; Benedict Egima
+    
+  </title>
+
+  <!-- CSS -->
+  <!-- <link rel="stylesheet" href="//public/css/poole.css">
+  <link rel="stylesheet" href="//public/css/syntax.css">
+  <link rel="stylesheet" href="//public/css/hyde.css"> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href=/public/css/poole.css>
+  <link rel="stylesheet" href=/public/css/syntax.css>
+  <link rel="stylesheet" href=/public/css/hyde.css>
+  <link rel="stylesheet" href=/public/css/profile.css>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href=/public/profile.png>
+                                 <link rel="shortcut icon" href=/public/profile.png>
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+    
+            <div class="profile-container">
+
+  
+  <img class="avatar" src="/public/profile.png" alt="profile picture" />  
+  <h2 class="uname">Benedict Egima Ayiko</h2>
+   
+  <h3 class="tagline">10 years from now, you will regret more the things you didn't do than those you did</h3>
+  
+</div>
+<div class="contact-container container-block">
+  <ul class="list-unstyled contact-list">
+    
+    <a href="mailto:">
+    <li class="email">
+      <i class="fas fa-envelope"></i>
+    </li>
+    </a>
+     
+     
+    <li class="linkedin">
+      <a href="https://linkedin.com/in/egimaben" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </li>
+     
+    <li class="github">
+      
+      <a href="http://github.com/egimaben" target="_blank"><i class="fab fa-github"></i></a>
+    </li>
+     
+    <li class="twitter">
+      <a href="https://twitter.com/egimaben" target="_blank"><i class="fab fa-twitter"></i></a>
+    </li>
+     
+    <li class="stack-overflow">
+      <a href="https://stackoverflow.com/users/3067615/egimaben" target="_blank"><i class="fab fa-stack-overflow"></i></a>
+    </li>
+    
+  </ul>
+</div>
+      <!-- <h1>
+        <a href="/">
+          Benedict Egima
+        </a>
+      </h1>
+      <p class="lead">10 years from now, you will regret more the things you didn't do than those you did</p> -->
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About</a>
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/archive/">Archive</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+      <span class="sidebar-nav-item">Currently v1.0.0</span>
+    </nav>
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Getting The Most Out of HashMaps</h1>
+  <span class="post-date">10 Jan 2017</span>
+  <div class="message">
+HashMaps are a great tool, but you need to know the internals to get the best performance from them. This guide covers collisions, iterations, load factors, and more.</div>
+
+<p><code>HashMap</code> is perhaps the most popular implementation of the <code>Map</code> interface in <strong>Java Collections Framework (JCF)</strong>. If you want to fully understand the internal workings of <code>HashMap</code>, the best tutorial I have found online is <a href="http://www.baeldung.com/java-hashmap">here</a>.</p>
+
+<p>For this article, we are only going to focus on the performance specific concepts. <code>HashMap</code> offers us a very fast, well-optimized data structure solution for many problem scenarios.</p>
+
+<h2>Good News</h2>
+
+<p><code>HashMap</code> is a great advantage for us because it is so versatile and fits in a lot of use cases:</p>
+
+<ul>
+<li>Want to load objects from an SQL result set and marshal them over the network? use a <code>HashMap</code>.</li>
+<li>Want to group some log file content according to a certain field? <code>HashMap</code> is available.</li>
+<li>Want to move some arbitrary data around without the restriction of creating a POJO or DTO? Oh! Hail! <code>HashMap</code>.
+What can’t you do with <code>HashMap</code>, plus the API is extremely easy to use.</li>
+</ul>
+
+<h2>Bad News</h2>
+
+<p>The caveat is that, it is easy to use <code>HashMap</code> in Java but not exactly easy to use it optimally or efficiently if you may. A few years back, when I was new to Java and programming in general, we were building a school information system.</p>
+
+<p>We would query some SQL database somewhere and then need to marshal the objects over the network using RPC. I can still recall the excitement I experienced seeing <code>HashMap</code> at work:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">Student</span><span class="o">&gt;</span> <span class="n">records</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span> 
+<span class="n">ResultSet</span> <span class="n">rsWithHundredsOfRecords</span><span class="o">=</span> <span class="c1">//... </span>
+  <span class="k">while</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">()){</span> 
+    <span class="n">Student</span> <span class="n">student</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Student</span><span class="o">();</span> 
+    <span class="n">student</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">));</span> 
+    <span class="n">student</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&quot;age&quot;</span><span class="o">));</span> 
+    <span class="c1">// plus several other attributes </span>
+    <span class="n">records</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">student</span><span class="o">.</span><span class="na">getId</span><span class="o">(),</span> <span class="n">student</span><span class="o">);</span> 
+  <span class="o">}</span></code></pre></figure>
+
+<p>Test data would average around a thousand records and we would not realize any performance dip. Awesome feat right? <strong>WRONG</strong>.</p>
+
+<p>Even without any test, a seasoned developer can look at the above code and immediately become uncomfortable — the <strong>rat smell</strong> is too strong. The <strong>happy go lucky</strong> developer, like myself a few years ago, would not lose their smile though.</p>
+
+<p>If you are among the less comfortable with the above code, feel free to stop reading at this point. However, if you are like me a few years ago and are very comfortable with the above code, endeavor to read the post up to the end and you will surely gain the competence to refactor my code for me.</p>
+
+<h2>Initial Capacity</h2>
+
+<p><code>HashMap</code> uses an array as its primary storage. Every <code>put</code> operation inserts a Key-Value pair at an index in this array, and every get operation retrieves a Key-Value pair from an index of this array.</p>
+
+<p>Capacity refers to the size of this underlying array. Initial capacity is, therefore, the size of this array when the HashMap is created:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">DEFAULT_INITIAL_CAPACITY</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="o">;</span> <span class="c1">// aka 16</span></code></pre></figure>
+
+<p>The above code resides inside <code>java.util.HashMap</code> class. The above value(<code>1&lt;&lt;4 // 16</code>) is used as the initial capacity of the hashmap if we initialize it the way I did:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Student</span><span class="o">&gt;</span> <span class="n">records</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span></code></pre></figure>
+
+<p>Now that the hashmap has an initial capacity of 16 and my records run in the hundreds:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span> <span class="n">ResultSet</span> <span class="n">rsWithHundredsOfRecords</span> <span class="o">=</span> <span class="o">...;</span></code></pre></figure>
+
+<p>What happens when the number of elements being added to the underlying array are exhausting the initial capacity?</p>
+
+<p>It so happens that <strong>HashMap is a self-regulating data structure</strong>. It has an internal mechanism for detecting when its current capacity is being exhausted and resizing its internal array.</p>
+
+<p>What happens is that when the number of entries is found to have reached a certain threshold, a new array is created with twice the size of the previous one and all the entries are transferred from the old array to the new array. A process called <strong>rehashing</strong>.</p>
+
+<p><strong>Rehashing is quite an expensive process and should be mercilessly minimized</strong> during design, or even totally avoided if possible.</p>
+
+<p>The <code>HashMap</code> class contains another constructor that enable us to pass in a custom value for <strong>initial capacity</strong>. In the bad example that we saw in the Bad News section, we could simply have anticipated the size of the ResultSet and used that to create a <strong>well-dimensioned hashmap</strong>, say we expect about 1,000 records:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Student</span><span class="o">&gt;</span> <span class="n">hashMapWithCapacity</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;(</span><span class="mi">1024</span><span class="o">);</span></code></pre></figure>
+
+<p>With the above refactored code, we would have saved ourselves at least six rehashing operations. Wondering how? Just picture that every time the number of entries reaches the current capacity, a rehashing operation doubles the capacity, starting from 16, then 32, 64, up until 1024.</p>
+
+<p>The above explanation suffices, for now, however, we will realize later that the decision to rehash is a little more complicated than this.</p>
+
+<p>The take-home point here is: <strong>Choose an initial capacity high enough to minimize the frequency of rehashing</strong>.</p>
+
+<h2>Collision</h2>
+
+<p>As a simple reminder to ourselves. <code>HashMap</code> works on the principle of hashing. For reasons beyond the scope of this article, hash code collisions are a common occurrence, <strong>where different keys end up at the same array index</strong>. More about this can be found in the articles linked at the beginning of this post.</p>
+
+<p>It sounds like an anomaly, but it is quite normal, specifically because of the <code>equals</code> and <code>hashCode</code> contract of <code>java.lang.Object</code>, the mother of all objects in Java.</p>
+
+<p>It suffices to only know that <strong>where there are collisions, HashMap performance is degraded</strong>.</p>
+
+<p>When a collision occurs at a given array index, instead of a K-V pair being stored there, a linked list is created in place and the colliding entries are chained together in this list.</p>
+
+<p>This way, if another entry hashes to the same location, each element of the linked list is compared with the new entry. If a match is found, the match is replaced, but if none is found, the new entry is placed at the head of the list.</p>
+
+<p>Something similar happens during retrieval. When the key in <code>hashMap.get(key);</code> hashes to an index that has collisions, the key is compared to all other keys in the linked list, if a match is found, the matched key’s value is returned, but if no match is found, null is returned.</p>
+
+<p>One of the strengths of a hashmap is <strong>lightning speed storage (put) and retrieval (get) operations</strong>. In more technical terms, they occur in constant time, <code>O(1)</code>. This means that regardless of the size of the hashmap or its capacity, a put or a get will return instantly.</p>
+
+<p>However, in the event of collisions, we can no longer guarantee <code>O(1)</code> performance. Because the performance will now be affected by the length of the linked list at a location where there is collision.</p>
+
+<p>Specifically, <strong>the time to retrieve an entry will be the constant time to hash to the array index, then the linear time O(n) to iterate over the linked list</strong>, where <code>n</code> is the size of the linked list.</p>
+
+<p>We can not do much about this problem, apart from ensuring that the hashmap has a <strong>big enough capacity to minimize collisions</strong> and if possible, the <strong>hash function is good enough to disperse entries with equal distribution across the array</strong>.</p>
+
+<h2>Load Factor</h2>
+
+<p>Load Factor, abbreviated as LF, is the ratio of the hashmap’s size to its capacity. It is a float between 0 and 1 and the default value is <code>0.75f</code>:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span> <span class="cm">/** * The load factor used when none specified in constructor. */</span> 
+<span class="kd">static</span> <span class="kd">final</span> <span class="kt">float</span> <span class="n">DEFAULT_LOAD_FACTOR</span> <span class="o">=</span> <span class="mf">0.75f</span><span class="o">;</span></code></pre></figure>
+
+<p>The LF is the ratio of the hashmap size (number of entries stored so far) to capacity (total array length regardless of entries) at which a rehash operation occurs. The default LF of 0.75 implies that if our hashmap is initialized with 100 initial capacity, then as soon as we make 75 entries in</p>
+
+<p>The default LF of 0.75 implies that if our hashmap is initialized with 100 initial capacity, then we can make 75 entries in it comfortably. The 76th entry will trigger a rehash. We can use a custom LF by creating hashmap with another constructor which takes LF along side initial capacity:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Student</span><span class="o">&gt;</span> <span class="n">records</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;(</span><span class="mi">100</span><span class="o">,</span> <span class="mf">0.5f</span><span class="o">);</span></code></pre></figure>
+
+<p>Through some tests and calculations, it can be proved that in the case of collisions, <strong>the average number size of the linked lists in the array is about the same as the LF</strong>. We have already seen that collision degrades the performance of hashmap in most operation.</p>
+
+<p>This can only mean that <strong>when LF which is too high, it will degrade performance</strong> due to its relationship with the linked list size. <strong>When LF is too low, it will also degrade performance</strong> due to frequency of rehashes. However, 0.75f offers a good optimum value.</p>
+
+<h2>Iteration Performance</h2>
+
+<p><strong>Iterating over a hashmap is affected by its size and capacity</strong>. Read the preceding sentence again and again until you think you have understood and then realize it’s very confusing and then accept that you need more explanation!</p>
+
+<p>The time complexity of hashmap iteration is O(n) where n= capacity + size. This implies that if the hashmap’s initial capacity is 100 and it only has a single entry so far, iteration will still levy a worst case performance time of O(n) where n=101.</p>
+
+<p>To picture this, we need to remember that <strong>iteration starts from the beginning of the array and proceeds sequentially to its end</strong>. There is <strong>no search efficiency in hashmap</strong> as there is in binary search trees.</p>
+
+<p>It is possible that the value being searched is close to index 0 in the array, in which case the time will be a fraction of worst case run time. However, as computer scientists, we are better off planning for the worst case scenario.</p>
+
+<p>We also need to remember how hashing works. The first entry in the map may hash to index 95 in the array and the second to index 34, etc. There is absolutely no order.</p>
+
+<p>It is now obvious that <strong>a high initial capacity will result in poor iteration performance</strong>. This means that we should <strong>choose a high initial capacity where we know there will be a lot of entries but little iteration needed</strong>.</p>
+
+<p>As we saw in the previous section, LF is approximately the average length of linked lists in the hashmap, so a low LF is a good thing for iteration performance.</p>
+
+<h2>Conclusion</h2>
+
+<p>In this article, we have explored HashMap class and its internal implementation details that are critical to performance. One should now be able to refactor the initial Bad News snippet to pass as optimized code. Afterall initial capacity is just one of the several implementation details that we have seen in this post.</p>
+
+<p>It is very important to understand these intricacies so that we can become better designers and decision makers.</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2018/12/01/testing/">
+            Testing a blog post?
+            <small>01 Dec 2018</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2017/02/07/java-garbage-collector-and-reference-objects/">
+            Java Garbage Collector and Reference Objects
+            <small>07 Feb 2017</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2017/01/30/lambda-expressions-in-java-8/">
+            Lambda Expressions in Java 8
+            <small>30 Jan 2017</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

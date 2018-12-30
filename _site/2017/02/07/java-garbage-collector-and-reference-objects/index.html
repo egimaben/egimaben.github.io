@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Java Garbage Collector and Reference Objects &middot; Benedict Egima
+    
+  </title>
+
+  <!-- CSS -->
+  <!-- <link rel="stylesheet" href="//public/css/poole.css">
+  <link rel="stylesheet" href="//public/css/syntax.css">
+  <link rel="stylesheet" href="//public/css/hyde.css"> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href=/public/css/poole.css>
+  <link rel="stylesheet" href=/public/css/syntax.css>
+  <link rel="stylesheet" href=/public/css/hyde.css>
+  <link rel="stylesheet" href=/public/css/profile.css>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href=/public/profile.png>
+                                 <link rel="shortcut icon" href=/public/profile.png>
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+    
+            <div class="profile-container">
+
+  
+  <img class="avatar" src="/public/profile.png" alt="profile picture" />  
+  <h2 class="uname">Benedict Egima Ayiko</h2>
+   
+  <h3 class="tagline">10 years from now, you will regret more the things you didn't do than those you did</h3>
+  
+</div>
+<div class="contact-container container-block">
+  <ul class="list-unstyled contact-list">
+    
+    <a href="mailto:">
+    <li class="email">
+      <i class="fas fa-envelope"></i>
+    </li>
+    </a>
+     
+     
+    <li class="linkedin">
+      <a href="https://linkedin.com/in/egimaben" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </li>
+     
+    <li class="github">
+      
+      <a href="http://github.com/egimaben" target="_blank"><i class="fab fa-github"></i></a>
+    </li>
+     
+    <li class="twitter">
+      <a href="https://twitter.com/egimaben" target="_blank"><i class="fab fa-twitter"></i></a>
+    </li>
+     
+    <li class="stack-overflow">
+      <a href="https://stackoverflow.com/users/3067615/egimaben" target="_blank"><i class="fab fa-stack-overflow"></i></a>
+    </li>
+    
+  </ul>
+</div>
+      <!-- <h1>
+        <a href="/">
+          Benedict Egima
+        </a>
+      </h1>
+      <p class="lead">10 years from now, you will regret more the things you didn't do than those you did</p> -->
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About</a>
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/archive/">Archive</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+      <span class="sidebar-nav-item">Currently v1.0.0</span>
+    </nav>
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Java Garbage Collector and Reference Objects</h1>
+  <span class="post-date">07 Feb 2017</span>
+  <div class="message">
+We take a look at garbage collector concepts in Java and that various reference object types that can be handled by it, demystifying the Java GC!</div>
+
+<p>In this article, we will discuss a few memory management concepts in Java with a heavy focus on the interaction between the Garbage Collector and the different reference objects available.</p>
+
+<p>This is no introduction, so let us mutually agree that you have Java Heap and GC basics down. Many articles cover this topic quite well, and you might actually wonder why am covering something that is already well discussed over the www.</p>
+
+<ul>
+<li><p>I found that most articles introduce Java memory very well, but start choking later on stuff like reference objects. It is either a variant of <em> Who doesn’t know that stuff?</em> attitude or author fatigue. I would like to give my shot and, hopefully, not fall into the same pool.</p></li>
+<li><p>Memory is a gold mine of interview questions for Senior Dev positions. <em> Java manages its own memory, I really don’t have to know how it does it.</em> Nice story for your neighbor or close friend. Good luck convincing that mean-looking interviewer. Moral: You must understand memory in the JVM.</p></li>
+</ul>
+
+<h2>Analogy</h2>
+
+<p>Analogies make understanding computing concepts short and sweet, full of oooh! and uh huh! moments. I hope you experience nothing less. </p>
+
+<p>Picture a school cafeteria. Plates are scarce, but the manager is smart. He derives a strategy together with his staff with one aim: To feed all the hungry students in time without anyone missing food due to a shortage of plates.</p>
+
+<p><strong>Strategy0</strong>: They plan to collect all used plates for washing whenever a student finishes eating and leaves the cafeteria, such that the same plates are reused by those that have not yet eaten.</p>
+
+<p>Therefore, whenever the serving team reports that plates are running out, a dedicated waitress is sent out to collect all used plates. A plate will be collected as long as the student that was using it has left the cafeteria. These plates are then washed and added to the pile to serve more students.</p>
+
+<p>This strategy works very well, and Mr. Manager is pleased with himself and his staff. Soon, he realizes that some students finish eating but stick around chatting and laughing with friends. He had told his collector waitress to only collect a plate when a student has left the table. The result, a lot of dirty plates stuck on tables simply because satisfied students are still seated there while the cafeteria is frequently running into plate crisis.</p>
+
+<p><strong>Strategy1</strong>: Mr. Manager has another trick up his sleeve. His instruction to the collector waitress changes: Collect a plate as long as a student has finished eating, regardless of whether he/she is still seated on the table or not. Word reaches students of the new and “hostile” changes, a lot of special groups come with complaints seeking a compromise with Mr. Manager. This strategy is marked a failure.</p>
+
+<p><strong>Strategy2</strong>: Being the smart man he is, he comes up with yet more brilliant ideas and draws up an instruction set for any collector waitress:</p>
+
+<ul>
+<li>If a student is a prefect or guild rep, allow them to retain their plate for as long as they like until they explicitly call you to collect it or they leave the table.</li>
+<li>If a student is a girlfriend or boyfriend to a prefect or guild rep, allow them privileges of their partner… meaning, even if they have finished eating but are still on the table, don’t rush to collect their plates unless there is absolutely no alternative and the cafeteria has literally reached its limit in terms of available plates.</li>
+<li>If the student is not a prefect and not in a relationship with any prefect, as is the case with most first-years, be very vigilant about collecting his/her plate — no delays, no compromise. Whether they are still seated on the table or not, as long as they have finished eating… even if they beg and cry. They are not allowed any kind of privilege whatsoever.</li>
+<li>Finally, the doctor has sent a list of diabetic students and needs to know the exact time they had their last meal every day in order to determine when to do routine blood sugar level checks. Collect their plates as you do for the students in the previous category, but always note down the exact time when you pick the plate and notify me.
+This turned out to be an excellent strategy. Talk about iterative problem solving .</li>
+</ul>
+
+<p>References to objects in Java follow a certain hierarchy of strength and privilege, as do the students in the cafeteria. Let us dive into the technical rundown.</p>
+
+<h2>Strong Reference</h2>
+
+<p>In every Java program, objects are the way to hold and manipulate data:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span></code></pre></figure>
+
+<p>In the above snippet, the new key word creates a <code>StringBuilder</code> object and stores a <strong>strong</strong> reference to it in variable <code>sb</code>. This is the default level of strength for all objects we create, so we don’t use any special label to identify them as we do for the rest.</p>
+
+<p>To create the rest of the references in the hierarchy, we need special wrapper objects that reside in the <code>java.lang.ref</code> package.</p>
+
+<p>Any object with at least one <strong>strong reference</strong> is not eligible for garbage collection. In our analogy, <strong>prefects</strong> hold <strong>strong references</strong> to their plates. In technical terms, we say the object is <strong>strongly reachable</strong>.</p>
+
+<p>It <strong>only becomes eligible for collection when we nullify its reference</strong>, akin to a prefect leaving the table:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">sb</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span></code></pre></figure>
+
+<h2>Soft Reference</h2>
+
+<p>A soft reference can be created to an object by wrapping its instance in a <code>java.lang.ref.SoftReference</code> object:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+<span class="n">SoftReference</span><span class="o">&lt;</span><span class="n">StringBuilder</span><span class="o">&gt;</span> <span class="n">sbSoftRef</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SoftReference</span><span class="o">&lt;&gt;(</span><span class="n">sb</span><span class="o">);</span>
+<span class="n">sb</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span></code></pre></figure>
+
+<p>In the above snippet, the first line creates a string builder object with a <strong>strong reference</strong> stored in <code>sb</code>. The second line creates a soft reference to it inside <code>sbSoftRef</code> so that now the string builder object has two references.</p>
+
+<p>At this stage, the string builder is not eligible for collection whatsoever. However, the third line nullifies the strong reference, and now the object only boasts of a soft reference.</p>
+
+<p>The object is now similar to a used plate sitting in front of the boyfriend/girlfriend of a prefect — it can be collected only as a last resort when the cafeteria staff is absolutely sure there are no more plates available. Technically, we say the object is <strong>softly reachable</strong>.</p>
+
+<p>In this phase, we can still retrieve a <strong>strong reference</strong> to the object by calling the <code>get</code> method of the <strong>SoftReference object</strong>, which returns null if the object is already collected:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">sb</span> <span class="o">=</span> <span class="n">sbSoftRef</span><span class="o">.</span><span class="na">get</span><span class="o">();</span></code></pre></figure>
+
+<p>Objects with only soft references to it are <strong>collected if and only if the JVM has concluded that there is no more memory to allocate to new objects and is on the brink of throwing an OutOfMemory error</strong>.</p>
+
+<p><strong>Soft references are intended for use in memory-sensitive caches</strong>. As the cache grows, available memory for new objects reduces yet you need the cache, so the JVM compromises with “you” until it can’t anymore.</p>
+
+<h2>Weak Reference</h2>
+
+<p>A weak reference can be created to an object by wrapping its instance in a <code>java.lang.ref.WeakReference</code> object:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+<span class="n">WeakReference</span><span class="o">&lt;</span><span class="n">StringBuilder</span><span class="o">&gt;</span> <span class="n">sbWeakRef</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WeakReference</span><span class="o">&lt;&gt;(</span><span class="n">sb</span><span class="o">);</span>
+<span class="n">sb</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span></code></pre></figure>
+
+<p>In the above snippet, after nullifying the strong reference in the third line, the object immediately becomes eligible for GC.</p>
+
+<p>The object is now similar to a used plate sitting in front of a first-year student with no privileges. It can be collected right away without any regard for whether the student is still seated at the table. Technically, we say the object is <strong>weakly reachable</strong>.</p>
+
+<p>Though we can still retrieve a strong reference to the object, the window of opportunity is way smaller than that of soft reference. We will get a null much more often than in the other cases:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">sb</span> <span class="o">=</span> <span class="n">sbWeakRef</span><span class="o">.</span><span class="na">get</span><span class="o">();</span></code></pre></figure>
+
+<p>Objects with only weak references are collected eagerly by the GC whether memory availability is tight or not.</p>
+
+<p>Weak references are intended for use in <strong>Canonicalized mapping</strong>. An understanding of this use case is beyond the scope of this article, so we will not dwell on that…</p>
+
+<h2>Phantom Reference</h2>
+
+<p>A phantom reference can be created to an object by wrapping its instance in a <code>java.lang.ref.PhantomReference</code> object:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+<span class="n">ReferenceQueue</span><span class="o">&lt;</span><span class="n">StringBuilder</span><span class="o">&gt;</span> <span class="n">refQ</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ReferenceQueue</span><span class="o">&lt;&gt;();</span>
+<span class="n">PhantomReference</span><span class="o">&lt;</span><span class="n">StringBuilder</span><span class="o">&gt;</span> <span class="n">sbPhantomRef</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PhantomReference</span><span class="o">&lt;&gt;(</span><span class="n">sb</span><span class="o">,</span> <span class="n">refQ</span><span class="o">);</span>
+<span class="n">sb</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span></code></pre></figure>
+
+<p>In the above snippet, after nullifying the strong reference in the fourth line, the object immediately becomes eligible for GC. Ignore the <code>ReferenceQueue object</code>, we&#39;ll get back to it. For now, just remember that <strong>PhantomReference, unlike soft and weak references, is useless without a ReferenceQueue</strong>.</p>
+
+<p>The object is now similar to a used plate sitting in front of a first-year student who is diabetic. It can be collected right away without any regard for whether the student is still seated at the table, albeit with one condition: the exact time of collection is noted and the doc notified.</p>
+
+<p>For as long as the piece of paper on which the time has been noted has not yet been used and discarded by the doctor, we refer to the object as phantom reachable. (Major point of confusion, let&#39;s keep going :)).</p>
+
+<p>The <code>get</code> method of a <code>PhantomReference</code> object is useless because it always returns <code>null</code>. This further strengthens the uniqueness of this reference object vis-a-vis soft and weak refs. The next sections will make this uniqueness even more crystal clear.</p>
+
+<p>Phantom references are intended for use as a more flexible alternative to the <code>Object.finalize()</code> method.</p>
+
+<h2>Reference Queue</h2>
+
+<p>True to its name, a reference queue is a data structure that enqueues reference objects namely: <code>WeakReference</code>, <code>SoftReference</code>, and <code>PhantomReference</code>.</p>
+
+<p>Whether a reference object is enqueued at any time or not depends on whether we provide a <code>ReferenceQueue</code> object upon creation of the reference object. Apart from the case of <code>PhantomReference</code>, it is not mandatory or even useful to provide one.</p>
+
+<p>Depending on the type of reference object, the exact point at which it is enqueued varies. I don’t intend to dwell much on this subject apart from furthering the coverage of phantom references. <strong>Let&#39;s be more keen on the next paragraph</strong>.</p>
+
+<p>A <strong>phantom reference is enqueued as soon as the object it is referring to has been finalized</strong> by the garbage collector. <strong>Finalized</strong> means its <code>finalize()</code> method has been called. The GC calls the <code>finalize()</code> method of objects just before collecting them for the benefit of the application that created them. The benefit is the opportunity to release <strong>non-“GC’eable”</strong> resources that the object must have created or used during its earthly life (read Java heap life). <strong>Non-“GC’eable”</strong> resources are inaccessible to the GC. One obvious example is a file handle provided by the OS. To demonstrate, take a look at the finalize method of <code>FileInputStream</code> class in all its glory:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">protected</span> <span class="kt">void</span> <span class="nf">finalize</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+  <span class="k">if</span> <span class="o">((</span><span class="n">fd</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">&amp;&amp;</span>  <span class="o">(</span><span class="n">fd</span> <span class="o">!=</span> <span class="n">FileDescriptor</span><span class="o">.</span><span class="na">in</span><span class="o">))</span> <span class="o">{</span>
+    <span class="cm">/* if fd is shared, the references in FileDescriptor</span>
+<span class="cm">     * will ensure that finalizer is only called when</span>
+<span class="cm">     * safe to do so. All references using the fd have</span>
+<span class="cm">     * become unreachable. We can call close()</span>
+<span class="cm">     */</span>
+    <span class="n">close</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Notice the <code>close()</code> method call at the end, look familiar? Yes, it&#39;s that <code>fis.close()</code> call our Java teachers taught us to always place in the <code>finally</code> clause of <code>try/catch/finally</code> blocks. Wondering whether it is a duplicate call, since we always <code>close()</code>‘d our file resources? Great, read on!</p>
+
+<p>Now notice the <code>if</code> check at the top of the method body. If we already called <code>close()</code> inside our code, then <code>fd</code> in the above code would be <code>null</code> and the rest of the method body would not be executed. Phewww!!!! (Did that come too late???). Read on!</p>
+
+<p>It so happens that, these days, the <code>finalize()</code> method, especially in library/platform classes such as <code>FileInputStream</code> above, acts as a safety net for cases where we as developers forget to release non-heap resources.(I may already by whispering to you that you may never have to use phantom refs, but read on).</p>
+
+<p>So what the heck does all this have to do with phantom references and reference queues. Am I losing focus? Well, you asked, so I&#39;ll answer:</p>
+
+<p>The <code>finalize()</code> method is plagued with numerous issues that counter almost all the advantages it sought to offer. There is actually a detailed coverage in <strong>Joshua Bloch’s Effective Java book</strong>, and several blogs talk about its problems extensively. Don’t think that they are just staining the image of an otherwise brilliant API. Unless you are an upcoming James Gosling, I would highly recommend that you just take their word and make peace with other alternatives for cleaning up after your resources. Now, keep reading — we&#39;re almost done.</p>
+
+<p>We can now <code>finalize()</code> this section with why phantom refs and ref queues come in. <code>PhantomReference</code> object was created to <strong>provide a more flexible alternative to finalize()</strong>. Whether it has succeeded or not is quite a huge topic, but my bet is <strong>NO</strong>.</p>
+
+<p>How we as programmers do this is by supplying a <code>ReferenceQueue</code> instance while creating a <code>PhantomReference</code> instance as we saw earlier. As soon as the <code>finalize()</code> method of the object is called, its phantom ref is enqueued. It is up to us to keep polling the reference queue to keep track of when this event happens. Here is where we manually release resources, including a final call to <code>phantomRef.clear()</code> method to nullify the underlying reference.</p>
+
+<h2>Differences Put Together</h2>
+
+<p>I know the title of this section is kinda lame, but bear with me. I will try to put together the differences of the three reference objects just to clear any doubts:</p>
+
+<ul>
+<li><strong>Enqueuing</strong>: Soft and weak reference objects are enqueued as soon as the GC, from its algorithms, has “marked” their memory objects for collection, but has not yet finalized them. On the other hand, phantom references are enqueued as soon as the memory objects have been finalized.</li>
+<li><strong>Reference.get()</strong>: The get method of both soft and weak references returns a strong reference to the underlying object or null if that object has already been marked for collection. On the other hand, the <code>get</code> method of phantom reference always returns null (whether you are Josh Bloch or Jon Skeet calling it. Kidding!). This difference strikes a key point about their use cases, for weak and soft refs to be of any use, one should be able to recreate a strong ref to their objects within the “window of opportunity.” But phantom refs don’t need this quality as we explored earlier.</li>
+<li><strong>Reference.clear()</strong>: This method is available in all the three ref objects. It sets the underlying reference to <code>null</code> hence explicitly availing the memory object for collection before its time. This is a useless facility for weak and soft refs as it would counter their benefit. But it is key for phantom refs as you have to call it on Mr. phantom at the end of your clean up steps.</li>
+<li><strong>ReferenceQueue</strong>: it is useless for soft and weak refs but without it, phantom refs are useless.</li>
+<li><strong>Use cases</strong>: Soft refs: memory-sensitive cache, weak-refs: canonicalized mapping, phantom-refs: more flexible substitute for <code>finalize()</code>.</li>
+</ul>
+
+<h2>Conclusion</h2>
+
+<p>In this, albeit very long, article, I have tried to discuss my findings on the relationship between the GC and reference objects. I hope it has, at least, given us a better understanding of the reference objects specifically and the GC generally.</p>
+
+<p>It goes without saying that you may never have to deal with these reference types directly:</p>
+
+<ul>
+<li>Need memory-sensitive caching? (A very complex and meticulous endeavor to get right, by the way?) Use solid and battle-hardened libs like ehcache.</li>
+<li>Need canonicalized mapping? Simply use <code>java.util.WeakHashMap</code> and save yourself hair loss.</li>
+<li>Need to do pre-mortem clean up? Don’t be deceived by Mr. Phantom’s offering as opposed to <code>finalize()</code>, stick to age-old <code>try/catch/finally</code>.</li>
+</ul>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2018/12/01/testing/">
+            Testing a blog post?
+            <small>01 Dec 2018</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2017/01/30/lambda-expressions-in-java-8/">
+            Lambda Expressions in Java 8
+            <small>30 Jan 2017</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2017/01/18/java-method-references/">
+            Java Method References
+            <small>18 Jan 2017</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

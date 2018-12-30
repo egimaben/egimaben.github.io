@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Benedict Egima</title>
- <link href="https://egimaben.github.io/atom.xml" rel="self"/>
- <link href="https://egimaben.github.io/"/>
- <updated>2018-12-03T08:44:43+03:00</updated>
- <id>https://egimaben.github.io</id>
+ <link href="http://localhost:4000/atom.xml" rel="self"/>
+ <link href="http://localhost:4000/"/>
+ <updated>2018-12-30T13:40:13+03:00</updated>
+ <id>http://localhost:4000</id>
  <author>
    <name>Benedict Egima Ayiko</name>
    <email>benikod@gmail.com</email>
@@ -14,9 +14,9 @@
  
  <entry>
    <title>Testing a blog post?</title>
-   <link href="https://egimaben.github.io/2018/12/01/testing/"/>
+   <link href="http://localhost:4000/2018/12/01/testing/"/>
    <updated>2018-12-01T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2018/12/01/testing</id>
+   <id>http://localhost:4000/2018/12/01/testing</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll&lt;/a&gt; is a static site generator, an open-source tool for creating simple yet powerful websites of all shapes and sizes. From &lt;a href=&quot;https://github.com/mojombo/jekyll/blob/master/README.markdown&quot;&gt;the project&amp;#39;s readme&lt;/a&gt;:&lt;/p&gt;
 
 &lt;blockquote&gt;
@@ -30,10 +30,709 @@
  </entry>
  
  <entry>
+   <title>Java Garbage Collector and Reference Objects</title>
+   <link href="http://localhost:4000/2017/02/07/java-garbage-collector-and-reference-objects/"/>
+   <updated>2017-02-07T00:00:00+03:00</updated>
+   <id>http://localhost:4000/2017/02/07/java-garbage-collector-and-reference-objects</id>
+   <content type="html">&lt;div class=&quot;message&quot;&gt;
+We take a look at garbage collector concepts in Java and that various reference object types that can be handled by it, demystifying the Java GC!&lt;/div&gt;
+
+&lt;p&gt;In this article, we will discuss a few memory management concepts in Java with a heavy focus on the interaction between the Garbage Collector and the different reference objects available.&lt;/p&gt;
+
+&lt;p&gt;This is no introduction, so let us mutually agree that you have Java Heap and GC basics down. Many articles cover this topic quite well, and you might actually wonder why am covering something that is already well discussed over the www.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;I found that most articles introduce Java memory very well, but start choking later on stuff like reference objects. It is either a variant of &lt;em&gt; Who doesn’t know that stuff?&lt;/em&gt; attitude or author fatigue. I would like to give my shot and, hopefully, not fall into the same pool.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Memory is a gold mine of interview questions for Senior Dev positions. &lt;em&gt; Java manages its own memory, I really don’t have to know how it does it.&lt;/em&gt; Nice story for your neighbor or close friend. Good luck convincing that mean-looking interviewer. Moral: You must understand memory in the JVM.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Analogy&lt;/h2&gt;
+
+&lt;p&gt;Analogies make understanding computing concepts short and sweet, full of oooh! and uh huh! moments. I hope you experience nothing less. &lt;/p&gt;
+
+&lt;p&gt;Picture a school cafeteria. Plates are scarce, but the manager is smart. He derives a strategy together with his staff with one aim: To feed all the hungry students in time without anyone missing food due to a shortage of plates.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Strategy0&lt;/strong&gt;: They plan to collect all used plates for washing whenever a student finishes eating and leaves the cafeteria, such that the same plates are reused by those that have not yet eaten.&lt;/p&gt;
+
+&lt;p&gt;Therefore, whenever the serving team reports that plates are running out, a dedicated waitress is sent out to collect all used plates. A plate will be collected as long as the student that was using it has left the cafeteria. These plates are then washed and added to the pile to serve more students.&lt;/p&gt;
+
+&lt;p&gt;This strategy works very well, and Mr. Manager is pleased with himself and his staff. Soon, he realizes that some students finish eating but stick around chatting and laughing with friends. He had told his collector waitress to only collect a plate when a student has left the table. The result, a lot of dirty plates stuck on tables simply because satisfied students are still seated there while the cafeteria is frequently running into plate crisis.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Strategy1&lt;/strong&gt;: Mr. Manager has another trick up his sleeve. His instruction to the collector waitress changes: Collect a plate as long as a student has finished eating, regardless of whether he/she is still seated on the table or not. Word reaches students of the new and “hostile” changes, a lot of special groups come with complaints seeking a compromise with Mr. Manager. This strategy is marked a failure.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Strategy2&lt;/strong&gt;: Being the smart man he is, he comes up with yet more brilliant ideas and draws up an instruction set for any collector waitress:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If a student is a prefect or guild rep, allow them to retain their plate for as long as they like until they explicitly call you to collect it or they leave the table.&lt;/li&gt;
+&lt;li&gt;If a student is a girlfriend or boyfriend to a prefect or guild rep, allow them privileges of their partner… meaning, even if they have finished eating but are still on the table, don’t rush to collect their plates unless there is absolutely no alternative and the cafeteria has literally reached its limit in terms of available plates.&lt;/li&gt;
+&lt;li&gt;If the student is not a prefect and not in a relationship with any prefect, as is the case with most first-years, be very vigilant about collecting his/her plate — no delays, no compromise. Whether they are still seated on the table or not, as long as they have finished eating… even if they beg and cry. They are not allowed any kind of privilege whatsoever.&lt;/li&gt;
+&lt;li&gt;Finally, the doctor has sent a list of diabetic students and needs to know the exact time they had their last meal every day in order to determine when to do routine blood sugar level checks. Collect their plates as you do for the students in the previous category, but always note down the exact time when you pick the plate and notify me.
+This turned out to be an excellent strategy. Talk about iterative problem solving .&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;References to objects in Java follow a certain hierarchy of strength and privilege, as do the students in the cafeteria. Let us dive into the technical rundown.&lt;/p&gt;
+
+&lt;h2&gt;Strong Reference&lt;/h2&gt;
+
+&lt;p&gt;In every Java program, objects are the way to hold and manipulate data:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the above snippet, the new key word creates a &lt;code&gt;StringBuilder&lt;/code&gt; object and stores a &lt;strong&gt;strong&lt;/strong&gt; reference to it in variable &lt;code&gt;sb&lt;/code&gt;. This is the default level of strength for all objects we create, so we don’t use any special label to identify them as we do for the rest.&lt;/p&gt;
+
+&lt;p&gt;To create the rest of the references in the hierarchy, we need special wrapper objects that reside in the &lt;code&gt;java.lang.ref&lt;/code&gt; package.&lt;/p&gt;
+
+&lt;p&gt;Any object with at least one &lt;strong&gt;strong reference&lt;/strong&gt; is not eligible for garbage collection. In our analogy, &lt;strong&gt;prefects&lt;/strong&gt; hold &lt;strong&gt;strong references&lt;/strong&gt; to their plates. In technical terms, we say the object is &lt;strong&gt;strongly reachable&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;It &lt;strong&gt;only becomes eligible for collection when we nullify its reference&lt;/strong&gt;, akin to a prefect leaving the table:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Soft Reference&lt;/h2&gt;
+
+&lt;p&gt;A soft reference can be created to an object by wrapping its instance in a &lt;code&gt;java.lang.ref.SoftReference&lt;/code&gt; object:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;SoftReference&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sbSoftRef&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SoftReference&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the above snippet, the first line creates a string builder object with a &lt;strong&gt;strong reference&lt;/strong&gt; stored in &lt;code&gt;sb&lt;/code&gt;. The second line creates a soft reference to it inside &lt;code&gt;sbSoftRef&lt;/code&gt; so that now the string builder object has two references.&lt;/p&gt;
+
+&lt;p&gt;At this stage, the string builder is not eligible for collection whatsoever. However, the third line nullifies the strong reference, and now the object only boasts of a soft reference.&lt;/p&gt;
+
+&lt;p&gt;The object is now similar to a used plate sitting in front of the boyfriend/girlfriend of a prefect — it can be collected only as a last resort when the cafeteria staff is absolutely sure there are no more plates available. Technically, we say the object is &lt;strong&gt;softly reachable&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;In this phase, we can still retrieve a &lt;strong&gt;strong reference&lt;/strong&gt; to the object by calling the &lt;code&gt;get&lt;/code&gt; method of the &lt;strong&gt;SoftReference object&lt;/strong&gt;, which returns null if the object is already collected:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sbSoftRef&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Objects with only soft references to it are &lt;strong&gt;collected if and only if the JVM has concluded that there is no more memory to allocate to new objects and is on the brink of throwing an OutOfMemory error&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Soft references are intended for use in memory-sensitive caches&lt;/strong&gt;. As the cache grows, available memory for new objects reduces yet you need the cache, so the JVM compromises with “you” until it can’t anymore.&lt;/p&gt;
+
+&lt;h2&gt;Weak Reference&lt;/h2&gt;
+
+&lt;p&gt;A weak reference can be created to an object by wrapping its instance in a &lt;code&gt;java.lang.ref.WeakReference&lt;/code&gt; object:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;WeakReference&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sbWeakRef&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;WeakReference&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the above snippet, after nullifying the strong reference in the third line, the object immediately becomes eligible for GC.&lt;/p&gt;
+
+&lt;p&gt;The object is now similar to a used plate sitting in front of a first-year student with no privileges. It can be collected right away without any regard for whether the student is still seated at the table. Technically, we say the object is &lt;strong&gt;weakly reachable&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Though we can still retrieve a strong reference to the object, the window of opportunity is way smaller than that of soft reference. We will get a null much more often than in the other cases:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sbWeakRef&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Objects with only weak references are collected eagerly by the GC whether memory availability is tight or not.&lt;/p&gt;
+
+&lt;p&gt;Weak references are intended for use in &lt;strong&gt;Canonicalized mapping&lt;/strong&gt;. An understanding of this use case is beyond the scope of this article, so we will not dwell on that…&lt;/p&gt;
+
+&lt;h2&gt;Phantom Reference&lt;/h2&gt;
+
+&lt;p&gt;A phantom reference can be created to an object by wrapping its instance in a &lt;code&gt;java.lang.ref.PhantomReference&lt;/code&gt; object:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ReferenceQueue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;refQ&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ReferenceQueue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;();&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;PhantomReference&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sbPhantomRef&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PhantomReference&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;refQ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the above snippet, after nullifying the strong reference in the fourth line, the object immediately becomes eligible for GC. Ignore the &lt;code&gt;ReferenceQueue object&lt;/code&gt;, we&amp;#39;ll get back to it. For now, just remember that &lt;strong&gt;PhantomReference, unlike soft and weak references, is useless without a ReferenceQueue&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The object is now similar to a used plate sitting in front of a first-year student who is diabetic. It can be collected right away without any regard for whether the student is still seated at the table, albeit with one condition: the exact time of collection is noted and the doc notified.&lt;/p&gt;
+
+&lt;p&gt;For as long as the piece of paper on which the time has been noted has not yet been used and discarded by the doctor, we refer to the object as phantom reachable. (Major point of confusion, let&amp;#39;s keep going :)).&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;get&lt;/code&gt; method of a &lt;code&gt;PhantomReference&lt;/code&gt; object is useless because it always returns &lt;code&gt;null&lt;/code&gt;. This further strengthens the uniqueness of this reference object vis-a-vis soft and weak refs. The next sections will make this uniqueness even more crystal clear.&lt;/p&gt;
+
+&lt;p&gt;Phantom references are intended for use as a more flexible alternative to the &lt;code&gt;Object.finalize()&lt;/code&gt; method.&lt;/p&gt;
+
+&lt;h2&gt;Reference Queue&lt;/h2&gt;
+
+&lt;p&gt;True to its name, a reference queue is a data structure that enqueues reference objects namely: &lt;code&gt;WeakReference&lt;/code&gt;, &lt;code&gt;SoftReference&lt;/code&gt;, and &lt;code&gt;PhantomReference&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Whether a reference object is enqueued at any time or not depends on whether we provide a &lt;code&gt;ReferenceQueue&lt;/code&gt; object upon creation of the reference object. Apart from the case of &lt;code&gt;PhantomReference&lt;/code&gt;, it is not mandatory or even useful to provide one.&lt;/p&gt;
+
+&lt;p&gt;Depending on the type of reference object, the exact point at which it is enqueued varies. I don’t intend to dwell much on this subject apart from furthering the coverage of phantom references. &lt;strong&gt;Let&amp;#39;s be more keen on the next paragraph&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;A &lt;strong&gt;phantom reference is enqueued as soon as the object it is referring to has been finalized&lt;/strong&gt; by the garbage collector. &lt;strong&gt;Finalized&lt;/strong&gt; means its &lt;code&gt;finalize()&lt;/code&gt; method has been called. The GC calls the &lt;code&gt;finalize()&lt;/code&gt; method of objects just before collecting them for the benefit of the application that created them. The benefit is the opportunity to release &lt;strong&gt;non-“GC’eable”&lt;/strong&gt; resources that the object must have created or used during its earthly life (read Java heap life). &lt;strong&gt;Non-“GC’eable”&lt;/strong&gt; resources are inaccessible to the GC. One obvious example is a file handle provided by the OS. To demonstrate, take a look at the finalize method of &lt;code&gt;FileInputStream&lt;/code&gt; class in all its glory:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;finalize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FileDescriptor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;in&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/* if fd is shared, the references in FileDescriptor&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * will ensure that finalizer is only called when&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * safe to do so. All references using the fd have&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * become unreachable. We can call close()&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Notice the &lt;code&gt;close()&lt;/code&gt; method call at the end, look familiar? Yes, it&amp;#39;s that &lt;code&gt;fis.close()&lt;/code&gt; call our Java teachers taught us to always place in the &lt;code&gt;finally&lt;/code&gt; clause of &lt;code&gt;try/catch/finally&lt;/code&gt; blocks. Wondering whether it is a duplicate call, since we always &lt;code&gt;close()&lt;/code&gt;‘d our file resources? Great, read on!&lt;/p&gt;
+
+&lt;p&gt;Now notice the &lt;code&gt;if&lt;/code&gt; check at the top of the method body. If we already called &lt;code&gt;close()&lt;/code&gt; inside our code, then &lt;code&gt;fd&lt;/code&gt; in the above code would be &lt;code&gt;null&lt;/code&gt; and the rest of the method body would not be executed. Phewww!!!! (Did that come too late???). Read on!&lt;/p&gt;
+
+&lt;p&gt;It so happens that, these days, the &lt;code&gt;finalize()&lt;/code&gt; method, especially in library/platform classes such as &lt;code&gt;FileInputStream&lt;/code&gt; above, acts as a safety net for cases where we as developers forget to release non-heap resources.(I may already by whispering to you that you may never have to use phantom refs, but read on).&lt;/p&gt;
+
+&lt;p&gt;So what the heck does all this have to do with phantom references and reference queues. Am I losing focus? Well, you asked, so I&amp;#39;ll answer:&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;finalize()&lt;/code&gt; method is plagued with numerous issues that counter almost all the advantages it sought to offer. There is actually a detailed coverage in &lt;strong&gt;Joshua Bloch’s Effective Java book&lt;/strong&gt;, and several blogs talk about its problems extensively. Don’t think that they are just staining the image of an otherwise brilliant API. Unless you are an upcoming James Gosling, I would highly recommend that you just take their word and make peace with other alternatives for cleaning up after your resources. Now, keep reading — we&amp;#39;re almost done.&lt;/p&gt;
+
+&lt;p&gt;We can now &lt;code&gt;finalize()&lt;/code&gt; this section with why phantom refs and ref queues come in. &lt;code&gt;PhantomReference&lt;/code&gt; object was created to &lt;strong&gt;provide a more flexible alternative to finalize()&lt;/strong&gt;. Whether it has succeeded or not is quite a huge topic, but my bet is &lt;strong&gt;NO&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;How we as programmers do this is by supplying a &lt;code&gt;ReferenceQueue&lt;/code&gt; instance while creating a &lt;code&gt;PhantomReference&lt;/code&gt; instance as we saw earlier. As soon as the &lt;code&gt;finalize()&lt;/code&gt; method of the object is called, its phantom ref is enqueued. It is up to us to keep polling the reference queue to keep track of when this event happens. Here is where we manually release resources, including a final call to &lt;code&gt;phantomRef.clear()&lt;/code&gt; method to nullify the underlying reference.&lt;/p&gt;
+
+&lt;h2&gt;Differences Put Together&lt;/h2&gt;
+
+&lt;p&gt;I know the title of this section is kinda lame, but bear with me. I will try to put together the differences of the three reference objects just to clear any doubts:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Enqueuing&lt;/strong&gt;: Soft and weak reference objects are enqueued as soon as the GC, from its algorithms, has “marked” their memory objects for collection, but has not yet finalized them. On the other hand, phantom references are enqueued as soon as the memory objects have been finalized.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Reference.get()&lt;/strong&gt;: The get method of both soft and weak references returns a strong reference to the underlying object or null if that object has already been marked for collection. On the other hand, the &lt;code&gt;get&lt;/code&gt; method of phantom reference always returns null (whether you are Josh Bloch or Jon Skeet calling it. Kidding!). This difference strikes a key point about their use cases, for weak and soft refs to be of any use, one should be able to recreate a strong ref to their objects within the “window of opportunity.” But phantom refs don’t need this quality as we explored earlier.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Reference.clear()&lt;/strong&gt;: This method is available in all the three ref objects. It sets the underlying reference to &lt;code&gt;null&lt;/code&gt; hence explicitly availing the memory object for collection before its time. This is a useless facility for weak and soft refs as it would counter their benefit. But it is key for phantom refs as you have to call it on Mr. phantom at the end of your clean up steps.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ReferenceQueue&lt;/strong&gt;: it is useless for soft and weak refs but without it, phantom refs are useless.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use cases&lt;/strong&gt;: Soft refs: memory-sensitive cache, weak-refs: canonicalized mapping, phantom-refs: more flexible substitute for &lt;code&gt;finalize()&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;In this, albeit very long, article, I have tried to discuss my findings on the relationship between the GC and reference objects. I hope it has, at least, given us a better understanding of the reference objects specifically and the GC generally.&lt;/p&gt;
+
+&lt;p&gt;It goes without saying that you may never have to deal with these reference types directly:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Need memory-sensitive caching? (A very complex and meticulous endeavor to get right, by the way?) Use solid and battle-hardened libs like ehcache.&lt;/li&gt;
+&lt;li&gt;Need canonicalized mapping? Simply use &lt;code&gt;java.util.WeakHashMap&lt;/code&gt; and save yourself hair loss.&lt;/li&gt;
+&lt;li&gt;Need to do pre-mortem clean up? Don’t be deceived by Mr. Phantom’s offering as opposed to &lt;code&gt;finalize()&lt;/code&gt;, stick to age-old &lt;code&gt;try/catch/finally&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Lambda Expressions in Java 8</title>
+   <link href="http://localhost:4000/2017/01/30/lambda-expressions-in-java-8/"/>
+   <updated>2017-01-30T00:00:00+03:00</updated>
+   <id>http://localhost:4000/2017/01/30/lambda-expressions-in-java-8</id>
+   <content type="html">&lt;div class=&quot;message&quot;&gt;
+  In this post, we will learn what, exactly, lambda expressions are and how they fit into the whole Java ecosystem.
+&lt;/div&gt;
+
+&lt;p&gt;Lambda expressions are the most popular feature of Java 8. They introduce functional programming concepts to Java, which is a completely object-oriented and imperative programming language. &lt;/p&gt;
+
+&lt;p&gt;How functional programming languages work is beyond the scope of this article, but we will extract a feature that will make the difference obvious for us who work with OOP.&lt;/p&gt;
+
+&lt;p&gt;How functional programming languages work is beyond the scope of this article, but we will extract a feature that will make the difference obvious to us who work with OOP.&lt;/p&gt;
+
+&lt;p&gt;In this post, we will learn what, exactly, lambda expressions are and how they fit into the whole Java ecosystem. We will also look at example code that works without using lambda expressions and then refactor this code to use lambdas.&lt;/p&gt;
+
+&lt;h2&gt;Understanding a Lambda Expression&lt;/h2&gt;
+
+&lt;p&gt;A Lambda expression is a block of code that we can pass around to execute. Passing a block of code to a function is something that we as Java programmers are not used to. &lt;/p&gt;
+
+&lt;p&gt;All our behavior defining code is encapsulated inside method bodies and executed through object references as it is with this code:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;I am learning Lambda&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This is classic OOP style of hiding method implementations from the caller. The caller simply passes a variable to the method which then does something with the value of the variable and returns another value or produces a side effect as it is in our case.&lt;/p&gt;
+
+&lt;p&gt;We are now going to see an equivalent implementation that uses behavior passing other than variable passing. To achieve this, we have to create a functional interface that defines that abstracts the behavior instead of a method. &lt;/p&gt;
+
+&lt;p&gt;A functional interface is an interface that has only one method:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Printer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Printer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the above implementation, the &lt;code&gt;Printer&lt;/code&gt; interface is responsible for all printing. The method &lt;code&gt;printSomething&lt;/code&gt; no longer defines the behavior but rather executes one defined by &lt;code&gt;Printer&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;I am using a Functional interface&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Printer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Printer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We may have noticed we have not done something new here. This is true because we have not applied a lambda expression yet. We simply created a concrete implementation of the Printer interface and passed it to the printSomething method.&lt;/p&gt;
+
+&lt;p&gt;The above demo was meant to bring us to a key objective of introducing Lambda expressions in Java:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Lambda expressions are used primarily to define inline implementation of a functional interface.
+Before we refactor the above example using lambda expressions, let’s learn the necessary syntax:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;param1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;param2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;param3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;paramN&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//block of code;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;A lambda constitutes a comma separated list of formal parameters enclosed in parenthesis as we would define in a method declaration, followed by an arrow token pointing to the code to execute. Now let us refactor the above code to use a lambda:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;I am learning Lambda&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/**/&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Printer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)-&amp;gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);};&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/**/&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I find the above snippet very compact and beautiful to look at. Since the functional interface declares only a single method, the parameters passed in the first part of the lambda are automatically mapped to the method’s parameter list and the code on the right of the arrow is treated as the method’s concrete implementation&lt;/p&gt;
+
+&lt;h2&gt;Why Use Lambda Expressions?&lt;/h2&gt;
+
+&lt;p&gt;As pertains the demo in the previous section, lambda expressions enable us to have more compact code, easier to read and follow. There are other benefits in line with performance and multi-core processing, but they can only make sense after understanding the Streams API, therefore beyond the scope of this article.&lt;/p&gt;
+
+&lt;p&gt;Comparing the &lt;code&gt;main&lt;/code&gt; method implementations with and without lambdas sure shows us the power of lambda expressions when it comes to shortening code:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;I am learning Lambda&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/**/&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Printer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)-&amp;gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);};&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/**/&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can make our code more concise than this. It so happens that even without specifying the type of the parameter on the left part of the arrow, its type will be inferred by the compiler from the formal params of the interface method:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Printer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)-&amp;gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can still do better. Another characteristic of lambdas is that: if there is only one parameter, we can eliminate the parenthesis altogether. Similarly, if there is only one statement on the right of the arrow, we can also eliminate the braces:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Printer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now our code is really starting to look cute. We are just getting started. If our interface method did not take any parameters, we could replace the declaration with empty parenthesis:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;anything&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;How about we just inline the lambda without first creating an object and then passing it to the saySomething method:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;I am Lambda&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/**/&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we are really starting to talk functional programming. Our initial main body of nine lines is now down to only 3 lines. This compactness of code is what makes lambda expressions very appealing to Java programmers.&lt;/p&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;In this post, we have gone through a gentle introduction to Lambda expressions in Java and learned how they can be used to improve the code quality of functional interface implementations. &lt;/p&gt;
+
+&lt;p&gt;Watch out for more coverage of Lambdas on this site as I will be touching the Stream API and discussing how it gives us more advantages of Lambdas when used together with the Collections framework.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Java Method References</title>
+   <link href="http://localhost:4000/2017/01/18/java-method-references/"/>
+   <updated>2017-01-18T00:00:00+03:00</updated>
+   <id>http://localhost:4000/2017/01/18/java-method-references</id>
+   <content type="html">&lt;div class=&quot;message&quot;&gt;
+  A double colon might appear so innocently, but there's a lot of things to know about it. In this post, we try to put together the most important of them.
+&lt;/div&gt;
+
+&lt;p&gt;In this post, we are going to discuss yet another feature of Java 8: Method References. In a previous post, we explored lambda expressions and learned how to use them to write better and more compact Java code, especially with the advent of functional interfaces.&lt;/p&gt;
+
+&lt;p&gt;Unless you are very well-versed with lambda expressions, I would highly recommend that you first go through my lambda expressions tutorial before continuing with this post.&lt;/p&gt;
+
+&lt;p&gt;To even encourage you further, when you understand lambda expressions, method references are a walk over.&lt;/p&gt;
+
+&lt;h2&gt;Method References vs. Lambda Rxpressions&lt;/h2&gt;
+
+&lt;p&gt;From the lambda expressions tutorial, we can remember that a lambda expression simply gives us a more compact way of writing an anonymous function or implementing a functional interface.&lt;/p&gt;
+
+&lt;p&gt;In summary, we discussed that, if we have an interface such as below for printing something and a method that takes the interface as a parameter:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Printer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Printer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;printer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Pre-Java 8, we can call the printSomething method and provide an implementation of Printer interface as an anonymous function:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;I am Lambda&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Printer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The above code, when run, produces the desirable result i.e. printing something to the console:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;I&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;am&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Lambda&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;However, as Java developers, aware of new features in Java 8, we found this too verbose and decided to apply a lambda expression:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;I am Lambda&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We were able to reduce the number of lines significantly. Notice that, we are simply using a single line of code in the lambda expression i.e. invoking only a single method. But we are free to add more lines and wrap them within braces:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;I am Lambda&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;We are testing lambda expressions&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;//more lines of code&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toPrint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Which prints:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;We&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;are&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;testing&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;expressions&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;I&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;am&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Lambda&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To use a lambda expression like we have done in the last example is awesome as it saves us from the verbosity of anonymous functions. However, the first case where we were only calling a single method is not the most compact code we can get…ENTER METHOD REFERENCES:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LambdaDemo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;something&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;I am Lambda&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;demo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;printSomething&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;something&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;A method reference can replace a lambda expression where we only have a single method call. Instead of the method call, we simply supply the method name attached to its class/object separated by a double colon(::) operator.&lt;/p&gt;
+
+&lt;p&gt;The real invocation of is done under the hood and we don’t even need to directly supply parameters (e.g. toPrint) as we did for lambdas, the compiler infers this information automatically and more such as return type.&lt;/p&gt;
+
+&lt;p&gt;More formally, we can say that:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A method reference is a more compact and easy-to-read construct to replace a lambda expression that does nothing more than invoking an existing method.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2&gt;Static Method Reference&lt;/h2&gt;
+
+&lt;p&gt;One of the more obvious and easiest ways to use a method reference is where static methods are involved. Assuming we have a class that only defines a single static method for adding two integers:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MRefDemo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can write a unit test for this class using a lambda expression if we don’t know about method references:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;givenStaticFn_createsFunctionalInterfaceWithLambda_pass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;BiFunction&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;adder&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;addResult&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;adder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;addResult&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We have to explicitly reference the parameters in the lambda expression wrapped by the BiFunction. But with method refs, we don’t need any of that:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;givenStaticFn_createsFunctionalInterfaceWithMethRef_pass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;BiFunction&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;adder&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MRefDemo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;addResult&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;adder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;addResult&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Notice the syntax for static method reference: the class name, MRefDemo and the method name, add separated by the double colon(::) operator.&lt;/p&gt;
+
+&lt;h2&gt;Constructor Reference&lt;/h2&gt;
+
+&lt;p&gt;Constructor reference is very similar to static method reference. It is a way to supply the name of the constructor of a class without invoking it. The invocation takes place under the hood.&lt;/p&gt;
+
+&lt;p&gt;Assume that we have a class called LogText.java, whose soul purpose in life is to wrap some raw text and avail it at log time in a beatiful way such that instead of our log appearing like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;server0&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It would appear like:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;server0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Simple, but serves our demo purpose.&lt;/p&gt;
+
+&lt;p&gt;Now here is the content of LogText.java:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LogText&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;==&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;==&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The constructor only beatifies the given string and stores it ready for retrieval at log time. Now we want to wrap this class in a functional interface such that a call to its functional method constructs an instance of LogText with the given string.&lt;/p&gt;
+
+&lt;p&gt;The lambda approach:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;givenConstructor_createsFunInterfaceWithLambda_pass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;server0&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;==server0==&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And the constructor reference option:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;givenConstructor_createsFunInterfaceWithMethRef_pass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;server0&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;==server0==&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Bound Instance Method Reference&lt;/h2&gt;
+
+&lt;p&gt;We have only looked at uses of method reference where we are not instantiating the object ourselves. We can also apply a method reference to name a method attached to an already constructed object.&lt;/p&gt;
+
+&lt;p&gt;Assuming that we want to convert the above constructor reference example to use bound instance method reference. We would have to construct our LogText instance in advance.&lt;/p&gt;
+
+&lt;p&gt;For this example to make sense, let us also assume that we now want the functional interface to supply us directly with the beautified string rather than an instance of LogText. The lambda example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;givenObj_createsFunInterfaceWithLambda_pass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifulText&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;server0&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Supplier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifulText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;==server0==&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And the method reference variant:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;givenObj_createsFunInterfaceWithMethRef_pass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifulText&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;server0&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Supplier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifulText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;==server0==&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Unbound Instance Method Reference&lt;/h2&gt;
+
+&lt;p&gt;Unbound instance method reference or unbound non-static method reference is very close in both syntax and even closer in semantics to bound instance method reference.&lt;/p&gt;
+
+&lt;p&gt;In the section on bound instance method reference above, we were telling the compiler:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Here is our object, it is the only thing we have to offer you, it is ready and contains everything we need, we only want you to invoke a certain method called toString on this object and return to us whatever that call returns.&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;That is why we had to use a Supplier, a functional interface whose functional method takes no arguments and returns a single value. We did not have anything inform of an argument as we only had a fully built LogText object.&lt;/p&gt;
+
+&lt;p&gt;Now take a look at an example of unbound instance method reference:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;givenObj_createsFunInterfaceWithLambda_pass2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;logText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;logText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifulText&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;server0&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;beautifulText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;==server0==&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The concept is not clear with a lambda, let’s look at the method reference approach:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;givenObj_createsFunInterfaceWithMethRef_pass2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifulText&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;server0&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beautifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;beautifulText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;==server0==&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now this is exactly what we are telling the compiler:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Hey dude, see we don’t really have a ready object at this point, we will have it ready very soon. But in the meantime we want you to take note of a certain method called toString. When we eventually get around to creating this object, please remember to call the said method on this object and return to us whatever that call returns.&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;This is why we are using a Function. A functional interface whose functional method takes one argument and produces a result. We will have to pass the LogText object as an argument to the functional method.&lt;/p&gt;
+
+&lt;p&gt;The syntax &lt;code&gt;Class::instanceMethod&lt;/code&gt; is strange and this is where part of the confusion comes from. That syntax is common with static methods. It is like calling String.toString yet we all know it should be called on some string s, like s.toString.&lt;/p&gt;
+
+&lt;p&gt;Therefore, understanding this difference is key to correct and informed use of method references.&lt;/p&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;In this tutorial, we have explored one of the features of Java 8. Method references can make your code more compact and easier to read.&lt;/p&gt;
+
+&lt;p&gt;Just remember that whenever you are going use a lambda expression, first ask yourself if the lambda expression is evaluating a single known function. If so, it is high time to replace that with a method reference.&lt;/p&gt;
+
+&lt;p&gt;Finally, endeavor to clearly understand the difference between bounded and unbounded instance/non-static method references. I have tried to clear that in this tutorial as well.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Getting The Most Out of HashMaps</title>
+   <link href="http://localhost:4000/2017/01/10/getting-the-most-out-of-hashmaps/"/>
+   <updated>2017-01-10T00:00:00+03:00</updated>
+   <id>http://localhost:4000/2017/01/10/getting-the-most-out-of-hashmaps</id>
+   <content type="html">&lt;div class=&quot;message&quot;&gt;
+HashMaps are a great tool, but you need to know the internals to get the best performance from them. This guide covers collisions, iterations, load factors, and more.&lt;/div&gt;
+
+&lt;p&gt;&lt;code&gt;HashMap&lt;/code&gt; is perhaps the most popular implementation of the &lt;code&gt;Map&lt;/code&gt; interface in &lt;strong&gt;Java Collections Framework (JCF)&lt;/strong&gt;. If you want to fully understand the internal workings of &lt;code&gt;HashMap&lt;/code&gt;, the best tutorial I have found online is &lt;a href=&quot;http://www.baeldung.com/java-hashmap&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For this article, we are only going to focus on the performance specific concepts. &lt;code&gt;HashMap&lt;/code&gt; offers us a very fast, well-optimized data structure solution for many problem scenarios.&lt;/p&gt;
+
+&lt;h2&gt;Good News&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;HashMap&lt;/code&gt; is a great advantage for us because it is so versatile and fits in a lot of use cases:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Want to load objects from an SQL result set and marshal them over the network? use a &lt;code&gt;HashMap&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Want to group some log file content according to a certain field? &lt;code&gt;HashMap&lt;/code&gt; is available.&lt;/li&gt;
+&lt;li&gt;Want to move some arbitrary data around without the restriction of creating a POJO or DTO? Oh! Hail! &lt;code&gt;HashMap&lt;/code&gt;.
+What can’t you do with &lt;code&gt;HashMap&lt;/code&gt;, plus the API is extremely easy to use.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Bad News&lt;/h2&gt;
+
+&lt;p&gt;The caveat is that, it is easy to use &lt;code&gt;HashMap&lt;/code&gt; in Java but not exactly easy to use it optimally or efficiently if you may. A few years back, when I was new to Java and programming in general, we were building a school information system.&lt;/p&gt;
+
+&lt;p&gt;We would query some SQL database somewhere and then need to marshal the objects over the network using RPC. I can still recall the excitement I experienced seeing &lt;code&gt;HashMap&lt;/code&gt; at work:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Student&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;records&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;();&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;ResultSet&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rsWithHundredsOfRecords&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//... &lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()){&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;Student&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;student&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Student&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;student&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;student&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setAge&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt; 
+    &lt;span class=&quot;c1&quot;&gt;// plus several other attributes &lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;records&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;student&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;student&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; 
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Test data would average around a thousand records and we would not realize any performance dip. Awesome feat right? &lt;strong&gt;WRONG&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Even without any test, a seasoned developer can look at the above code and immediately become uncomfortable — the &lt;strong&gt;rat smell&lt;/strong&gt; is too strong. The &lt;strong&gt;happy go lucky&lt;/strong&gt; developer, like myself a few years ago, would not lose their smile though.&lt;/p&gt;
+
+&lt;p&gt;If you are among the less comfortable with the above code, feel free to stop reading at this point. However, if you are like me a few years ago and are very comfortable with the above code, endeavor to read the post up to the end and you will surely gain the competence to refactor my code for me.&lt;/p&gt;
+
+&lt;h2&gt;Initial Capacity&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;HashMap&lt;/code&gt; uses an array as its primary storage. Every &lt;code&gt;put&lt;/code&gt; operation inserts a Key-Value pair at an index in this array, and every get operation retrieves a Key-Value pair from an index of this array.&lt;/p&gt;
+
+&lt;p&gt;Capacity refers to the size of this underlying array. Initial capacity is, therefore, the size of this array when the HashMap is created:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DEFAULT_INITIAL_CAPACITY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// aka 16&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The above code resides inside &lt;code&gt;java.util.HashMap&lt;/code&gt; class. The above value(&lt;code&gt;1&amp;lt;&amp;lt;4 // 16&lt;/code&gt;) is used as the initial capacity of the hashmap if we initialize it the way I did:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Student&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;records&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now that the hashmap has an initial capacity of 16 and my records run in the hundreds:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ResultSet&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rsWithHundredsOfRecords&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;What happens when the number of elements being added to the underlying array are exhausting the initial capacity?&lt;/p&gt;
+
+&lt;p&gt;It so happens that &lt;strong&gt;HashMap is a self-regulating data structure&lt;/strong&gt;. It has an internal mechanism for detecting when its current capacity is being exhausted and resizing its internal array.&lt;/p&gt;
+
+&lt;p&gt;What happens is that when the number of entries is found to have reached a certain threshold, a new array is created with twice the size of the previous one and all the entries are transferred from the old array to the new array. A process called &lt;strong&gt;rehashing&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Rehashing is quite an expensive process and should be mercilessly minimized&lt;/strong&gt; during design, or even totally avoided if possible.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;HashMap&lt;/code&gt; class contains another constructor that enable us to pass in a custom value for &lt;strong&gt;initial capacity&lt;/strong&gt;. In the bad example that we saw in the Bad News section, we could simply have anticipated the size of the ResultSet and used that to create a &lt;strong&gt;well-dimensioned hashmap&lt;/strong&gt;, say we expect about 1,000 records:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Student&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hashMapWithCapacity&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;With the above refactored code, we would have saved ourselves at least six rehashing operations. Wondering how? Just picture that every time the number of entries reaches the current capacity, a rehashing operation doubles the capacity, starting from 16, then 32, 64, up until 1024.&lt;/p&gt;
+
+&lt;p&gt;The above explanation suffices, for now, however, we will realize later that the decision to rehash is a little more complicated than this.&lt;/p&gt;
+
+&lt;p&gt;The take-home point here is: &lt;strong&gt;Choose an initial capacity high enough to minimize the frequency of rehashing&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Collision&lt;/h2&gt;
+
+&lt;p&gt;As a simple reminder to ourselves. &lt;code&gt;HashMap&lt;/code&gt; works on the principle of hashing. For reasons beyond the scope of this article, hash code collisions are a common occurrence, &lt;strong&gt;where different keys end up at the same array index&lt;/strong&gt;. More about this can be found in the articles linked at the beginning of this post.&lt;/p&gt;
+
+&lt;p&gt;It sounds like an anomaly, but it is quite normal, specifically because of the &lt;code&gt;equals&lt;/code&gt; and &lt;code&gt;hashCode&lt;/code&gt; contract of &lt;code&gt;java.lang.Object&lt;/code&gt;, the mother of all objects in Java.&lt;/p&gt;
+
+&lt;p&gt;It suffices to only know that &lt;strong&gt;where there are collisions, HashMap performance is degraded&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;When a collision occurs at a given array index, instead of a K-V pair being stored there, a linked list is created in place and the colliding entries are chained together in this list.&lt;/p&gt;
+
+&lt;p&gt;This way, if another entry hashes to the same location, each element of the linked list is compared with the new entry. If a match is found, the match is replaced, but if none is found, the new entry is placed at the head of the list.&lt;/p&gt;
+
+&lt;p&gt;Something similar happens during retrieval. When the key in &lt;code&gt;hashMap.get(key);&lt;/code&gt; hashes to an index that has collisions, the key is compared to all other keys in the linked list, if a match is found, the matched key’s value is returned, but if no match is found, null is returned.&lt;/p&gt;
+
+&lt;p&gt;One of the strengths of a hashmap is &lt;strong&gt;lightning speed storage (put) and retrieval (get) operations&lt;/strong&gt;. In more technical terms, they occur in constant time, &lt;code&gt;O(1)&lt;/code&gt;. This means that regardless of the size of the hashmap or its capacity, a put or a get will return instantly.&lt;/p&gt;
+
+&lt;p&gt;However, in the event of collisions, we can no longer guarantee &lt;code&gt;O(1)&lt;/code&gt; performance. Because the performance will now be affected by the length of the linked list at a location where there is collision.&lt;/p&gt;
+
+&lt;p&gt;Specifically, &lt;strong&gt;the time to retrieve an entry will be the constant time to hash to the array index, then the linear time O(n) to iterate over the linked list&lt;/strong&gt;, where &lt;code&gt;n&lt;/code&gt; is the size of the linked list.&lt;/p&gt;
+
+&lt;p&gt;We can not do much about this problem, apart from ensuring that the hashmap has a &lt;strong&gt;big enough capacity to minimize collisions&lt;/strong&gt; and if possible, the &lt;strong&gt;hash function is good enough to disperse entries with equal distribution across the array&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Load Factor&lt;/h2&gt;
+
+&lt;p&gt;Load Factor, abbreviated as LF, is the ratio of the hashmap’s size to its capacity. It is a float between 0 and 1 and the default value is &lt;code&gt;0.75f&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;/** * The load factor used when none specified in constructor. */&lt;/span&gt; 
+&lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DEFAULT_LOAD_FACTOR&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.75f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The LF is the ratio of the hashmap size (number of entries stored so far) to capacity (total array length regardless of entries) at which a rehash operation occurs. The default LF of 0.75 implies that if our hashmap is initialized with 100 initial capacity, then as soon as we make 75 entries in&lt;/p&gt;
+
+&lt;p&gt;The default LF of 0.75 implies that if our hashmap is initialized with 100 initial capacity, then we can make 75 entries in it comfortably. The 76th entry will trigger a rehash. We can use a custom LF by creating hashmap with another constructor which takes LF along side initial capacity:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Student&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;records&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.5f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Through some tests and calculations, it can be proved that in the case of collisions, &lt;strong&gt;the average number size of the linked lists in the array is about the same as the LF&lt;/strong&gt;. We have already seen that collision degrades the performance of hashmap in most operation.&lt;/p&gt;
+
+&lt;p&gt;This can only mean that &lt;strong&gt;when LF which is too high, it will degrade performance&lt;/strong&gt; due to its relationship with the linked list size. &lt;strong&gt;When LF is too low, it will also degrade performance&lt;/strong&gt; due to frequency of rehashes. However, 0.75f offers a good optimum value.&lt;/p&gt;
+
+&lt;h2&gt;Iteration Performance&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Iterating over a hashmap is affected by its size and capacity&lt;/strong&gt;. Read the preceding sentence again and again until you think you have understood and then realize it’s very confusing and then accept that you need more explanation!&lt;/p&gt;
+
+&lt;p&gt;The time complexity of hashmap iteration is O(n) where n= capacity + size. This implies that if the hashmap’s initial capacity is 100 and it only has a single entry so far, iteration will still levy a worst case performance time of O(n) where n=101.&lt;/p&gt;
+
+&lt;p&gt;To picture this, we need to remember that &lt;strong&gt;iteration starts from the beginning of the array and proceeds sequentially to its end&lt;/strong&gt;. There is &lt;strong&gt;no search efficiency in hashmap&lt;/strong&gt; as there is in binary search trees.&lt;/p&gt;
+
+&lt;p&gt;It is possible that the value being searched is close to index 0 in the array, in which case the time will be a fraction of worst case run time. However, as computer scientists, we are better off planning for the worst case scenario.&lt;/p&gt;
+
+&lt;p&gt;We also need to remember how hashing works. The first entry in the map may hash to index 95 in the array and the second to index 34, etc. There is absolutely no order.&lt;/p&gt;
+
+&lt;p&gt;It is now obvious that &lt;strong&gt;a high initial capacity will result in poor iteration performance&lt;/strong&gt;. This means that we should &lt;strong&gt;choose a high initial capacity where we know there will be a lot of entries but little iteration needed&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;As we saw in the previous section, LF is approximately the average length of linked lists in the hashmap, so a low LF is a good thing for iteration performance.&lt;/p&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;In this article, we have explored HashMap class and its internal implementation details that are critical to performance. One should now be able to refactor the initial Bad News snippet to pass as optimized code. Afterall initial capacity is just one of the several implementation details that we have seen in this post.&lt;/p&gt;
+
+&lt;p&gt;It is very important to understand these intricacies so that we can become better designers and decision makers.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>Introducing Hyde</title>
-   <link href="https://egimaben.github.io/2013/12/28/introducing-hyde/"/>
+   <link href="http://localhost:4000/2013/12/28/introducing-hyde/"/>
    <updated>2013-12-28T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2013/12/28/introducing-hyde</id>
+   <id>http://localhost:4000/2013/12/28/introducing-hyde</id>
    <content type="html">&lt;p&gt;Hyde is a brazen two-column &lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll&lt;/a&gt; theme that pairs a prominent sidebar with uncomplicated content. It&amp;#39;s based on &lt;a href=&quot;http://getpoole.com&quot;&gt;Poole&lt;/a&gt;, the Jekyll butler.&lt;/p&gt;
 
 &lt;h3&gt;Built on Poole&lt;/h3&gt;
@@ -75,9 +774,9 @@
  
  <entry>
    <title>Example content</title>
-   <link href="https://egimaben.github.io/2012/02/07/example-content/"/>
+   <link href="http://localhost:4000/2012/02/07/example-content/"/>
    <updated>2012-02-07T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2012/02/07/example-content</id>
+   <id>http://localhost:4000/2012/02/07/example-content</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
   Howdy! This is an example blog post that shows several types of HTML content supported in this theme.
 &lt;/div&gt;
@@ -222,9 +921,9 @@
  
  <entry>
    <title>What's Jekyll?</title>
-   <link href="https://egimaben.github.io/2012/02/06/whats-jekyll/"/>
+   <link href="http://localhost:4000/2012/02/06/whats-jekyll/"/>
    <updated>2012-02-06T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2012/02/06/whats-jekyll</id>
+   <id>http://localhost:4000/2012/02/06/whats-jekyll</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll&lt;/a&gt; is a static site generator, an open-source tool for creating simple yet powerful websites of all shapes and sizes. From &lt;a href=&quot;https://github.com/mojombo/jekyll/blob/master/README.markdown&quot;&gt;the project&amp;#39;s readme&lt;/a&gt;:&lt;/p&gt;
 
 &lt;blockquote&gt;
