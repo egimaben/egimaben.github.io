@@ -10,7 +10,7 @@ We take a look at garbage collector concepts in Java and that various reference 
 In this article, we will discuss a few memory management concepts in Java with a heavy focus on the interaction between the Garbage Collector and the different reference objects available.
 
 This is no introduction, so let us mutually agree that you have Java Heap and GC basics down. Many articles cover this topic quite well, and you might actually wonder why am covering something that is already well discussed over the www.
-
+<!--more-->
 - I found that most articles introduce Java memory very well, but start choking later on stuff like reference objects. It is either a variant of <em> Who doesn’t know that stuff?</em> attitude or author fatigue. I would like to give my shot and, hopefully, not fall into the same pool.
 
 - Memory is a gold mine of interview questions for Senior Dev positions. <em> Java manages its own memory, I really don’t have to know how it does it.</em> Nice story for your neighbor or close friend. Good luck convincing that mean-looking interviewer. Moral: You must understand memory in the JVM.

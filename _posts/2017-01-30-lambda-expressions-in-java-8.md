@@ -11,7 +11,7 @@ title: Lambda Expressions in Java 8
 Lambda expressions are the most popular feature of Java 8. They introduce functional programming concepts to Java, which is a completely object-oriented and imperative programming language. 
 
 How functional programming languages work is beyond the scope of this article, but we will extract a feature that will make the difference obvious for us who work with OOP.
-
+<!--more-->
 How functional programming languages work is beyond the scope of this article, but we will extract a feature that will make the difference obvious to us who work with OOP.
 
 In this post, we will learn what, exactly, lambda expressions are and how they fit into the whole Java ecosystem. We will also look at example code that works without using lambda expressions and then refactor this code to use lambdas.

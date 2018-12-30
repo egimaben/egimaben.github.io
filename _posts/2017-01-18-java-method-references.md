@@ -13,7 +13,7 @@ In this post, we are going to discuss yet another feature of Java 8: Method Refe
 Unless you are very well-versed with lambda expressions, I would highly recommend that you first go through my lambda expressions tutorial before continuing with this post.
 
 To even encourage you further, when you understand lambda expressions, method references are a walk over.
-
+<!--more-->
 ## Method References vs. Lambda Rxpressions
 
 From the lambda expressions tutorial, we can remember that a lambda expression simply gives us a more compact way of writing an anonymous function or implementing a functional interface.

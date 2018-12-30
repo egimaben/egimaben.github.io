@@ -8,7 +8,7 @@ HashMaps are a great tool, but you need to know the internals to get the best pe
 `HashMap` is perhaps the most popular implementation of the `Map` interface in **Java Collections Framework (JCF)**. If you want to fully understand the internal workings of `HashMap`, the best tutorial I have found online is [here](http://www.baeldung.com/java-hashmap).
 
 For this article, we are only going to focus on the performance specific concepts. `HashMap` offers us a very fast, well-optimized data structure solution for many problem scenarios.
-
+<!--more-->
 ## Good News
 
 `HashMap` is a great advantage for us because it is so versatile and fits in a lot of use cases:

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Canonical Equivalence In Unicode Pattern Matching &middot; Benedict Egima
+    
+  </title>
+
+  <!-- CSS -->
+  <!-- <link rel="stylesheet" href="//public/css/poole.css">
+  <link rel="stylesheet" href="//public/css/syntax.css">
+  <link rel="stylesheet" href="//public/css/hyde.css"> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href=/public/css/poole.css>
+  <link rel="stylesheet" href=/public/css/syntax.css>
+  <link rel="stylesheet" href=/public/css/hyde.css>
+  <link rel="stylesheet" href=/public/css/profile.css>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href=/public/profile.png>
+                                 <link rel="shortcut icon" href=/public/profile.png>
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+    
+            <div class="profile-container">
+
+  
+  <img class="avatar" src="/public/profile.png" alt="profile picture" />  
+  <h2 class="uname">Benedict Egima Ayiko</h2>
+   
+  <h3 class="tagline">10 years from now, you will regret more the things you didn't do than those you did</h3>
+  
+</div>
+<div class="contact-container container-block">
+  <ul class="list-unstyled contact-list">
+    
+    <a href="mailto:">
+    <li class="email">
+      <i class="fas fa-envelope"></i>
+    </li>
+    </a>
+     
+     
+    <li class="linkedin">
+      <a href="https://linkedin.com/in/egimaben" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </li>
+     
+    <li class="github">
+      
+      <a href="http://github.com/egimaben" target="_blank"><i class="fab fa-github"></i></a>
+    </li>
+     
+    <li class="twitter">
+      <a href="https://twitter.com/egimaben" target="_blank"><i class="fab fa-twitter"></i></a>
+    </li>
+     
+    <li class="stack-overflow">
+      <a href="https://stackoverflow.com/users/3067615/egimaben" target="_blank"><i class="fab fa-stack-overflow"></i></a>
+    </li>
+    
+  </ul>
+</div>
+      <!-- <h1>
+        <a href="/">
+          Benedict Egima
+        </a>
+      </h1>
+      <p class="lead">10 years from now, you will regret more the things you didn't do than those you did</p> -->
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/archive/">Archive</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+      <span class="sidebar-nav-item">Currently v1.0.0</span>
+    </nav>
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Canonical Equivalence In Unicode Pattern Matching</h1>
+  <span class="post-date">03 Oct 2016</span>
+  <div class="message">
+ In this article, we will define and explain the term Canonical Equivalence as applied to pattern matching according to the Unicode character specification.
+</div>
+
+<p>In this article, we will define and explain the term Canonical Equivalence as applied to pattern matching according to the Unicode character specification.</p>
+
+<p>Pattern matching is one of the most common concepts in computer science. Take a look at the Wikipedia definition:</p>
+
+<!--more-->
+
+<blockquote>
+<p>In computer science, pattern matching is the act of checking a given sequence of tokens for the presence of the constituents of some pattern. In contrast to pattern recognition, the match usually has to be exact. The patterns generally have the form of either sequences or tree structures.</p>
+</blockquote>
+
+<p>Notice how it differs from pattern recognition, the word EXACT is key here. Canonical Equivalence is the term used in the <a href="https://en.wikipedia.org/wiki/Unicode_equivalence">Unicode Equivalence specification</a> of the Unicode character encoding system to emphasize the EXACTing nature of its matching system.</p>
+
+<h2><em>Canonical</em> Explained</h2>
+
+<p>Wikipedia defines Canonicalization as:</p>
+
+<blockquote>
+<p>A process for converting data that has more than one possible representation into a “standard” canonical representation.</p>
+</blockquote>
+
+<p>In this context, the term Canonical means to have many forms or representations which must all boil down to a single standard value which is hereby known as the canonical value.</p>
+
+<p>Another common example in programming to help us understand canonical representation is to look at the XML schema datatype definition of “boolean”:</p>
+
+<p>The “lexical representation” of boolean can be one of: true, false, 1, 0.</p>
+
+<p>On the other hand, the “canonical representation” can only be one of: true, false.</p>
+
+<p>This means that at the end of it all, every accepted boolean value must be able to map to its canonical equivalent:</p>
+
+<p>1 – &gt; true</p>
+
+<p>0 – &gt; false.</p>
+
+<p>Another useful way to look at the word canonical is in theological terms where it refers to the real truth that has been and will always be the real truth regardless of any layers of information added to it.</p>
+
+<p>In Java, when we compare two objects:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">a</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">b</span><span class="o">)</span></code></pre></figure>
+
+<p>The JVM will compare them based on different aspects such as hashCode and attribute values to establish their sameness with each other. If there is even one aspect that differs, then the test will fail. If you are sure of their sameness, however, and want a quick test, then you are better off using the == operator:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">a</span><span class="o">==</span><span class="n">b</span></code></pre></figure>
+
+<p>This comparison is faster because it only bases on the one <strong>canonical truth</strong> that is used to judge the sameness of the two objects and that is the object id.</p>
+
+<h2>Canonical Equivalence In Unicode</h2>
+
+<p>Having looked at the term Canonical in depth, it is now easy to conclude that two different characters are canonically equivalent if, and only if what is considered their canonical value is the same.</p>
+
+<p>In file systems, this can be the absolute path to a file which will work regardless of the present working directory.</p>
+
+<p>Finally, in Unicode terms, canonical equivalence is a fundamental equivalence between individual Unicode characters and sequences of Unicode characters.</p>
+
+<p>Let’s take a look at an example:</p>
+
+<p><code>In Unicode, there is a character e, whose code point is u0065. However, Unicode also has a composite character é which is the same character e with an acute accent superimposed on top of it. The code point for the accented e is u00E9. However, the accent character on top of the composite character also has a Unicode code point, u0301. This means that the composite character u00E9 is canonically equivalent to the character sequence u0065 u0301.</code></p>
+
+<h2>Canonical Equivalence In Java</h2>
+
+<p>The concept of Canonical equivalence is encountered in a number of areas in Java programming language. Knowledge of this will save you hair loss. We looked at one example earlier with Object comparison. We can look at some more.</p>
+
+<h3>Java Reflection</h3>
+
+<p>When we are inspecting the different aspects of a Java class using reflection, we can retrieve the class name of an object in different ways. Consider an empty class called Person.java:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">package</span> <span class="nn">com.egima</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">Person</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Let’s run some inspection on this class:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Person</span> <span class="n">ob</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
+    <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+    <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getSimpleName</span><span class="o">();</span>
+    <span class="n">String</span> <span class="n">canonicalName</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getCanonicalName</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Simple Class Name: &quot;</span> <span class="o">+</span> <span class="n">name</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Canonical Class name= &quot;</span> <span class="o">+</span> <span class="n">canonicalName</span><span class="o">);</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Console output:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Simple</span> <span class="n">Class</span> <span class="n">Name</span><span class="o">:</span> <span class="n">Person</span>
+<span class="n">Canonical</span> <span class="n">Class</span> <span class="n">name</span><span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="na">egima</span><span class="o">.</span><span class="na">Person</span></code></pre></figure>
+
+<p>Notice that if we don’t really care much about the detailed truth about the class we call the <code>getSimpleName</code> method. We can easily dispute this by having another <code>Person.java</code> class in a different package.</p>
+
+<p>The JVM is so wise that when you instantiate a class object reflectively, you will only get success when your class name can be traced through an explicitely defined class hierarchy. And this is only possible with the canonical name.</p>
+
+<p>The following code will fail and throw a <code>ClassNotFoundException</code>:</p>
+
+<p>The lambda approach:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&quot;Person&quot;</span><span class="o">);</span>
+    <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="o">(</span><span class="n">Person</span><span class="o">)</span> <span class="n">clazz</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>While this one will pass:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&quot;com.egima.Person&quot;</span><span class="o">);</span>
+    <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="o">(</span><span class="n">Person</span><span class="o">)</span> <span class="n">clazz</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+<span class="o">}</span></code></pre></figure>
+
+<h2>Java Regex</h2>
+
+<p>When searching Unicode characters with Java Regular Expression API, we must be very informed about the notion of Canonical Equivalence or else we will waste a lot of time and effort with little success.</p>
+
+<p>Let’s consider our earlier example of accented character <code>é</code> . We concluded that it’s unicode code points can be represented as a composite: <code>u00E9</code> or a sequence:  <code>u0065 u0301</code>.</p>
+
+<p>Now let us see this in action:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Pattern</span> <span class="n">pattern</span> <span class="o">=</span> <span class="n">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">&quot;\u00E9&quot;</span><span class="o">);</span>
+    <span class="n">Matcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="s">&quot;Text with unicode accented character \u0065\u0301&quot;</span><span class="o">);</span>
+    <span class="kt">boolean</span> <span class="n">found</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="na">find</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Was the character found: &quot;</span> <span class="o">+</span> <span class="n">found</span><span class="o">);</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>And the output is:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Was</span> <span class="n">the</span> <span class="n">character</span> <span class="n">found</span><span class="o">:</span> <span class="kc">false</span></code></pre></figure>
+
+<p>The character was not found and yet we know the composite character used as the regex pattern and the sequence of characters in the input text are canonically equivalent.</p>
+
+<p>What this means is that the Java regex engine by default does not take into consideration canonical equivalence, so it compares the Unicode character <code>\u00E9</code> against <code>\u0065 \u0301</code> as is without regard to their underlying final values.</p>
+
+<p>If we want the engine to take into account the canonical equivalence of Unicode characters while searching, we must specify the <code>Pattern.CANON_EQ</code> flag of the <code>java.util.regex.Pattern</code>  class during regex compilation:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Pattern</span> <span class="n">pattern</span> <span class="o">=</span> <span class="n">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">&quot;\u00E9&quot;</span><span class="o">,</span> <span class="n">Pattern</span><span class="o">.</span><span class="na">CANON_EQ</span><span class="o">);</span>
+    <span class="n">Matcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="s">&quot;Text with unicode accented character \u0065\u0301&quot;</span><span class="o">);</span>
+    <span class="kt">boolean</span> <span class="n">found</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="na">find</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Was the character found: &quot;</span> <span class="o">+</span> <span class="n">found</span><span class="o">);</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Now the output is:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Was</span> <span class="n">the</span> <span class="n">character</span> <span class="n">found</span><span class="o">:</span> <span class="kc">true</span></code></pre></figure>
+
+<h2>Conclusion</h2>
+
+<p>In this article, we discussed the notion of Canonical Equivalence which is common in Unicode character encoding schemes which automatically makes it common in all programming languages.</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2017/02/07/java-garbage-collector-and-reference-objects/">
+            Java Garbage Collector and Reference Objects
+            <small>07 Feb 2017</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2017/01/30/lambda-expressions-in-java-8/">
+            Lambda Expressions in Java 8
+            <small>30 Jan 2017</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2017/01/18/java-method-references/">
+            Java Method References
+            <small>18 Jan 2017</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>
