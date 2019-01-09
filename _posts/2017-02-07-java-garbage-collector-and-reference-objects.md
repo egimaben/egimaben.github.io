@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Java Garbage Collector and Reference Objects
+comments: true
 ---
 
 

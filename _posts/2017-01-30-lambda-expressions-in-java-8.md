@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Lambda Expressions in Java 8
+comments: true
 ---
 
 

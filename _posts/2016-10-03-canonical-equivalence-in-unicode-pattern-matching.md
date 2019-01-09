@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Canonical Equivalence In Unicode Pattern Matching
+comments: true
 ---
 
 

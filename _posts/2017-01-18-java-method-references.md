@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Java Method References
+comments: true
 ---
 
 

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Getting The Most Out of HashMaps
+comments: true
 ---
 <div class="message">
 HashMaps are a great tool, but you need to know the internals to get the best performance from them. This guide covers collisions, iterations, load factors, and more.</div>
