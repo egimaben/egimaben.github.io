@@ -3,8 +3,12 @@
   {% if site.author.name %}
   <img class="avatar" src="/public/profile.png" alt="profile picture" /> {% endif %} {% if site.author.name %}
   <h2 class="uname">{{ site.author.name }}</h2>
-  {% endif %} {% if site.description %}
+  {% endif %} 
+  {% if site.description %}
   <h3 class="tagline">{{ site.description }}</h3>
+  {% endif %}
+  {% if site.author.role %}
+  <h3 class="role">{{ site.author.role }}</h3>
   {% endif %}
 </div>
 <div class="contact-container container-block">
