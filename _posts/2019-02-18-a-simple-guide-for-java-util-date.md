@@ -180,4 +180,4 @@ assertEquals("Mon Feb 18 00:00:00 EAT 2019", date4.toString());
 
 In this article, we have gone through the most important ways of using `java.util.Date` class along side the helper classes for formatting. This should act as a quick refresher for those that use this class once in a while or if you are preparing for an interview and just need to remind yourself. 
 
-In the next article, we will look at how to `add` and `subtract` dates such that you can get a date before of after the available date without apply string manipulation kung-fu. We will also look at how to decompose dates by extracting component parts i.e. year, month, day etc from a Date object. These are made possible by the Calendar class.
+In the next article, we will look at how to `add` and `subtract` dates such that you can get a date before or after the available date without apply string manipulation kung-fu. We will also look at how to decompose dates by extracting component parts i.e. year, month, day etc from a Date object. These are made possible by the `Calendar` class.
