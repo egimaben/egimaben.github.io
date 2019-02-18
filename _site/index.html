@@ -16,21 +16,21 @@
   </title>
 
   <!-- CSS -->
-  <!-- <link rel="stylesheet" href="/pages/egimaben/public/css/poole.css">
-  <link rel="stylesheet" href="/pages/egimaben/public/css/syntax.css">
-  <link rel="stylesheet" href="/pages/egimaben/public/css/hyde.css"> -->
+  <!-- <link rel="stylesheet" href="//public/css/poole.css">
+  <link rel="stylesheet" href="//public/css/syntax.css">
+  <link rel="stylesheet" href="//public/css/hyde.css"> -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  <link rel="stylesheet" href=/pages/egimaben/public/css/poole.css>
-  <link rel="stylesheet" href=/pages/egimaben/public/css/syntax.css>
-  <link rel="stylesheet" href=/pages/egimaben/public/css/hyde.css>
-  <link rel="stylesheet" href=/pages/egimaben/public/css/profile.css>
+  <link rel="stylesheet" href=/public/css/poole.css>
+  <link rel="stylesheet" href=/public/css/syntax.css>
+  <link rel="stylesheet" href=/public/css/hyde.css>
+  <link rel="stylesheet" href=/public/css/profile.css>
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
 
   <!-- Icons -->
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href=/pages/egimaben/public/profile.png>
-                                 <link rel="shortcut icon" href=/pages/egimaben/public/profile.png>
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href=/public/profile.png>
+                                 <link rel="shortcut icon" href=/public/profile.png>
 
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
@@ -86,7 +86,7 @@
   </ul>
 </div>
       <!-- <h1>
-        <a href="/pages/egimaben">
+        <a href="/">
           Benedict Egima
         </a>
       </h1>
@@ -94,7 +94,7 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a class="sidebar-nav-item" href="/">Home</a>
+      <a class="sidebar-nav-item active" href="/">Home</a>
 
       
 
@@ -116,6 +116,10 @@
           
         
       
+        
+          
+        
+      
       <span class="sidebar-nav-item">Currently v1.0.0</span>
     </nav>
     <p>&copy; 2019. All rights reserved.</p>
@@ -125,6 +129,23 @@
 
     <div class="content container">
       <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2019/02/18/a-simple-guide-for-java-util-date/">
+        A Simple Guide for Java.util.Date
+      </a>
+    </h1>
+    <span class="post-date">18 Feb 2019</span>
+    <div class="message">
+ In this article, we will explore java.util.Date, consume it as a basic cheatsheet. We will see several examples as it's still used in several code bases and later, I mean really later, we will conspire to throw it out of the window and explore better alternatives for date and time handling in Java. 
+</div>
+
+<p>Why am I talking about <code>java.util.Date</code> in this day and age when the &quot;whole&quot; community has moved on? Because the whole community has not yet moved on and several of us still work with legacy code bases, some going as far back as Java 6 and much as we are moving forth, we can&#39;t go into the future without thoroughly coming to terms with our past :)</p>
+
+<p>I bet you often deal with dates and have to frequently google how to parse date from string, convert date to different string formats for SQL storage or user-friendly display, compare dates, add and subtract days, months, years etc from a date. These are pretty common needs for most developers so let&#39;s get on with it and move on with our lives. I will do my best to keep it short and sweet!</p>
+
+  </div>
   
   <div class="post">
     <h1 class="post-title">
@@ -194,44 +215,17 @@ HashMaps are a great tool, but you need to know the internals to get the best pe
 
   </div>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2016/10/03/canonical-equivalence-in-unicode-pattern-matching/">
-        Canonical Equivalence In Unicode Pattern Matching
-      </a>
-    </h1>
-    <span class="post-date">03 Oct 2016</span>
-    <div class="message">
- In this article, we will define and explain the term Canonical Equivalence as applied to pattern matching according to the Unicode character specification.
-</div>
-
-<p>In this article, we will define and explain the term Canonical Equivalence as applied to pattern matching according to the Unicode character specification.</p>
-
-<p>Pattern matching is one of the most common concepts in computer science. Take a look at the Wikipedia definition:</p>
-
-  </div>
-  
 </div>
 
 <div class="pagination">
   
-    <span class="pagination-item older">Older</span>
+    <a class="pagination-item older" href="/page2">Older</a>
   
   
     <span class="pagination-item newer">Newer</span>
   
 </div>
     </div>
-    
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-132809342-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-132809342-1');
-</script>
     
   </body>
 </html>

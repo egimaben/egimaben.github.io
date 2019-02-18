@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      A Simple Guide for Java.util.Date &middot; Benedict Egima
+    
+  </title>
+
+  <!-- CSS -->
+  <!-- <link rel="stylesheet" href="//public/css/poole.css">
+  <link rel="stylesheet" href="//public/css/syntax.css">
+  <link rel="stylesheet" href="//public/css/hyde.css"> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href=/public/css/poole.css>
+  <link rel="stylesheet" href=/public/css/syntax.css>
+  <link rel="stylesheet" href=/public/css/hyde.css>
+  <link rel="stylesheet" href=/public/css/profile.css>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href=/public/profile.png>
+                                 <link rel="shortcut icon" href=/public/profile.png>
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+    
+            <div class="profile-container">
+
+  
+  <img class="avatar" src="/public/profile.png" alt="profile picture" />  
+  <h2 class="uname">Benedict Egima Ayiko</h2>
+   
+  
+  <h3 class="tagline">10 years from now, you will regret more the things you didn't do than those you did</h3>
+  
+  
+  <h3 class="role">Senior Software Developer @Andela, Senior Backend Engineer @Coursera</h3>
+  
+</div>
+<div class="contact-container container-block">
+  <ul class="list-unstyled contact-list">
+    
+    <a href="mailto:">
+    <li class="email">
+      <i class="fas fa-envelope"></i>
+    </li>
+    </a>
+     
+     
+    <li class="linkedin">
+      <a href="https://linkedin.com/in/egimaben" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </li>
+     
+    <li class="github">
+      
+      <a href="http://github.com/egimaben" target="_blank"><i class="fab fa-github"></i></a>
+    </li>
+     
+    <li class="twitter">
+      <a href="https://twitter.com/egimaben" target="_blank"><i class="fab fa-twitter"></i></a>
+    </li>
+     
+    <li class="stack-overflow">
+      <a href="https://stackoverflow.com/users/3067615/egimaben" target="_blank"><i class="fab fa-stack-overflow"></i></a>
+    </li>
+    
+  </ul>
+</div>
+      <!-- <h1>
+        <a href="/">
+          Benedict Egima
+        </a>
+      </h1>
+      <p class="lead">10 years from now, you will regret more the things you didn't do than those you did</p> -->
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/archive/">Archive</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+      <span class="sidebar-nav-item">Currently v1.0.0</span>
+    </nav>
+    <p>&copy; 2019. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">A Simple Guide for Java.util.Date</h1>
+  <span class="post-date">18 Feb 2019</span>
+  <div class="message">
+ In this article, we will explore java.util.Date, consume it as a basic cheatsheet. We will see several examples as it's still used in several code bases and later, I mean really later, we will conspire to throw it out of the window and explore better alternatives for date and time handling in Java. 
+</div>
+
+<p>Why am I talking about <code>java.util.Date</code> in this day and age when the &quot;whole&quot; community has moved on? Because the whole community has not yet moved on and several of us still work with legacy code bases, some going as far back as Java 6 and much as we are moving forth, we can&#39;t go into the future without thoroughly coming to terms with our past :)</p>
+
+<p>I bet you often deal with dates and have to frequently google how to parse date from string, convert date to different string formats for SQL storage or user-friendly display, compare dates, add and subtract days, months, years etc from a date. These are pretty common needs for most developers so let&#39;s get on with it and move on with our lives. I will do my best to keep it short and sweet!
+&lt;!--more--&gt;</p>
+
+<h2>Date Creation</h2>
+
+<p>The java.util.Date class has 2 constructors, a default one and one that take a <code>long</code> value which represents the the number of milliseconds that have elapsed since 00:00:00 Thursday, 1 January 1970 AKA Unix Epoch time. It&#39;s just a way to keep ourselves and our computers sane while dealing with time in different locales and timezones:
+To make for easier testing, I captured a <code>long</code> time value on the day of writing this article as the default constructor internally invokes <code>System.currentTimeInMillis()</code> to get the <code>now</code> time:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_getDateFromTimestamp_basic</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">Date</span> <span class="n">now</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+<span class="c1">// assertEquals(&quot;current time&quot;, now.toString());</span>
+    <span class="n">Date</span> <span class="n">fixedDate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Mon Feb 18 14:06:01 EAT 2019&quot;</span><span class="o">,</span> <span class="n">fixedDate</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Take note of the default format when the date is <code>toString</code>&#39;d</p>
+
+<h2>Comparing Dates</h2>
+
+<p>The Date object has a method called <code>getTime</code> which converts the date back to a <code>long</code> unix epoch time. It&#39;s a reversal of the previously seen creation process. We can just compare the <code>long</code> values of 2 dates to know which is an earlier(less) date:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span>   <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_compareDates</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Date</span> <span class="n">older</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+        <span class="n">Date</span> <span class="n">newer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">older</span><span class="o">.</span><span class="na">getTime</span><span class="o">()</span> <span class="o">&lt;</span> <span class="n">newer</span><span class="o">.</span><span class="na">getTime</span><span class="o">());</span>
+    <span class="o">}</span></code></pre></figure>
+
+<p>We can use the <code>compareTo</code> instance method to compare one date to the other which is passed as an argument to <code>compareTo</code>. If the date on which <code>compareTo</code> is called is earlier(less) than the argument date, the result is -1, if they are the same instance in time, we get a 0 and a 1 if the argument date is less:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span>   <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_compareDates</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Date</span> <span class="n">older</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+        <span class="n">Date</span> <span class="n">newer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">older</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">newer</span><span class="o">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="o">);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">newer</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">older</span><span class="o">)</span> <span class="o">==</span> <span class="mi">1</span><span class="o">);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">newer</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">newer</span><span class="o">)</span> <span class="o">==</span> <span class="mi">0</span><span class="o">);</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">older</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">older</span><span class="o">)</span> <span class="o">==</span> <span class="mi">0</span><span class="o">);</span>
+    <span class="o">}</span></code></pre></figure>
+
+<p>Finally,we have the instance methods <code>before</code> and <code>after</code>. They are definitely much more readable and intuitive than the previous 2, especially <code>compareTo</code>. We call each of these on a <code>Date</code> object and pass the second date to be compared as an argument. The results are boolean:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span>   <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_compareDates</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Date</span> <span class="n">older</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+        <span class="n">Date</span> <span class="n">newer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+        <span class="n">assertTrue</span><span class="o">(</span><span class="n">older</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">newer</span><span class="o">));</span>
+        <span class="n">assertFalse</span><span class="o">(</span><span class="n">newer</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">older</span><span class="o">));</span>
+    <span class="o">}</span></code></pre></figure>
+
+<h2>Date to String conversion</h2>
+
+<p>Frequently we will want to convert a date to a string either for storage or user-friendly display, this is done by formatting the date. <code>java.text.DateFormat</code> class comes in handly, most commonly though its subclass <code>java.text.SimpleDateFormat</code>. SimpleDateFormat is very simple to use and the main requirement is to understand the notation used to define formats.</p>
+
+<p>For reference information about the different formatting patterns and codes we will use here(<code>m</code> for minute, <code>M</code> for month, <code>s</code> for seconds etc), head over <a href="https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">here</a>.</p>
+
+<p>Let&#39;s first recall the default conversion when we haven&#39;t specified any format:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_dateFormatting</span><span class="o">()</span> <span class="o">{</span>
+<span class="c1">// ie Mon Feb 18 14:06:01 EAT 2019</span>
+    <span class="n">Date</span> <span class="n">fixedDate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Mon Feb 18 14:06:01 EAT 2019&quot;</span><span class="o">,</span> <span class="n">fixedDate</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+<span class="o">}</span></code></pre></figure>
+
+<p><code>Mon</code> stands for monday, <code>Feb</code> for february then 18 is day of month, followed by time in hours, minutes and seconds, timezone and finally year. This may be a little verbose for your needs or you would like to have time in 12 hour clock system or remove the timezone or use the full month name etc, let&#39;s first try to recreate the above string by specifying our own format(remember to keep <a href="https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">this</a> reference doc close):</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_dateFormatting</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="n">SimpleDateFormat</span> <span class="n">defaultFormat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;E M d HH:mm:ss z y&quot;</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Mon 2 18 14:06:01 EAT 2019&quot;</span><span class="o">,</span> <span class="n">defaultFormat</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Everything seems to be alright except the month section, it&#39;s a <code>2</code> because Feb is the second month of the year, we used its code <code>M</code> which represents the simplest format for the month, we could choose to make it 2 digits so that single digit months match double digit months(nov, dec) in length, we do this by appending another <code>M</code></p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">SimpleDateFormat</span> <span class="n">defaultFormat2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;E MM d HH:mm:ss z y&quot;</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Mon 02 18 14:06:01 EAT 2019&quot;</span><span class="o">,</span> <span class="n">defaultFormat2</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span></code></pre></figure>
+
+<p>To get month in words but abbreviated as our default example gives, we append another <code>M</code> to make them 3:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">SimpleDateFormat</span> <span class="n">defaultFormat3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;E MMM d HH:mm:ss z y&quot;</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Mon Feb 18 14:06:01 EAT 2019&quot;</span><span class="o">,</span> <span class="n">defaultFormat3</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span></code></pre></figure>
+
+<p>If we want full month name, then make them 4:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">SimpleDateFormat</span> <span class="n">defaultFormat4</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;E MMMM d HH:mm:ss z y&quot;</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Mon February 18 14:06:01 EAT 2019&quot;</span><span class="o">,</span> <span class="n">defaultFormat4</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span></code></pre></figure>
+
+<p>This pattern of adding and reducing the number of codes for each part of the date is common in formatting dates. Play around with this while referring to the reference doc for further clarity. For instance, let&#39;s get the full day name by using 4 <code>E</code>s:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">SimpleDateFormat</span> <span class="n">defaultFormat5</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;EEEE MMMM d HH:mm:ss z y&quot;</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Monday February 18 14:06:01 EAT 2019&quot;</span><span class="o">,</span> <span class="n">defaultFormat5</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span></code></pre></figure>
+
+<p>Watch out though, as this does not work for all codes. Let&#39;s try to convert our time to 12 hour clock system(<code>h</code> for 12 and <code>H</code> for 24, <code>a</code> for the AM/PM marker of 12 hour system):</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">SimpleDateFormat</span> <span class="n">defaultFormat6</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;EEEE MMMM d hh:mm:ss a z y&quot;</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Monday February 18 02:06:01 PM EAT 2019&quot;</span><span class="o">,</span> <span class="n">defaultFormat6</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span></code></pre></figure>
+
+<p>We can strip the zeros that appear to pad up the time in case it&#39;s all single digits. We do this by using single forms of the codes <code>hh</code>, <code>mm</code> and <code>ss</code>:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">SimpleDateFormat</span> <span class="n">defaultFormat7</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;EEEE MMMM d h:m:s a z y&quot;</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Monday February 18 2:6:1 PM EAT 2019&quot;</span><span class="o">,</span> <span class="n">defaultFormat7</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span></code></pre></figure>
+
+<p>But it does not look intuitive right? I have commonly seen the zero stripped from the hour part but not from the minute and second parts, do what works best for your use case. 
+Another caveat and common cause of bugs is developers confusing upper case and lower case formatting codes. <code>m</code> and <code>M</code> are different, the former for minute and the latter for month. Always remember that these codes are case sensitive:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">SimpleDateFormat</span> <span class="n">defaultFormat8</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;M m&quot;</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;2 6&quot;</span><span class="o">,</span> <span class="n">defaultFormat8</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span></code></pre></figure>
+
+<p>With the above examples, we can now achieve almost any format we need by a combination of the formatting codes picked from the reference documentation, see SQL date for example:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">SimpleDateFormat</span> <span class="n">sqlFormat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;y-MM-d HH:mm:ss&quot;</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;2019-02-18 14:06:01&quot;</span><span class="o">,</span> <span class="n">sqlFormat</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span></code></pre></figure>
+
+<p>One of the most commont <code>ISO-8601</code> formats that has given me headache in the past. Some APIs are strict about the date format they accept. Take note of how we are using single quotes here, they are delimiters and enable us to inject any text in the date format:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">SimpleDateFormat</span> <span class="n">isoFormat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;y-MM-d&#39;T&#39;HH:mm:ss&#39;Z&#39;&quot;</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;2019-02-18T14:06:01Z&quot;</span><span class="o">,</span> <span class="n">isoFormat</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span></code></pre></figure>
+
+<p>Sometimes the <code>ISO-8601</code> format requires fractions of a second to be represented, we use the <code>SSS</code> code:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">SimpleDateFormat</span> <span class="n">isoFormat2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;y-MM-d&#39;T&#39;HH:mm:ss.SSS&#39;Z&#39;&quot;</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;2019-02-18T14:06:01.686Z&quot;</span><span class="o">,</span> <span class="n">isoFormat2</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span></code></pre></figure>
+
+<p>Finally, using the powerful single quotes, we can inject any text in the formatted date:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">SimpleDateFormat</span> <span class="n">customStringFormat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;&#39;Payment received on&#39; y-MM-d &#39;at&#39; HH:mm:ss&quot;</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Payment received on 2019-02-18 at 14:06:01&quot;</span><span class="o">,</span> <span class="n">customStringFormat</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">fixedDate</span><span class="o">));</span></code></pre></figure>
+
+<h2>String to Date conversion</h2>
+
+<p><code>SimpleDateFormat</code> has a <code>parse</code> method that does the opposite of <code>format</code> as we have seen above. It takes any string we have received from a file, from an API response or created by ourselves and attempts to parse it into a <code>java.util.Date</code> object or throws a <code>java.text.ParseException</code> if the pattern we used does not match the date. </p>
+
+<p>Here it is very important to get the pattern right, that means you need to understand the format of the date string before hand. Remember, date will still give the default value we saw earlier if it is <code>toString</code>&#39;d:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">String</span> <span class="n">dateString1</span> <span class="o">=</span> <span class="s">&quot;20190218&quot;</span><span class="o">;</span>
+<span class="n">SimpleDateFormat</span> <span class="n">sdf1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;yyyyMMdd&quot;</span><span class="o">);</span>
+<span class="n">Date</span> <span class="n">date1</span> <span class="o">=</span> <span class="n">sdf1</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">dateString1</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Mon Feb 18 00:00:00 EAT 2019&quot;</span><span class="o">,</span> <span class="n">date1</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span></code></pre></figure>
+
+<p>Let&#39;s see a few other examples to gain more clarity, using the <code>/</code> date delimiter which we haven&#39;t seen explicitly before:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">String</span> <span class="n">dateString2</span> <span class="o">=</span> <span class="s">&quot;2019/02/18&quot;</span><span class="o">;</span>
+<span class="n">SimpleDateFormat</span> <span class="n">sdf2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;yyyy/MM/dd&quot;</span><span class="o">);</span>
+<span class="n">Date</span> <span class="n">date2</span> <span class="o">=</span> <span class="n">sdf2</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">dateString2</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Mon Feb 18 00:00:00 EAT 2019&quot;</span><span class="o">,</span> <span class="n">date2</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span></code></pre></figure>
+
+<p>Let&#39;s also see a case where we have text in the date e.g. month in words:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">String</span> <span class="n">dateString3</span> <span class="o">=</span> <span class="s">&quot;2019-February-18&quot;</span><span class="o">;</span>
+<span class="n">SimpleDateFormat</span> <span class="n">sdf3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;yyyy-MMMM-dd&quot;</span><span class="o">);</span>
+<span class="n">Date</span> <span class="n">date3</span> <span class="o">=</span> <span class="n">sdf3</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">dateString3</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Mon Feb 18 00:00:00 EAT 2019&quot;</span><span class="o">,</span> <span class="n">date3</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span></code></pre></figure>
+
+<p>We used <code>MMMM</code> month code because we expected a full month name, sometimes, the month is abbreviated, just do what we know already, strip a single <code>M</code>: </p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">String</span> <span class="n">dateString4</span> <span class="o">=</span> <span class="s">&quot;2019-Feb-18&quot;</span><span class="o">;</span>
+<span class="n">SimpleDateFormat</span> <span class="n">sdf4</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;yyyy-MMM-dd&quot;</span><span class="o">);</span>
+<span class="n">Date</span> <span class="n">date4</span> <span class="o">=</span> <span class="n">sdf4</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">dateString4</span><span class="o">);</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Mon Feb 18 00:00:00 EAT 2019&quot;</span><span class="o">,</span> <span class="n">date4</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span></code></pre></figure>
+
+<h2>Conclusion</h2>
+
+<p>In this article, we have gone through the most important ways of using <code>java.util.Date</code> class along side the helper classes for formatting. This should act as a quick refresher for those that use this class once in a while or if you are preparing for an interview and just need to remind yourself. </p>
+
+<p>In the next article, we will look at how to <code>add</code> and <code>subtract</code> dates such that you can get a date before of after the available date without apply string manipulation kung-fu. We will also look at how to decompose dates by extracting component parts i.e. year, month, day etc from a Date object. These are made possible by the Calendar class.</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2017/02/07/java-garbage-collector-and-reference-objects/">
+            Java Garbage Collector and Reference Objects
+            <small>07 Feb 2017</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2017/01/30/lambda-expressions-in-java-8/">
+            Lambda Expressions in Java 8
+            <small>30 Jan 2017</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2017/01/18/java-method-references/">
+            Java Method References
+            <small>18 Jan 2017</small>
+          </a>
+        </h3>
+      </li>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+var disqus_config = function () {
+this.page.url = "https://egimaben.github.io/2019/02/18/a-simple-guide-for-java-util-date/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "/2019/02/18/a-simple-guide-for-java-util-date"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://egimaben-github-io.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  </ul>
+</div>
+
+    </div>
+    
+  </body>
+</html>
