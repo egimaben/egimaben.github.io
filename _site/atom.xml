@@ -4,7 +4,7 @@
  <title>Benedict Egima</title>
  <link href="https://egimaben.github.io/atom.xml" rel="self"/>
  <link href="https://egimaben.github.io/"/>
- <updated>2019-02-20T17:05:55+03:00</updated>
+ <updated>2019-02-20T17:08:36+03:00</updated>
  <id>https://egimaben.github.io</id>
  <author>
    <name>Benedict Egima Ayiko</name>
@@ -17,11 +17,15 @@
    <link href="https://egimaben.github.io/2019/02/20/manipulating-dates-with-calendar-class/"/>
    <updated>2019-02-20T00:00:00+03:00</updated>
    <id>https://egimaben.github.io/2019/02/20/manipulating-dates-with-calendar-class</id>
-   <content type="html">&lt;p&gt;In this article, we will explore &lt;code&gt;java.util.Calendar&lt;/code&gt; class. In a &lt;a href=&quot;/2019/02/18/a-simple-guide-for-java-util-date&quot;&gt;previous article&lt;/a&gt;, we discussed &lt;code&gt;java.util.Date&lt;/code&gt; class but its failures around internationalisation concepts like timezone awareness were evident. We were also not able to compute future and previous dates from a &lt;code&gt;Date&lt;/code&gt; object just like we could not decompose a date into its parts(year, day, month, hour etc) easily.&lt;/p&gt;
+   <content type="html">&lt;p&gt;In this article, we will explore &lt;code&gt;java.util.Calendar&lt;/code&gt; class. &lt;/p&gt;
+
+&lt;p&gt;&amp;lt;!--more--&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;In a &lt;a href=&quot;/2019/02/18/a-simple-guide-for-java-util-date&quot;&gt;previous article&lt;/a&gt;, we discussed &lt;code&gt;java.util.Date&lt;/code&gt; class but its failures around internationalisation concepts like timezone awareness were evident. &lt;/p&gt;
+
+&lt;p&gt;We were also not able to compute future and previous dates from a &lt;code&gt;Date&lt;/code&gt; object just like we could not decompose a date into its parts(year, day, month, hour etc) easily.&lt;/p&gt;
 
 &lt;p&gt;We will now see how to achieve all this with the &lt;code&gt;Calendar&lt;/code&gt; class.&lt;/p&gt;
-
-&lt;!--more--&gt;
 
 &lt;h2&gt;Calendar Creation&lt;/h2&gt;
 
@@ -292,10 +296,11 @@ Since we touched a bit on internationalization, we can use the &lt;code&gt;getTi
  In this article, we will explore java.util.Date, consume it as a basic cheatsheet. We will see several examples as it's still used in several code bases and later, I mean really later, we will conspire to throw it out of the window and explore better alternatives for date and time handling in Java. 
 &lt;/div&gt;
 
+&lt;!--more--&gt;
+
 &lt;p&gt;Why am I talking about &lt;code&gt;java.util.Date&lt;/code&gt; in this day and age when the &amp;quot;whole&amp;quot; community has moved on? Because the whole community has not yet moved on and several of us still work with legacy code bases, some going as far back as Java 6 and much as we are moving forth, we can&amp;#39;t go into the future without thoroughly coming to terms with our past :)&lt;/p&gt;
 
-&lt;p&gt;I bet you often deal with dates and have to frequently google how to parse date from string, convert date to different string formats for SQL storage or user-friendly display, compare dates, add and subtract days, months, years etc from a date. These are pretty common needs for most developers so let&amp;#39;s get on with it and move on with our lives. I will do my best to keep it short and sweet!
-&amp;lt;!--more--&amp;gt;&lt;/p&gt;
+&lt;p&gt;I bet you often deal with dates and have to frequently google how to parse date from string, convert date to different string formats for SQL storage or user-friendly display, compare dates, add and subtract days, months, years etc from a date. These are pretty common needs for most developers so let&amp;#39;s get on with it and move on with our lives. I will do my best to keep it short and sweet!&lt;/p&gt;
 
 &lt;h2&gt;Date Creation&lt;/h2&gt;
 

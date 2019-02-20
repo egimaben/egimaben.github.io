@@ -4,11 +4,15 @@ title: Manipulating Dates with Calendar Class
 comments: true
 ---
 
- In this article, we will explore `java.util.Calendar` class. In a [previous article](/2019/02/18/a-simple-guide-for-java-util-date), we discussed `java.util.Date` class but its failures around internationalisation concepts like timezone awareness were evident. We were also not able to compute future and previous dates from a `Date` object just like we could not decompose a date into its parts(year, day, month, hour etc) easily.
+ In this article, we will explore `java.util.Calendar` class. 
+ 
+ <!--more-->
+
+ In a [previous article](/2019/02/18/a-simple-guide-for-java-util-date), we discussed `java.util.Date` class but its failures around internationalisation concepts like timezone awareness were evident. 
+ 
+ We were also not able to compute future and previous dates from a `Date` object just like we could not decompose a date into its parts(year, day, month, hour etc) easily.
  
  We will now see how to achieve all this with the `Calendar` class.
-
-<!--more-->
 
 ## Calendar Creation
 There are 3 ways of constructing a `Calendar` class object. We use the static `getInstance` calendar method instead of the `new` key word. The `Calendar` class is timezone and locale aware and only assumes these settings to a default when we don't specify them:

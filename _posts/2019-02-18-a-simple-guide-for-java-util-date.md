@@ -9,10 +9,12 @@ comments: true
  In this article, we will explore java.util.Date, consume it as a basic cheatsheet. We will see several examples as it's still used in several code bases and later, I mean really later, we will conspire to throw it out of the window and explore better alternatives for date and time handling in Java. 
 </div>
 
+<!--more-->
+
 Why am I talking about `java.util.Date` in this day and age when the "whole" community has moved on? Because the whole community has not yet moved on and several of us still work with legacy code bases, some going as far back as Java 6 and much as we are moving forth, we can't go into the future without thoroughly coming to terms with our past :)
 
 I bet you often deal with dates and have to frequently google how to parse date from string, convert date to different string formats for SQL storage or user-friendly display, compare dates, add and subtract days, months, years etc from a date. These are pretty common needs for most developers so let's get on with it and move on with our lives. I will do my best to keep it short and sweet!
-<!--more-->
+
 ## Date Creation
 The java.util.Date class has 2 constructors, a default one and one that take a `long` value which represents the the number of milliseconds that have elapsed since 00:00:00 Thursday, 1 January 1970 AKA Unix Epoch time. It's just a way to keep ourselves and our computers sane while dealing with time in different locales and timezones:
 To make for easier testing, I captured a `long` time value on the day of writing this article as the default constructor internally invokes `System.currentTimeInMillis()` to get the `now` time:
