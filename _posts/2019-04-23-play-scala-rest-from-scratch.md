@@ -203,7 +203,7 @@ Notice we have injected `Configuration` API. Reload the browser the you should s
 
 You can read more about the [configuration API](https://www.playframework.com/documentation/2.7.x/ScalaConfig) and also the [syntax](https://www.playframework.com/documentation/2.7.x/ConfigFile) of the `application.conf` config file.
 
-##Continuing developing from intelliJ
+## Continuing developing from intelliJ
 
 Since we have setup a basic structure of a play/scala application hopefully with much understanding, most of which we have done from the console, it is now time to take it to the next level. This will be easier with an IDE such as intelliJ.
 

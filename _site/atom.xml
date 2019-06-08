@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Benedict Egima</title>
- <link href="http://localhost:4000/atom.xml" rel="self"/>
- <link href="http://localhost:4000/"/>
- <updated>2019-04-23T19:29:51+03:00</updated>
- <id>http://localhost:4000</id>
+ <link href="https://egimaben.github.io/atom.xml" rel="self"/>
+ <link href="https://egimaben.github.io/"/>
+ <updated>2019-06-08T10:44:16+03:00</updated>
+ <id>https://egimaben.github.io</id>
  <author>
    <name>Benedict Egima Ayiko</name>
    <email>benikod@gmail.com</email>
@@ -14,9 +14,9 @@
  
  <entry>
    <title>Play 2.7 Scala REST API from scratch With SBT</title>
-   <link href="http://localhost:4000/2019/04/23/play-scala-rest-from-scratch/"/>
+   <link href="https://egimaben.github.io/2019/04/23/play-scala-rest-from-scratch/"/>
    <updated>2019-04-23T00:00:00+03:00</updated>
-   <id>http://localhost:4000/2019/04/23/play-scala-rest-from-scratch</id>
+   <id>https://egimaben.github.io/2019/04/23/play-scala-rest-from-scratch</id>
    <content type="html">&lt;p&gt;With the advent of modern web frameworks such as Play, Laravel/PHP, Express/Node, advanced tools have come up to help in scaffolding ready-to-run Web Apps with a single command. In some cases, like with Play, there are even &lt;a href=&quot;https://developer.lightbend.com/start/?group=play&quot;&gt;fully scaffolded examples&lt;/a&gt; to download and run.&lt;/p&gt;
 
 &lt;p&gt;&amp;lt;!--more--&amp;gt;&lt;/p&gt;
@@ -208,9 +208,9 @@ mkdir contollers &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;
  
  <entry>
    <title>Manipulating Dates with Calendar Class</title>
-   <link href="http://localhost:4000/2019/02/20/manipulating-dates-with-calendar-class/"/>
+   <link href="https://egimaben.github.io/2019/02/20/manipulating-dates-with-calendar-class/"/>
    <updated>2019-02-20T00:00:00+03:00</updated>
-   <id>http://localhost:4000/2019/02/20/manipulating-dates-with-calendar-class</id>
+   <id>https://egimaben.github.io/2019/02/20/manipulating-dates-with-calendar-class</id>
    <content type="html">&lt;p&gt;In this article, we will explore &lt;code&gt;java.util.Calendar&lt;/code&gt; class. &lt;/p&gt;
 
 &lt;p&gt;&amp;lt;!--more--&amp;gt;&lt;/p&gt;
@@ -483,9 +483,9 @@ Since we touched a bit on internationalization, we can use the &lt;code&gt;getTi
  
  <entry>
    <title>A Simple Guide for Java.util.Date</title>
-   <link href="http://localhost:4000/2019/02/18/a-simple-guide-for-java-util-date/"/>
+   <link href="https://egimaben.github.io/2019/02/18/a-simple-guide-for-java-util-date/"/>
    <updated>2019-02-18T00:00:00+03:00</updated>
-   <id>http://localhost:4000/2019/02/18/a-simple-guide-for-java-util-date</id>
+   <id>https://egimaben.github.io/2019/02/18/a-simple-guide-for-java-util-date</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
  In this article, we will explore java.util.Date, consume it as a basic cheatsheet. We will see several examples as it's still used in several code bases and later, I mean really later, we will conspire to throw it out of the window and explore better alternatives for date and time handling in Java. 
 &lt;/div&gt;
@@ -666,9 +666,9 @@ Another caveat and common cause of bugs is developers confusing upper case and l
  
  <entry>
    <title>Java Garbage Collector and Reference Objects</title>
-   <link href="http://localhost:4000/2017/02/07/java-garbage-collector-and-reference-objects/"/>
+   <link href="https://egimaben.github.io/2017/02/07/java-garbage-collector-and-reference-objects/"/>
    <updated>2017-02-07T00:00:00+03:00</updated>
-   <id>http://localhost:4000/2017/02/07/java-garbage-collector-and-reference-objects</id>
+   <id>https://egimaben.github.io/2017/02/07/java-garbage-collector-and-reference-objects</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
 We take a look at garbage collector concepts in Java and that various reference object types that can be handled by it, demystifying the Java GC!&lt;/div&gt;
 
@@ -848,9 +848,9 @@ This turned out to be an excellent strategy. Talk about iterative problem solvin
  
  <entry>
    <title>Lambda Expressions in Java 8</title>
-   <link href="http://localhost:4000/2017/01/30/lambda-expressions-in-java-8/"/>
+   <link href="https://egimaben.github.io/2017/01/30/lambda-expressions-in-java-8/"/>
    <updated>2017-01-30T00:00:00+03:00</updated>
-   <id>http://localhost:4000/2017/01/30/lambda-expressions-in-java-8</id>
+   <id>https://egimaben.github.io/2017/01/30/lambda-expressions-in-java-8</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
   In this post, we will learn what, exactly, lambda expressions are and how they fit into the whole Java ecosystem.
 &lt;/div&gt;
@@ -981,9 +981,9 @@ Before we refactor the above example using lambda expressions, let’s learn the
  
  <entry>
    <title>Java Method References</title>
-   <link href="http://localhost:4000/2017/01/18/java-method-references/"/>
+   <link href="https://egimaben.github.io/2017/01/18/java-method-references/"/>
    <updated>2017-01-18T00:00:00+03:00</updated>
-   <id>http://localhost:4000/2017/01/18/java-method-references</id>
+   <id>https://egimaben.github.io/2017/01/18/java-method-references</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
   A double colon might appear so innocently, but there's a lot of things to know about it. In this post, we try to put together the most important of them.
 &lt;/div&gt;
@@ -1225,9 +1225,9 @@ Before we refactor the above example using lambda expressions, let’s learn the
  
  <entry>
    <title>Getting The Most Out of HashMaps</title>
-   <link href="http://localhost:4000/2017/01/10/getting-the-most-out-of-hashmaps/"/>
+   <link href="https://egimaben.github.io/2017/01/10/getting-the-most-out-of-hashmaps/"/>
    <updated>2017-01-10T00:00:00+03:00</updated>
-   <id>http://localhost:4000/2017/01/10/getting-the-most-out-of-hashmaps</id>
+   <id>https://egimaben.github.io/2017/01/10/getting-the-most-out-of-hashmaps</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
 HashMaps are a great tool, but you need to know the internals to get the best performance from them. This guide covers collisions, iterations, load factors, and more.&lt;/div&gt;
 
@@ -1368,9 +1368,9 @@ What can’t you do with &lt;code&gt;HashMap&lt;/code&gt;, plus the API is extre
  
  <entry>
    <title>Canonical Equivalence In Unicode Pattern Matching</title>
-   <link href="http://localhost:4000/2016/10/03/canonical-equivalence-in-unicode-pattern-matching/"/>
+   <link href="https://egimaben.github.io/2016/10/03/canonical-equivalence-in-unicode-pattern-matching/"/>
    <updated>2016-10-03T00:00:00+03:00</updated>
-   <id>http://localhost:4000/2016/10/03/canonical-equivalence-in-unicode-pattern-matching</id>
+   <id>https://egimaben.github.io/2016/10/03/canonical-equivalence-in-unicode-pattern-matching</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
  In this article, we will define and explain the term Canonical Equivalence as applied to pattern matching according to the Unicode character specification.
 &lt;/div&gt;
