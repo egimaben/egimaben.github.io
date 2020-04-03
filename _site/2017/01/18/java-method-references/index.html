@@ -117,12 +117,14 @@
         
       
         
+      
+        
           
         
       
       <span class="sidebar-nav-item">Currently v1.0.0</span>
     </nav>
-    <p>&copy; 2019. All rights reserved.</p>
+    <p>&copy; 2020. All rights reserved.</p>
   </div>
 </div>
 
@@ -140,71 +142,70 @@
 <p>Unless you are very well-versed with lambda expressions, I would highly recommend that you first go through my lambda expressions tutorial before continuing with this post.</p>
 
 <p>To even encourage you further, when you understand lambda expressions, method references are a walk over.
-&lt;!--more--&gt;</p>
-
-<h2>Method References vs. Lambda Rxpressions</h2>
+<!--more--></p>
+<h2 id="method-references-vs-lambda-rxpressions">Method References vs. Lambda Rxpressions</h2>
 
 <p>From the lambda expressions tutorial, we can remember that a lambda expression simply gives us a more compact way of writing an anonymous function or implementing a functional interface.</p>
 
 <p>In summary, we discussed that, if we have an interface such as below for printing something and a method that takes the interface as a parameter:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LambdaDemo</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LambdaDemo</span> <span class="o">{</span>
     <span class="kd">interface</span> <span class="nc">Printer</span> <span class="o">{</span>
-        <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">String</span> <span class="n">val</span><span class="o">);</span>
+        <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="nc">String</span> <span class="n">val</span><span class="o">);</span>
     <span class="o">}</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printSomething</span><span class="o">(</span><span class="n">String</span> <span class="n">something</span><span class="o">,</span> <span class="n">Printer</span> <span class="n">printer</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printSomething</span><span class="o">(</span><span class="nc">String</span> <span class="n">something</span><span class="o">,</span> <span class="nc">Printer</span> <span class="n">printer</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">printer</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">something</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>Pre-Java 8, we can call the printSomething method and provide an implementation of Printer interface as an anonymous function:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LambdaDemo</span><span class="o">();</span>
-    <span class="n">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">&quot;I am Lambda&quot;</span><span class="o">;</span>
-    <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="k">new</span> <span class="n">Printer</span><span class="o">()</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LambdaDemo</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">"I am Lambda"</span><span class="o">;</span>
+    <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Printer</span><span class="o">()</span> <span class="o">{</span>
         <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">String</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">val</span><span class="o">);</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="nc">String</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">val</span><span class="o">);</span>
         <span class="o">}</span>
     <span class="o">});</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>The above code, when run, produces the desirable result i.e. printing something to the console:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">I</span> <span class="n">am</span> <span class="n">Lambda</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="no">I</span> <span class="n">am</span> <span class="nc">Lambda</span></code></pre></figure>
 
 <p>However, as Java developers, aware of new features in Java 8, we found this too verbose and decided to apply a lambda expression:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LambdaDemo</span><span class="o">();</span>
-    <span class="n">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">&quot;I am Lambda&quot;</span><span class="o">;</span>
-    <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="o">(</span><span class="n">toPrint</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">));</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LambdaDemo</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">"I am Lambda"</span><span class="o">;</span>
+    <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="o">(</span><span class="n">toPrint</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">));</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>We were able to reduce the number of lines significantly. Notice that, we are simply using a single line of code in the lambda expression i.e. invoking only a single method. But we are free to add more lines and wrap them within braces:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LambdaDemo</span><span class="o">();</span>
-    <span class="n">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">&quot;I am Lambda&quot;</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LambdaDemo</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">"I am Lambda"</span><span class="o">;</span>
     <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="o">(</span><span class="n">toPrint</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
-            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;We are testing lambda expressions&quot;</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"We are testing lambda expressions"</span><span class="o">);</span>
             <span class="c1">//more lines of code</span>
-            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">);</span>
     <span class="o">});</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>Which prints:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">We</span> <span class="n">are</span> <span class="n">testing</span> <span class="n">lambda</span> <span class="n">expressions</span>
-<span class="n">I</span> <span class="n">am</span> <span class="n">Lambda</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nc">We</span> <span class="n">are</span> <span class="n">testing</span> <span class="n">lambda</span> <span class="n">expressions</span>
+<span class="no">I</span> <span class="n">am</span> <span class="nc">Lambda</span></code></pre></figure>
 
 <p>To use a lambda expression like we have done in the last example is awesome as it saves us from the verbosity of anonymous functions. However, the first case where we were only calling a single method is not the most compact code we can get…ENTER METHOD REFERENCES:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LambdaDemo</span><span class="o">();</span>
-    <span class="n">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">&quot;I am Lambda&quot;</span><span class="o">;</span>
-    <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">);</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LambdaDemo</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">"I am Lambda"</span><span class="o">;</span>
+    <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>A method reference can replace a lambda expression where we only have a single method call. Instead of the method call, we simply supply the method name attached to its class/object separated by a double colon(::) operator.</p>
@@ -212,16 +213,15 @@
 <p>The real invocation of is done under the hood and we don’t even need to directly supply parameters (e.g. toPrint) as we did for lambdas, the compiler infers this information automatically and more such as return type.</p>
 
 <p>More formally, we can say that:</p>
-
 <blockquote>
-<p>A method reference is a more compact and easy-to-read construct to replace a lambda expression that does nothing more than invoking an existing method.</p>
+  <p>A method reference is a more compact and easy-to-read construct to replace a lambda expression that does nothing more than invoking an existing method.</p>
 </blockquote>
 
-<h2>Static Method Reference</h2>
+<h2 id="static-method-reference">Static Method Reference</h2>
 
 <p>One of the more obvious and easiest ways to use a method reference is where static methods are involved. Assuming we have a class that only defines a single static method for adding two integers:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MRefDemo</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MRefDemo</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">add</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">;</span>
     <span class="o">}</span>
@@ -229,47 +229,47 @@
 
 <p>We can write a unit test for this class using a lambda expression if we don’t know about method references:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">givenStaticFn_createsFunctionalInterfaceWithLambda_pass</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">BiFunction</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">adder</span> <span class="o">=</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">add</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">);</span>
+    <span class="nc">BiFunction</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">adder</span> <span class="o">=</span> <span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">add</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">);</span>
     <span class="kt">int</span> <span class="n">addResult</span> <span class="o">=</span> <span class="n">adder</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">6</span><span class="o">);</span>
     <span class="n">assertEquals</span><span class="o">(</span><span class="mi">11</span><span class="o">,</span> <span class="n">addResult</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>We have to explicitly reference the parameters in the lambda expression wrapped by the BiFunction. But with method refs, we don’t need any of that:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">givenStaticFn_createsFunctionalInterfaceWithMethRef_pass</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">BiFunction</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">adder</span> <span class="o">=</span> <span class="n">MRefDemo</span><span class="o">::</span><span class="n">add</span><span class="o">;</span>
+    <span class="nc">BiFunction</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">adder</span> <span class="o">=</span> <span class="nl">MRefDemo:</span><span class="o">:</span><span class="n">add</span><span class="o">;</span>
     <span class="kt">int</span> <span class="n">addResult</span> <span class="o">=</span> <span class="n">adder</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">6</span><span class="o">);</span>
     <span class="n">assertEquals</span><span class="o">(</span><span class="mi">11</span><span class="o">,</span> <span class="n">addResult</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>Notice the syntax for static method reference: the class name, MRefDemo and the method name, add separated by the double colon(::) operator.</p>
 
-<h2>Constructor Reference</h2>
+<h2 id="constructor-reference">Constructor Reference</h2>
 
 <p>Constructor reference is very similar to static method reference. It is a way to supply the name of the constructor of a class without invoking it. The invocation takes place under the hood.</p>
 
 <p>Assume that we have a class called LogText.java, whose soul purpose in life is to wrap some raw text and avail it at log time in a beatiful way such that instead of our log appearing like this:</p>
 
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span></span><span class="nx">server0</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">server0</span></code></pre></figure>
 
 <p>It would appear like:</p>
 
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span></span><span class="o">==</span><span class="nx">server0</span><span class="o">==</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="o">==</span><span class="nx">server0</span><span class="o">==</span></code></pre></figure>
 
 <p>Simple, but serves our demo purpose.</p>
 
 <p>Now here is the content of LogText.java:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">class</span> <span class="nc">LogText</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">String</span> <span class="n">s</span><span class="o">;</span>
-    <span class="kd">public</span> <span class="nf">LogText</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">s</span> <span class="o">=</span> <span class="s">&quot;==&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s">&quot;==&quot;</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">LogText</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">s</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">LogText</span><span class="o">(</span><span class="nc">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">s</span> <span class="o">=</span> <span class="s">"=="</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s">"=="</span><span class="o">;</span>
     <span class="o">}</span>
     <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">s</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span></code></pre></figure>
@@ -278,89 +278,88 @@
 
 <p>The lambda approach:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">givenConstructor_createsFunInterfaceWithLambda_pass</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Function</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">LogText</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="n">LogText</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
-    <span class="n">LogText</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="s">&quot;server0&quot;</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;==server0==&quot;</span><span class="o">,</span> <span class="n">log</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+    <span class="nc">Function</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">LogText</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="nc">LogText</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+    <span class="nc">LogText</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="s">"server0"</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">"==server0=="</span><span class="o">,</span> <span class="n">log</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>And the constructor reference option:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">givenConstructor_createsFunInterfaceWithMethRef_pass</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Function</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">LogText</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="n">LogText</span><span class="o">::</span><span class="k">new</span><span class="o">;</span>
-    <span class="n">LogText</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="s">&quot;server0&quot;</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;==server0==&quot;</span><span class="o">,</span> <span class="n">log</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+    <span class="nc">Function</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">LogText</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="nl">LogText:</span><span class="o">:</span><span class="k">new</span><span class="o">;</span>
+    <span class="nc">LogText</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="s">"server0"</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">"==server0=="</span><span class="o">,</span> <span class="n">log</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
 <span class="o">}</span></code></pre></figure>
 
-<h2>Bound Instance Method Reference</h2>
-
+<h2 id="bound-instance-method-reference">Bound Instance Method Reference</h2>
 <p>We have only looked at uses of method reference where we are not instantiating the object ourselves. We can also apply a method reference to name a method attached to an already constructed object.</p>
 
 <p>Assuming that we want to convert the above constructor reference example to use bound instance method reference. We would have to construct our LogText instance in advance.</p>
 
 <p>For this example to make sense, let us also assume that we now want the functional interface to supply us directly with the beautified string rather than an instance of LogText. The lambda example:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">givenObj_createsFunInterfaceWithLambda_pass</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">LogText</span> <span class="n">beautifulText</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LogText</span><span class="o">(</span><span class="s">&quot;server0&quot;</span><span class="o">);</span>
-    <span class="n">Supplier</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="n">beautifulText</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
-    <span class="n">String</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;==server0==&quot;</span><span class="o">,</span> <span class="n">log</span><span class="o">);</span>
+    <span class="nc">LogText</span> <span class="n">beautifulText</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LogText</span><span class="o">(</span><span class="s">"server0"</span><span class="o">);</span>
+    <span class="nc">Supplier</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="n">beautifulText</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">"==server0=="</span><span class="o">,</span> <span class="n">log</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>And the method reference variant:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">givenObj_createsFunInterfaceWithMethRef_pass</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">LogText</span> <span class="n">beautifulText</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LogText</span><span class="o">(</span><span class="s">&quot;server0&quot;</span><span class="o">);</span>
-    <span class="n">Supplier</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="n">beautifulText</span><span class="o">::</span><span class="n">toString</span><span class="o">;</span>
-    <span class="n">String</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;==server0==&quot;</span><span class="o">,</span> <span class="n">log</span><span class="o">);</span>
+    <span class="nc">LogText</span> <span class="n">beautifulText</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LogText</span><span class="o">(</span><span class="s">"server0"</span><span class="o">);</span>
+    <span class="nc">Supplier</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="nl">beautifulText:</span><span class="o">:</span><span class="n">toString</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">"==server0=="</span><span class="o">,</span> <span class="n">log</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
-<h2>Unbound Instance Method Reference</h2>
+<h2 id="unbound-instance-method-reference">Unbound Instance Method Reference</h2>
 
 <p>Unbound instance method reference or unbound non-static method reference is very close in both syntax and even closer in semantics to bound instance method reference.</p>
 
 <p>In the section on bound instance method reference above, we were telling the compiler:</p>
 
-<p><code>Here is our object, it is the only thing we have to offer you, it is ready and contains everything we need, we only want you to invoke a certain method called toString on this object and return to us whatever that call returns.</code></p>
+<p><code class="language-plaintext highlighter-rouge">Here is our object, it is the only thing we have to offer you, it is ready and contains everything we need, we only want you to invoke a certain method called toString on this object and return to us whatever that call returns.</code></p>
 
 <p>That is why we had to use a Supplier, a functional interface whose functional method takes no arguments and returns a single value. We did not have anything inform of an argument as we only had a fully built LogText object.</p>
 
 <p>Now take a look at an example of unbound instance method reference:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">givenObj_createsFunInterfaceWithLambda_pass2</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Function</span><span class="o">&lt;</span><span class="n">LogText</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="o">(</span><span class="n">logText</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">logText</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
-    <span class="n">LogText</span> <span class="n">beautifulText</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LogText</span><span class="o">(</span><span class="s">&quot;server0&quot;</span><span class="o">);</span>
-    <span class="n">String</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="n">beautifulText</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;==server0==&quot;</span><span class="o">,</span> <span class="n">log</span><span class="o">);</span>
+    <span class="nc">Function</span><span class="o">&lt;</span><span class="nc">LogText</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="o">(</span><span class="n">logText</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">logText</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="nc">LogText</span> <span class="n">beautifulText</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LogText</span><span class="o">(</span><span class="s">"server0"</span><span class="o">);</span>
+    <span class="nc">String</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="n">beautifulText</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">"==server0=="</span><span class="o">,</span> <span class="n">log</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>The concept is not clear with a lambda, let’s look at the method reference approach:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">givenObj_createsFunInterfaceWithMethRef_pass2</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Function</span><span class="o">&lt;</span><span class="n">LogText</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="n">LogText</span><span class="o">::</span><span class="n">toString</span><span class="o">;</span>
-    <span class="n">LogText</span> <span class="n">beautifulText</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LogText</span><span class="o">(</span><span class="s">&quot;server0&quot;</span><span class="o">);</span>
-    <span class="n">String</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="n">beautifulText</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;==server0==&quot;</span><span class="o">,</span> <span class="n">log</span><span class="o">);</span>
+    <span class="nc">Function</span><span class="o">&lt;</span><span class="nc">LogText</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">beautifier</span> <span class="o">=</span> <span class="nl">LogText:</span><span class="o">:</span><span class="n">toString</span><span class="o">;</span>
+    <span class="nc">LogText</span> <span class="n">beautifulText</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LogText</span><span class="o">(</span><span class="s">"server0"</span><span class="o">);</span>
+    <span class="nc">String</span> <span class="n">log</span> <span class="o">=</span> <span class="n">beautifier</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="n">beautifulText</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">"==server0=="</span><span class="o">,</span> <span class="n">log</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>Now this is exactly what we are telling the compiler:</p>
 
-<p><code>Hey dude, see we don’t really have a ready object at this point, we will have it ready very soon. But in the meantime we want you to take note of a certain method called toString. When we eventually get around to creating this object, please remember to call the said method on this object and return to us whatever that call returns.</code></p>
+<p><code class="language-plaintext highlighter-rouge">Hey dude, see we don’t really have a ready object at this point, we will have it ready very soon. But in the meantime we want you to take note of a certain method called toString. When we eventually get around to creating this object, please remember to call the said method on this object and return to us whatever that call returns.</code></p>
 
 <p>This is why we are using a Function. A functional interface whose functional method takes one argument and produces a result. We will have to pass the LogText object as an argument to the functional method.</p>
 
-<p>The syntax <code>Class::instanceMethod</code> is strange and this is where part of the confusion comes from. That syntax is common with static methods. It is like calling String.toString yet we all know it should be called on some string s, like s.toString.</p>
+<p>The syntax <code class="language-plaintext highlighter-rouge">Class::instanceMethod</code> is strange and this is where part of the confusion comes from. That syntax is common with static methods. It is like calling String.toString yet we all know it should be called on some string s, like s.toString.</p>
 
 <p>Therefore, understanding this difference is key to correct and informed use of method references.</p>
 
-<h2>Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>In this tutorial, we have explored one of the features of Java 8. Method references can make your code more compact and easier to read.</p>
 
@@ -376,6 +375,15 @@
     
       <li>
         <h3>
+          <a href="/2020/04/03/play-framework-primer-scaffolding/">
+            Play Framework Primer - Scaffolding
+            <small>03 Apr 2020</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
           <a href="/2019/04/23/play-scala-rest-from-scratch/">
             Play 2.7 Scala REST API from scratch With SBT
             <small>23 Apr 2019</small>
@@ -388,15 +396,6 @@
           <a href="/2019/02/20/manipulating-dates-with-calendar-class/">
             Manipulating Dates with Calendar Class
             <small>20 Feb 2019</small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/2019/02/18/a-simple-guide-for-java-util-date/">
-            A Simple Guide for Java.util.Date
-            <small>18 Feb 2019</small>
           </a>
         </h3>
       </li>

@@ -117,12 +117,14 @@
         
       
         
+      
+        
           
         
       
       <span class="sidebar-nav-item">Currently v1.0.0</span>
     </nav>
-    <p>&copy; 2019. All rights reserved.</p>
+    <p>&copy; 2020. All rights reserved.</p>
   </div>
 </div>
 
@@ -133,66 +135,65 @@
   <span class="post-date">23 Apr 2019</span>
   <p>With the advent of modern web frameworks such as Play, Laravel/PHP, Express/Node, advanced tools have come up to help in scaffolding ready-to-run Web Apps with a single command. In some cases, like with Play, there are even <a href="https://developer.lightbend.com/start/?group=play">fully scaffolded examples</a> to download and run.</p>
 
-<p>&lt;!--more--&gt;</p>
+<p><!--more--></p>
 
 <p>Now this is really great as most programmers prefer to just copy and paste already working code, but if you are anything like me, understanding something at a fundamental level and being able build it from scratch can give you much more control over your work.</p>
 
 <p>I downloaded one of the already scaffolded <a href="(https://developer.lightbend.com/start/?group=play)">play examples</a> and there were so many files and folders most of which I thought were redundant and cause mental clutter and cognitive overload for nothing. But to confirm this, I had to create one from scratch with the bare minimum set of files and directories that could work.</p>
 
-<h2>Requirements</h2>
-
+<h2 id="requirements">Requirements</h2>
 <p>Java 8 must be installed. To confirm this, check the version from your terminal or command prompt:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>MacBook-Pro-9% java -version
-java version <span class="s2">&quot;1.8.0_172&quot;</span>
-Java<span class="o">(</span>TM<span class="o">)</span> SE Runtime Environment <span class="o">(</span>build <span class="m">1</span>.8.0_172-b11<span class="o">)</span>
-Java HotSpot<span class="o">(</span>TM<span class="o">)</span> <span class="m">64</span>-Bit Server VM <span class="o">(</span>build <span class="m">25</span>.172-b11, mixed mode<span class="o">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">MacBook-Pro-9% java <span class="nt">-version</span>
+java version <span class="s2">"1.8.0_172"</span>
+Java<span class="o">(</span>TM<span class="o">)</span> SE Runtime Environment <span class="o">(</span>build 1.8.0_172-b11<span class="o">)</span>
+Java HotSpot<span class="o">(</span>TM<span class="o">)</span> 64-Bit Server VM <span class="o">(</span>build 25.172-b11, mixed mode<span class="o">)</span></code></pre></figure>
 
 <p>I am using MacOS but the same should work on Linux and even Windows.
-Install <code>sbt</code> from the <a href="https://www.scala-sbt.org/">official website</a>. To confirm, run the following command and you should get a similar output:</p>
+Install <code class="language-plaintext highlighter-rouge">sbt</code> from the <a href="https://www.scala-sbt.org/">official website</a>. To confirm, run the following command and you should get a similar output:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>MacBook-Pro-9% sbt sbtVersion
-<span class="o">[</span>info<span class="o">]</span> Loading global plugins from /Users/benedictayiko/.sbt/1.0/plugins
-<span class="o">[</span>info<span class="o">]</span> Loading project definition from /Users/benedictayiko/project
-<span class="o">[</span>info<span class="o">]</span> Set current project to benedictayiko <span class="o">(</span>in build file:/Users/benedictayiko/<span class="o">)</span>
-<span class="o">[</span>info<span class="o">]</span> <span class="m">1</span>.2.8</code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">MacBook-Pro-9% sbt sbtVersion
+<span class="o">[</span>info] Loading global plugins from /Users/benedictayiko/.sbt/1.0/plugins
+<span class="o">[</span>info] Loading project definition from /Users/benedictayiko/project
+<span class="o">[</span>info] Set current project to benedictayiko <span class="o">(</span><span class="k">in </span>build file:/Users/benedictayiko/<span class="o">)</span>
+<span class="o">[</span>info] 1.2.8</code></pre></figure>
 
 <p>I am not going to use an IDE for this demo but I would recommend <a href="https://www.jetbrains.com/idea/download/">IntelliJ iDea</a> which has a community edition. Ensure that you install the <a href="https://www.jetbrains.com/help/idea/managing-plugins.html">Scala plugin</a>.</p>
 
-<h2>Creating The Application</h2>
+<h2 id="creating-the-application">Creating The Application</h2>
 
-<h3>Overview</h3>
+<h3 id="overview">Overview</h3>
 
 <p>Navigate to your preferred location in the file system and create a new directory to hold your project files:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>mkdir PlayFromScratch <span class="o">&amp;&amp;</span> <span class="nb">cd</span> PlayFromScratch</code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">mkdir </span>PlayFromScratch <span class="o">&amp;&amp;</span> <span class="nb">cd </span>PlayFromScratch</code></pre></figure>
 
-<p>As we create the project files and directories, it would help to keep referring to the official <a href="https://www.playframework.com/documentation/2.7.x/Anatomy">anatomy of a play application</a> to see what they signify if you don&#39;t already know.</p>
+<p>As we create the project files and directories, it would help to keep referring to the official <a href="https://www.playframework.com/documentation/2.7.x/Anatomy">anatomy of a play application</a> to see what they signify if you don’t already know.</p>
 
-<p>In summary, the most important files and folders are as below. Of course the controller may vary depending on your needs but the rest of the files are for application config and build system config, so without them, the build won&#39;t succeed:</p>
+<p>In summary, the most important files and folders are as below. Of course the controller may vary depending on your needs but the rest of the files are for application config and build system config, so without them, the build won’t succeed:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="p">|</span>_PlayFromScratch
-<span class="p">|</span>____app
-<span class="p">|</span> <span class="p">|</span>____controllers
-<span class="p">|</span> <span class="p">|</span> <span class="p">|</span>____HomeController.scala
-<span class="p">|</span>____project
-<span class="p">|</span> <span class="p">|</span>____build.properties
-<span class="p">|</span> <span class="p">|</span>____plugins.sbt
-<span class="p">|</span>____conf
-<span class="p">|</span> <span class="p">|</span>____application.conf
-<span class="p">|</span> <span class="p">|</span>____routes
-<span class="p">|</span>____build.sbt</code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">|_PlayFromScratch
+|____app
+| |____controllers
+| | |____HomeController.scala
+|____project
+| |____build.properties
+| |____plugins.sbt
+|____conf
+| |____application.conf
+| |____routes
+|____build.sbt</code></pre></figure>
 
-<h3>App directory</h3>
+<h3 id="app-directory">App directory</h3>
 
-<p>Let&#39;s create the <code>app</code> directory for all compilable source code, much as we will only create a controller. There could be a directory for <code>models</code> as well as <code>views</code>:</p>
+<p>Let’s create the <code class="language-plaintext highlighter-rouge">app</code> directory for all compilable source code, much as we will only create a controller. There could be a directory for <code class="language-plaintext highlighter-rouge">models</code> as well as <code class="language-plaintext highlighter-rouge">views</code>:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>mkdir app <span class="o">&amp;&amp;</span> <span class="nb">cd</span> app
-mkdir contollers <span class="o">&amp;&amp;</span> <span class="nb">cd</span> controllers</code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">mkdir </span>app <span class="o">&amp;&amp;</span> <span class="nb">cd </span>app
+<span class="nb">mkdir </span>contollers <span class="o">&amp;&amp;</span> <span class="nb">cd </span>controllers</code></pre></figure>
 
-<p>Let&#39;s create the <code>HomeController</code> controller:</p>
+<p>Let’s create the <code class="language-plaintext highlighter-rouge">HomeController</code> controller:</p>
 
-<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span></span><span class="k">package</span> <span class="nn">controllers</span>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">package</span> <span class="nn">controllers</span>
 
 <span class="k">import</span> <span class="nn">javax.inject._</span>
 <span class="k">import</span> <span class="nn">play.api._</span>
@@ -200,99 +201,95 @@ mkdir contollers <span class="o">&amp;&amp;</span> <span class="nb">cd</span> co
 
 <span class="nd">@Singleton</span>
 <span class="k">class</span> <span class="nc">HomeController</span> <span class="nd">@Inject</span><span class="o">()(</span><span class="n">cc</span><span class="k">:</span> <span class="kt">ControllerComponents</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">AbstractController</span><span class="o">(</span><span class="n">cc</span><span class="o">)</span> <span class="o">{</span>
-  <span class="k">def</span> <span class="n">index</span><span class="o">()</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
-    <span class="nc">Ok</span><span class="o">(</span><span class="s">&quot;Hello world&quot;</span><span class="o">)</span>
+  <span class="k">def</span> <span class="nf">index</span><span class="o">()</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="s">"Hello world"</span><span class="o">)</span>
   <span class="o">}</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>In my opinion, this is the most basic controller we can have in Play with a single action.</p>
 
-<h3>Project definition directory</h3>
+<h3 id="project-definition-directory">Project definition directory</h3>
+<p>Next we will add <code class="language-plaintext highlighter-rouge">build.properties</code> and <code class="language-plaintext highlighter-rouge">plugins.sbt</code>. Back in the root of the app where <code class="language-plaintext highlighter-rouge">app</code> directory is located, let’s create <code class="language-plaintext highlighter-rouge">project</code> directory:</p>
 
-<p>Next we will add <code>build.properties</code> and <code>plugins.sbt</code>. Back in the root of the app where <code>app</code> directory is located, let&#39;s create <code>project</code> directory:</p>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">mkdir </span>project <span class="o">&amp;&amp;</span> <span class="nb">cd </span>project</code></pre></figure>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>mkdir project <span class="o">&amp;&amp;</span> <span class="nb">cd</span> project</code></pre></figure>
+<p>Let’s create <code class="language-plaintext highlighter-rouge">build.properties</code> with the following content. This file forms part of your build definition where you specify the version of sbt that your build uses. This allows people with different versions of the sbt launcher to build the same projects with consistent results:</p>
 
-<p>Let&#39;s create <code>build.properties</code> with the following content. This file forms part of your build definition where you specify the version of sbt that your build uses. This allows people with different versions of the sbt launcher to build the same projects with consistent results:</p>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sbt.version<span class="o">=</span>1.2.8</code></pre></figure>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>sbt.version<span class="o">=</span><span class="m">1</span>.2.8</code></pre></figure>
+<p>The other part of your build definition is <code class="language-plaintext highlighter-rouge">plugins.sbt</code> which contains plugin definitions that will be used in the build, in a way, plugins extend the build… for our case, we need to add the <code class="language-plaintext highlighter-rouge">play</code> plugin:</p>
 
-<p>The other part of your build definition is <code>plugins.sbt</code> which contains plugin definitions that will be used in the build, in a way, plugins extend the build... for our case, we need to add the <code>play</code> plugin:</p>
-
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>addSbtPlugin<span class="o">(</span><span class="s2">&quot;com.typesafe.play&quot;</span> % <span class="s2">&quot;sbt-plugin&quot;</span> % <span class="s2">&quot;2.7.0&quot;</span><span class="o">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">addSbtPlugin<span class="o">(</span><span class="s2">"com.typesafe.play"</span> % <span class="s2">"sbt-plugin"</span> % <span class="s2">"2.7.0"</span><span class="o">)</span></code></pre></figure>
 
 <p>You can get more details about <a href="https://www.scala-sbt.org/1.0/docs/Using-Plugins.html">plugins</a> and <a href="https://www.scala-sbt.org/1.x/docs/Basic-Def.html">build definitions</a>.</p>
 
-<h3>Configuration directory</h3>
+<h3 id="configuration-directory">Configuration directory</h3>
 
-<p>Next we will create <code>conf</code> directory which at the minimum contains the application wide configs inside <code>application.conf</code> or <code>application.json</code> without which the build will fail with an <code>IO</code> exception(I know it should be more graceful than that). So by all means create it even if you don&#39;t have configs. </p>
+<p>Next we will create <code class="language-plaintext highlighter-rouge">conf</code> directory which at the minimum contains the application wide configs inside <code class="language-plaintext highlighter-rouge">application.conf</code> or <code class="language-plaintext highlighter-rouge">application.json</code> without which the build will fail with an <code class="language-plaintext highlighter-rouge">IO</code> exception(I know it should be more graceful than that). So by all means create it even if you don’t have configs.</p>
 
-<p>The second file is the <code>routes</code> file which helps the <code>HTTP Server</code> map routes to controller actions.</p>
+<p>The second file is the <code class="language-plaintext highlighter-rouge">routes</code> file which helps the <code class="language-plaintext highlighter-rouge">HTTP Server</code> map routes to controller actions.</p>
 
-<p>Let&#39;s navigate back to project root where we now have <code>app</code> and <code>project</code> directories. Create <code>conf</code> directory:</p>
+<p>Let’s navigate back to project root where we now have <code class="language-plaintext highlighter-rouge">app</code> and <code class="language-plaintext highlighter-rouge">project</code> directories. Create <code class="language-plaintext highlighter-rouge">conf</code> directory:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>mkdir conf <span class="o">&amp;&amp;</span> <span class="nb">cd</span> conf</code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">mkdir </span>conf <span class="o">&amp;&amp;</span> <span class="nb">cd </span>conf</code></pre></figure>
 
-<p>Next, we create <code>application.conf</code>, currently we don&#39;t have any configs, so we will leave it empty</p>
+<p>Next, we create <code class="language-plaintext highlighter-rouge">application.conf</code>, currently we don’t have any configs, so we will leave it empty</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>//application wide configs go here</code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">//application wide configs go here</code></pre></figure>
 
-<p>Then create a <code>routes</code> file, directing base url traffic to our <code>index</code> action in the controller</p>
+<p>Then create a <code class="language-plaintext highlighter-rouge">routes</code> file, directing base url traffic to our <code class="language-plaintext highlighter-rouge">index</code> action in the controller</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>GET     /                                   controllers.HomeController.index</code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /                                   controllers.HomeController.index</code></pre></figure>
 
-<h3>Build Definition</h3>
+<h3 id="build-definition">Build Definition</h3>
+<p>Finally, at the root directory, we will create the most important file for <code class="language-plaintext highlighter-rouge">sbt</code> to build our project, it is the main build definition. Create <code class="language-plaintext highlighter-rouge">build.sbt</code> with the following content:</p>
 
-<p>Finally, at the root directory, we will create the most important file for <code>sbt</code> to build our project, it is the main build definition. Create <code>build.sbt</code> with the following content:</p>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">name</span> <span class="o">:=</span> <span class="s">"""play-scala-seed"""</span>
+<span class="n">organization</span> <span class="o">:=</span> <span class="s">"io.egimaben"</span>
 
-<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span></span><span class="n">name</span> <span class="o">:=</span> <span class="s">&quot;&quot;&quot;play-scala-seed&quot;&quot;&quot;</span>
-<span class="n">organization</span> <span class="o">:=</span> <span class="s">&quot;io.egimaben&quot;</span>
+<span class="n">version</span> <span class="o">:=</span> <span class="s">"1.0-SNAPSHOT"</span>
 
-<span class="n">version</span> <span class="o">:=</span> <span class="s">&quot;1.0-SNAPSHOT&quot;</span>
+<span class="k">lazy</span> <span class="k">val</span> <span class="nv">root</span> <span class="k">=</span> <span class="o">(</span><span class="n">project</span> <span class="n">in</span> <span class="nf">file</span><span class="o">(</span><span class="s">"."</span><span class="o">)).</span><span class="py">enablePlugins</span><span class="o">(</span><span class="nc">PlayScala</span><span class="o">)</span>
 
-<span class="k">lazy</span> <span class="k">val</span> <span class="n">root</span> <span class="k">=</span> <span class="o">(</span><span class="n">project</span> <span class="n">in</span> <span class="n">file</span><span class="o">(</span><span class="s">&quot;.&quot;</span><span class="o">)).</span><span class="n">enablePlugins</span><span class="o">(</span><span class="nc">PlayScala</span><span class="o">)</span>
-
-<span class="n">scalaVersion</span> <span class="o">:=</span> <span class="s">&quot;2.12.8&quot;</span>
+<span class="n">scalaVersion</span> <span class="o">:=</span> <span class="s">"2.12.8"</span>
 
 <span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="n">guice</span></code></pre></figure>
 
-<p>The definitive guide to understanding the config items above is the <code>sbt</code> docs located <a href="https://www.scala-sbt.org/1.x/docs/Basic-Def.html">here</a>. </p>
+<p>The definitive guide to understanding the config items above is the <code class="language-plaintext highlighter-rouge">sbt</code> docs located <a href="https://www.scala-sbt.org/1.x/docs/Basic-Def.html">here</a>.</p>
 
-<h2>Running the application</h2>
+<h2 id="running-the-application">Running the application</h2>
+<p>From the root of the project, run <code class="language-plaintext highlighter-rouge">sbt</code> to launch the sbt console with your build configuration from where you can run any of several commands e.g. <code class="language-plaintext highlighter-rouge">compile</code>, <code class="language-plaintext highlighter-rouge">clean</code> and <code class="language-plaintext highlighter-rouge">run</code>. Or you can run the command straight by appending it right away e.g. <code class="language-plaintext highlighter-rouge">sbt run</code>.</p>
 
-<p>From the root of the project, run <code>sbt</code> to launch the sbt console with your build configuration from where you can run any of several commands e.g. <code>compile</code>, <code>clean</code> and <code>run</code>. Or you can run the command straight by appending it right away e.g. <code>sbt run</code>.</p>
+<p>So let’s just go with <code class="language-plaintext highlighter-rouge">sbt run</code>. If it’s your first time to run <code class="language-plaintext highlighter-rouge">sbt</code>, it’s likely to take sometime downloading dependencies. But your console should ultimately look like this:</p>
 
-<p>So let&#39;s just go with <code>sbt run</code>. If it&#39;s your first time to run <code>sbt</code>, it&#39;s likely to take sometime downloading dependencies. But your console should ultimately look like this:</p>
-
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>MacBook-Pro-9% sbt run
-<span class="o">[</span>info<span class="o">]</span> Loading global plugins from /Users/benedictayiko/.sbt/1.0/plugins
-<span class="o">[</span>info<span class="o">]</span> Loading settings <span class="k">for</span> project minimalplay-build from plugins.sbt ...
-<span class="o">[</span>info<span class="o">]</span> Loading project definition from /Users/benedictayiko/play/MinimalPlay/project
-<span class="o">[</span>info<span class="o">]</span> Loading settings <span class="k">for</span> project root from build.sbt ...
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">MacBook-Pro-9% sbt run
+<span class="o">[</span>info] Loading global plugins from /Users/benedictayiko/.sbt/1.0/plugins
+<span class="o">[</span>info] Loading settings <span class="k">for </span>project minimalplay-build from plugins.sbt ...
+<span class="o">[</span>info] Loading project definition from /Users/benedictayiko/play/MinimalPlay/project
+<span class="o">[</span>info] Loading settings <span class="k">for </span>project root from build.sbt ...
 ....//several downloads
-<span class="o">[</span>info<span class="o">]</span> Set current project to play-scala-seed <span class="o">(</span>in build file:/Users/benedictayiko/play/MinimalPlay/<span class="o">)</span>
-<span class="o">[</span>info<span class="o">]</span> sbt server started at local:///Users/benedictayiko/.sbt/1.0/server/1210f6650449d35a6be3/sock
-<span class="o">[</span>info<span class="o">]</span> Updating ...
-<span class="o">[</span>info<span class="o">]</span> Done updating.
-<span class="o">[</span>warn<span class="o">]</span> There may be incompatibilities among your library dependencies<span class="p">;</span> run <span class="s1">&#39;evicted&#39;</span> to see detailed eviction warnings.
+<span class="o">[</span>info] Set current project to play-scala-seed <span class="o">(</span><span class="k">in </span>build file:/Users/benedictayiko/play/MinimalPlay/<span class="o">)</span>
+<span class="o">[</span>info] sbt server started at <span class="nb">local</span>:///Users/benedictayiko/.sbt/1.0/server/1210f6650449d35a6be3/sock
+<span class="o">[</span>info] Updating ...
+<span class="o">[</span>info] Done updating.
+<span class="o">[</span>warn] There may be incompatibilities among your library dependencies<span class="p">;</span> run <span class="s1">'evicted'</span> to see detailed eviction warnings.
 
---- <span class="o">(</span>Running the application, auto-reloading is enabled<span class="o">)</span> ---
+<span class="nt">---</span> <span class="o">(</span>Running the application, auto-reloading is enabled<span class="o">)</span> <span class="nt">---</span>
 
-<span class="o">[</span>info<span class="o">]</span> p.c.s.AkkaHttpServer - Listening <span class="k">for</span> HTTP on /0:0:0:0:0:0:0:0:9000
+<span class="o">[</span>info] p.c.s.AkkaHttpServer - Listening <span class="k">for </span>HTTP on /0:0:0:0:0:0:0:0:9000
 
 <span class="o">(</span>Server started, use Enter to stop and go back to the console...<span class="o">)</span></code></pre></figure>
 
-<p>When you visit <code>http://localhost:9000</code>, then your browser should display <code>Hello World!</code> since that is what we return in our only controller action.</p>
+<p>When you visit <code class="language-plaintext highlighter-rouge">http://localhost:9000</code>, then your browser should display <code class="language-plaintext highlighter-rouge">Hello World!</code> since that is what we return in our only controller action.</p>
 
-<h2>Adding a configuration</h2>
+<h2 id="adding-a-configuration">Adding a configuration</h2>
+<p>I thought it would be interesting to add a configuration and read it from the controller. Inside <code class="language-plaintext highlighter-rouge">application.conf</code> add a config, the syntax being key value pairs separated by equals sign, like so:</p>
 
-<p>I thought it would be interesting to add a configuration and read it from the controller. Inside <code>application.conf</code> add a config, the syntax being key value pairs separated by equals sign, like so:</p>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">world <span class="o">=</span> Earth</code></pre></figure>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="nv">world</span> <span class="o">=</span> Earth</code></pre></figure>
+<p>In the controller, instead of hardcoding <code class="language-plaintext highlighter-rouge">World</code>, we want to pick the value from the config file. Play provides a configuration API which loads configs in the background and we can request a dependency to access this API, change the controller declaration so the code is as below:</p>
 
-<p>In the controller, instead of hardcoding <code>World</code>, we want to pick the value from the config file. Play provides a configuration API which loads configs in the background and we can request a dependency to access this API, change the controller declaration so the code is as below:</p>
-
-<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span></span><span class="k">package</span> <span class="nn">controllers</span>
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">package</span> <span class="nn">controllers</span>
 
 <span class="k">import</span> <span class="nn">javax.inject._</span>
 <span class="k">import</span> <span class="nn">play.api._</span>
@@ -300,21 +297,21 @@ mkdir contollers <span class="o">&amp;&amp;</span> <span class="nb">cd</span> co
 
 <span class="nd">@Singleton</span>
 <span class="k">class</span> <span class="nc">HomeController</span> <span class="nd">@Inject</span><span class="o">()(</span><span class="n">config</span><span class="k">:</span> <span class="kt">Configuration</span><span class="o">,</span> <span class="n">cc</span><span class="k">:</span> <span class="kt">ControllerComponents</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">AbstractController</span><span class="o">(</span><span class="n">cc</span><span class="o">)</span> <span class="o">{</span>
-  <span class="k">def</span> <span class="n">index</span><span class="o">()</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
-    <span class="k">val</span> <span class="n">world</span> <span class="k">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="s">&quot;world&quot;</span><span class="o">)</span>
-    <span class="nc">Ok</span><span class="o">(</span><span class="s">s&quot;Hello </span><span class="si">$world</span><span class="s">!&quot;</span><span class="o">)</span>
+  <span class="k">def</span> <span class="nf">index</span><span class="o">()</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="k">val</span> <span class="nv">world</span> <span class="k">=</span> <span class="nv">config</span><span class="o">.</span><span class="py">get</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="s">"world"</span><span class="o">)</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="n">s</span><span class="s">"Hello $world!"</span><span class="o">)</span>
   <span class="o">}</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>Notice we have injected <code>Configuration</code> API. Reload the browser the you should see <code>Hello Earth!</code></p>
+<p>Notice we have injected <code class="language-plaintext highlighter-rouge">Configuration</code> API. Reload the browser the you should see <code class="language-plaintext highlighter-rouge">Hello Earth!</code></p>
 
-<p>You can read more about the <a href="https://www.playframework.com/documentation/2.7.x/ScalaConfig">configuration API</a> and also the <a href="https://www.playframework.com/documentation/2.7.x/ConfigFile">syntax</a> of the <code>application.conf</code> config file.</p>
+<p>You can read more about the <a href="https://www.playframework.com/documentation/2.7.x/ScalaConfig">configuration API</a> and also the <a href="https://www.playframework.com/documentation/2.7.x/ConfigFile">syntax</a> of the <code class="language-plaintext highlighter-rouge">application.conf</code> config file.</p>
 
-<h2>Continuing developing from intelliJ</h2>
+<h2 id="continuing-developing-from-intellij">Continuing developing from intelliJ</h2>
 
 <p>Since we have setup a basic structure of a play/scala application hopefully with much understanding, most of which we have done from the console, it is now time to take it to the next level. This will be easier with an IDE such as intelliJ.</p>
 
-<p>Since from an earlier section, we already talked about setting up intelliJ, all you have to do now is to import the project(<code>File</code> -&gt; <code>Open project</code> then navigate to root directory) into intelliJ. If you create the project from intelliJ, you may run into dependency resolution <a href="https://stackoverflow.com/questions/27063562/cannot-resolve-symbol-routes">issues</a> and more <a href="https://stackoverflow.com/questions/21577573/intellij-idea-can-not-resolve-symbol-with-play-framework/47632950">issues</a>.</p>
+<p>Since from an earlier section, we already talked about setting up intelliJ, all you have to do now is to import the project(<code class="language-plaintext highlighter-rouge">File</code> -&gt; <code class="language-plaintext highlighter-rouge">Open project</code> then navigate to root directory) into intelliJ. If you create the project from intelliJ, you may run into dependency resolution <a href="https://stackoverflow.com/questions/27063562/cannot-resolve-symbol-routes">issues</a> and more <a href="https://stackoverflow.com/questions/21577573/intellij-idea-can-not-resolve-symbol-with-play-framework/47632950">issues</a>.</p>
 
 <p>I will write more articles that build on this minimal application introducing new concepts to help us gain more mastery with the Play/Scala stack.</p>
 
@@ -323,6 +320,15 @@ mkdir contollers <span class="o">&amp;&amp;</span> <span class="nb">cd</span> co
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2020/04/03/play-framework-primer-scaffolding/">
+            Play Framework Primer - Scaffolding
+            <small>03 Apr 2020</small>
+          </a>
+        </h3>
+      </li>
     
       <li>
         <h3>
@@ -338,15 +344,6 @@ mkdir contollers <span class="o">&amp;&amp;</span> <span class="nb">cd</span> co
           <a href="/2019/02/18/a-simple-guide-for-java-util-date/">
             A Simple Guide for Java.util.Date
             <small>18 Feb 2019</small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/2017/02/07/java-garbage-collector-and-reference-objects/">
-            Java Garbage Collector and Reference Objects
-            <small>07 Feb 2017</small>
           </a>
         </h3>
       </li>

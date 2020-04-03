@@ -117,12 +117,14 @@
         
       
         
+      
+        
           
         
       
       <span class="sidebar-nav-item">Currently v1.0.0</span>
     </nav>
-    <p>&copy; 2019. All rights reserved.</p>
+    <p>&copy; 2020. All rights reserved.</p>
   </div>
 </div>
 
@@ -131,279 +133,283 @@
       <div class="post">
   <h1 class="post-title">Manipulating Dates with Calendar Class</h1>
   <span class="post-date">20 Feb 2019</span>
-  <p>In this article, we will explore <code>java.util.Calendar</code> class. </p>
+  <p>In this article, we will explore <code class="language-plaintext highlighter-rouge">java.util.Calendar</code> class.</p>
 
-<p>&lt;!--more--&gt;</p>
+<p><!--more--></p>
 
-<p>In a <a href="/2019/02/18/a-simple-guide-for-java-util-date">previous article</a>, we discussed <code>java.util.Date</code> class but its failures around internationalisation concepts like timezone awareness were evident. </p>
+<p>In a <a href="/2019/02/18/a-simple-guide-for-java-util-date">previous article</a>, we discussed <code class="language-plaintext highlighter-rouge">java.util.Date</code> class but its failures around internationalisation concepts like timezone awareness were evident.</p>
 
-<p>We were also not able to compute future and previous dates from a <code>Date</code> object just like we could not decompose a date into its parts(year, day, month, hour etc) easily.</p>
+<p>We were also not able to compute future and previous dates from a <code class="language-plaintext highlighter-rouge">Date</code> object just like we could not decompose a date into its parts(year, day, month, hour etc) easily.</p>
 
-<p>We will now see how to achieve all this with the <code>Calendar</code> class.</p>
+<p>We will now see how to achieve all this with the <code class="language-plaintext highlighter-rouge">Calendar</code> class.</p>
 
-<h2>Calendar Creation</h2>
+<h2 id="calendar-creation">Calendar Creation</h2>
+<p>There are 3 ways of constructing a <code class="language-plaintext highlighter-rouge">Calendar</code> class object. We use the static <code class="language-plaintext highlighter-rouge">getInstance</code> calendar method instead of the <code class="language-plaintext highlighter-rouge">new</code> key word. The <code class="language-plaintext highlighter-rouge">Calendar</code> class is timezone and locale aware and only assumes these settings to a default when we don’t specify them:</p>
 
-<p>There are 3 ways of constructing a <code>Calendar</code> class object. We use the static <code>getInstance</code> calendar method instead of the <code>new</code> key word. The <code>Calendar</code> class is timezone and locale aware and only assumes these settings to a default when we don&#39;t specify them:</p>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nc">Calendar</span> <span class="n">defaultCal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+<span class="nc">Calendar</span> <span class="n">tzCal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="nc">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">"GMT"</span><span class="o">));</span>
+<span class="nc">Calendar</span> <span class="n">tzAndLocaleCal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="nc">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">"GMT"</span><span class="o">),</span> <span class="nc">Locale</span><span class="o">.</span><span class="na">UK</span><span class="o">);</span></code></pre></figure>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Calendar</span> <span class="n">defaultCal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
-<span class="n">Calendar</span> <span class="n">tzCal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">&quot;GMT&quot;</span><span class="o">));</span>
-<span class="n">Calendar</span> <span class="n">tzAndLocaleCal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">&quot;GMT&quot;</span><span class="o">),</span> <span class="n">Locale</span><span class="o">.</span><span class="na">UK</span><span class="o">);</span></code></pre></figure>
+<p>As you can see from the snippet above, <code class="language-plaintext highlighter-rouge">defaultCal</code> will default to the timezone and locale settings in the JVM. A second variation of <code class="language-plaintext highlighter-rouge">getInstance</code> allows us to specify a timezone and the third, both timezone and locale.</p>
 
-<p>As you can see from the snippet above, <code>defaultCal</code> will default to the timezone and locale settings in the JVM. A second variation of <code>getInstance</code> allows us to specify a timezone and the third, both timezone and locale.</p>
+<p>The 2 concepts of timezone and locale are what enables internationalization in the <code class="language-plaintext highlighter-rouge">Calendar</code> class. When timezone is set, all operations on the class and all internal values reflect the time in that timezone, in the above case, GMT.</p>
 
-<p>The 2 concepts of timezone and locale are what enables internationalization in the <code>Calendar</code> class. When timezone is set, all operations on the class and all internal values reflect the time in that timezone, in the above case, GMT. </p>
+<p>Locale is used to customize the <code class="language-plaintext highlighter-rouge">Calendar</code> class to a specific language and cultural setting, this is mostly for presentational purposes as is the case where you need to retrieve date and time values for printing. Setting the local to <code class="language-plaintext highlighter-rouge">Locale.France</code> for instance would return month of January as Janvier. We will see more examples in the internationalization section.</p>
 
-<p>Locale is used to customize the <code>Calendar</code> class to a specific language and cultural setting, this is mostly for presentational purposes as is the case where you need to retrieve date and time values for printing. Setting the local to <code>Locale.France</code> for instance would return month of January as Janvier. We will see more examples in the internationalization section.</p>
+<h2 id="conversion-to-and-from-date">Conversion to and from Date</h2>
+<p>We can convert <code class="language-plaintext highlighter-rouge">Date</code> instances to <code class="language-plaintext highlighter-rouge">Calendar</code> and vice versae. For easy testing, let’s assume we are starting from the fixed time we had in the previous article, the unix epoch time <code class="language-plaintext highlighter-rouge">1550487961686L</code> corresponds to <code class="language-plaintext highlighter-rouge">Mon Feb 18 14:06:01 EAT 2019</code> in my timezone.</p>
 
-<h2>Conversion to and from Date</h2>
+<p><code class="language-plaintext highlighter-rouge">Date</code> is converted to <code class="language-plaintext highlighter-rouge">Calendar</code> using the <code class="language-plaintext highlighter-rouge">setTime</code> method:</p>
 
-<p>We can convert <code>Date</code> instances to <code>Calendar</code> and vice versae. For easy testing, let&#39;s assume we are starting from the fixed time we had in the previous article, the unix epoch time <code>1550487961686L</code> corresponds to <code>Mon Feb 18 14:06:01 EAT 2019</code> in my timezone.</p>
-
-<p><code>Date</code> is converted to <code>Calendar</code> using the <code>setTime</code> method: </p>
-
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Date</span> <span class="n">date</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
-<span class="n">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nc">Date</span> <span class="n">date</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+<span class="nc">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
 <span class="n">cal</span><span class="o">.</span><span class="na">setTime</span><span class="o">(</span><span class="n">date</span><span class="o">);</span></code></pre></figure>
 
-<p>We can use <code>getTime</code> to convert it back to <code>Date</code>:</p>
+<p>We can use <code class="language-plaintext highlighter-rouge">getTime</code> to convert it back to <code class="language-plaintext highlighter-rouge">Date</code>:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Date</span> <span class="n">fromCal</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">();</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nc">Date</span> <span class="n">fromCal</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">();</span></code></pre></figure>
 
-<p>It&#39;s also possible to convert the unix time directly to <code>Calendar</code> and back to unix time:</p>
+<p>It’s also possible to convert the unix time directly to <code class="language-plaintext highlighter-rouge">Calendar</code> and back to unix time:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nc">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
 <span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
 <span class="c1">//back</span>
 <span class="kt">long</span> <span class="n">unixTime</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="na">getTimeInMillis</span><span class="o">();</span></code></pre></figure>
 
-<h2>Calendar Time Comparison</h2>
+<h2 id="calendar-time-comparison">Calendar Time Comparison</h2>
+<p>Just like <code class="language-plaintext highlighter-rouge">Date</code>, we can use the <code class="language-plaintext highlighter-rouge">compareTo</code> instance method of <code class="language-plaintext highlighter-rouge">Calendar</code> class to compare one date to the other which is passed as an argument to <code class="language-plaintext highlighter-rouge">compareTo</code>. If the date on which <code class="language-plaintext highlighter-rouge">compareTo</code> is called is earlier(less) than the argument date, the result is -1, if they are the same instance in time, we get a 0 and a 1 if the argument date is less:</p>
 
-<p>Just like <code>Date</code>, we can use the <code>compareTo</code> instance method of <code>Calendar</code> class to compare one date to the other which is passed as an argument to <code>compareTo</code>. If the date on which <code>compareTo</code> is called is earlier(less) than the argument date, the result is -1, if they are the same instance in time, we get a 0 and a 1 if the argument date is less:</p>
-
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_compareCalendarDates</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Calendar</span> <span class="n">currCal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
-    <span class="n">Calendar</span> <span class="n">fixedCal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+    <span class="nc">Calendar</span> <span class="n">currCal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+    <span class="nc">Calendar</span> <span class="n">fixedCal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
     <span class="n">fixedCal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
 
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">currCal</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">fixedCal</span><span class="o">),</span> <span class="mi">1</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="n">currCal</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">fixedCal</span><span class="o">),</span> <span class="mi">1</span><span class="o">);</span>
     <span class="n">assertEquals</span><span class="o">(</span><span class="n">fixedCal</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">currCal</span><span class="o">),</span> <span class="o">-</span><span class="mi">1</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">fixedCal</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">fixedCal</span><span class="o">),</span> <span class="mi">0</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="n">fixedCal</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">fixedCal</span><span class="o">),</span> <span class="mi">0</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>We also have the instance methods <code>before</code> and <code>after</code>. They are definitely much more readable and intuitive than <code>compareTo</code>. We call each of these on a <code>Calendar</code> object and pass the second object to be compared as an argument. The results are boolean:</p>
+<p>We also have the instance methods <code class="language-plaintext highlighter-rouge">before</code> and <code class="language-plaintext highlighter-rouge">after</code>. They are definitely much more readable and intuitive than <code class="language-plaintext highlighter-rouge">compareTo</code>. We call each of these on a <code class="language-plaintext highlighter-rouge">Calendar</code> object and pass the second object to be compared as an argument. The results are boolean:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_compareCalendarDates</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Calendar</span> <span class="n">currCal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
-    <span class="n">Calendar</span> <span class="n">fixedCal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
-    <span class="n">fixedCal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
-        
-    <span class="n">assertFalse</span><span class="o">(</span><span class="n">currCal</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">fixedCal</span><span class="o">));</span>
-    <span class="n">assertTrue</span><span class="o">(</span><span class="n">fixedCal</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">currCal</span><span class="o">));</span>
+	<span class="nc">Calendar</span> <span class="n">currCal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+	<span class="nc">Calendar</span> <span class="n">fixedCal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+	<span class="n">fixedCal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+		
+	<span class="n">assertFalse</span><span class="o">(</span><span class="n">currCal</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">fixedCal</span><span class="o">));</span>
+	<span class="n">assertTrue</span><span class="o">(</span><span class="n">fixedCal</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">currCal</span><span class="o">));</span>
 <span class="o">}</span></code></pre></figure>
 
-<h2>Date decomposition With Calendar Class</h2>
+<h2 id="date-decomposition-with-calendar-class">Date decomposition With Calendar Class</h2>
 
-<p>One of the short comings of <code>Date</code> class is that we can&#39;t easily retrieve date parts e.g. hour, day, month from the object. <code>Calendar</code> class makes this easy with static integer identifiers for each date part e.g. <code>Calendar.DAY_OF_WEEK</code>, <code>Calendar.MONTH</code> etc in conjunction with the <code>get</code> method on a calendar object.</p>
+<p>One of the short comings of <code class="language-plaintext highlighter-rouge">Date</code> class is that we can’t easily retrieve date parts e.g. hour, day, month from the object. <code class="language-plaintext highlighter-rouge">Calendar</code> class makes this easy with static integer identifiers for each date part e.g. <code class="language-plaintext highlighter-rouge">Calendar.DAY_OF_WEEK</code>, <code class="language-plaintext highlighter-rouge">Calendar.MONTH</code> etc in conjunction with the <code class="language-plaintext highlighter-rouge">get</code> method on a calendar object.</p>
 
-<p>Let&#39;s decompose our earlier fixed date:</p>
+<p>Let’s decompose our earlier fixed date:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_dateTimeDecomposition</span><span class="o">()</span> <span class="o">{</span>
-    <span class="c1">//1550487961686L ie  Mon Feb 18 14:06:01 EAT 2019</span>
-    <span class="n">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
-    <span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">18</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">14</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">HOUR</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">6</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MINUTE</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">SECOND</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">2019</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">YEAR</span><span class="o">));</span>
+	<span class="c1">//1550487961686L ie  Mon Feb 18 14:06:01 EAT 2019</span>
+	<span class="nc">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">18</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">14</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">HOUR</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">6</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MINUTE</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">SECOND</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">2019</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">YEAR</span><span class="o">));</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>As you can see, the values returned from the <code>get</code> calls are the integer representations of each date part. Notice that days of the week start from Sunday by default as opposed to Monday, hence2 for Monday. </p>
+<p>As you can see, the values returned from the <code class="language-plaintext highlighter-rouge">get</code> calls are the integer representations of each date part. Notice that days of the week start from Sunday by default as opposed to Monday, hence2 for Monday.</p>
 
-<p>Also notice that months use a zero-based indexing system i.e. January is <code>0</code> and February is <code>1</code>.
-Since we touched a bit on internationalization, we can use the <code>getTimeZone()</code> method to see some interesting things:</p>
+<p>Also notice that months use a zero-based indexing system i.e. January is <code class="language-plaintext highlighter-rouge">0</code> and February is <code class="language-plaintext highlighter-rouge">1</code>.
+Since we touched a bit on internationalization, we can use the <code class="language-plaintext highlighter-rouge">getTimeZone()</code> method to see some interesting things:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_dateTimeDecomposition</span><span class="o">()</span> <span class="o">{</span>
-    <span class="c1">//1550487961686L ie  Mon Feb 18 14:06:01 EAT 2019</span>
-    <span class="n">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
-    <span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+	<span class="c1">//1550487961686L ie  Mon Feb 18 14:06:01 EAT 2019</span>
+	<span class="nc">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
 
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Africa/Kampala&quot;</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getID</span><span class="o">());</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Eastern African Time&quot;</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getDisplayName</span><span class="o">());</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Heure d&#39;Afrique de l&#39;Est&quot;</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getDisplayName</span><span class="o">(</span><span class="n">Locale</span><span class="o">.</span><span class="na">FRANCE</span><span class="o">)</span> <span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Africa/Kampala"</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getID</span><span class="o">());</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Eastern African Time"</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getDisplayName</span><span class="o">());</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Heure d'Afrique de l'Est"</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getDisplayName</span><span class="o">(</span><span class="nc">Locale</span><span class="o">.</span><span class="na">FRANCE</span><span class="o">)</span> <span class="o">);</span>
 
-    <span class="n">cal</span><span class="o">.</span><span class="na">setTimeZone</span><span class="o">(</span><span class="n">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">&quot;Asia/Dubai&quot;</span><span class="o">));</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">setTimeZone</span><span class="o">(</span><span class="nc">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">"Asia/Dubai"</span><span class="o">));</span>
 
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Asia/Dubai&quot;</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getID</span><span class="o">());</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Gulf Standard Time&quot;</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getDisplayName</span><span class="o">());</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Heure normale du Golfe&quot;</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getDisplayName</span><span class="o">(</span><span class="n">Locale</span><span class="o">.</span><span class="na">FRANCE</span><span class="o">)</span> <span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Asia/Dubai"</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getID</span><span class="o">());</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Gulf Standard Time"</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getDisplayName</span><span class="o">());</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Heure normale du Golfe"</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">().</span><span class="na">getDisplayName</span><span class="o">(</span><span class="nc">Locale</span><span class="o">.</span><span class="na">FRANCE</span><span class="o">)</span> <span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>We can see that my timezone has defaulted to <code>Africa/Kampala</code> which is my current city, this is because we did not specify another. </p>
+<p>We can see that my timezone has defaulted to <code class="language-plaintext highlighter-rouge">Africa/Kampala</code> which is my current city, this is because we did not specify another.</p>
 
-<p>The timezone object has important attributes e.g ID which is denotes region/continent and city, it could have been <code>Europe/Paris</code>. </p>
+<p>The timezone object has important attributes e.g ID which is denotes region/continent and city, it could have been <code class="language-plaintext highlighter-rouge">Europe/Paris</code>.</p>
 
 <p>There is also a display name which is more descriptive of the timezone.</p>
 
-<p>Notice how <code>getDisplayName</code> takes a <code>Locale</code> argument so that it knows how best to describe the timezone. When we specified <code>Locale.FRANCE</code> it defaulted to French. Similarly, we played around with Dubai time a little just so the point is clear.</p>
+<p>Notice how <code class="language-plaintext highlighter-rouge">getDisplayName</code> takes a <code class="language-plaintext highlighter-rouge">Locale</code> argument so that it knows how best to describe the timezone. When we specified <code class="language-plaintext highlighter-rouge">Locale.FRANCE</code> it defaulted to French. Similarly, we played around with Dubai time a little just so the point is clear.</p>
 
-<p>Just as there is a <code>get</code> method on <code>Calendar</code> class objects, there is also a <code>set</code> method in case we want to specify values for the date parts. Let&#39;s use the gulf time for the fun of it:</p>
+<p>Just as there is a <code class="language-plaintext highlighter-rouge">get</code> method on <code class="language-plaintext highlighter-rouge">Calendar</code> class objects, there is also a <code class="language-plaintext highlighter-rouge">set</code> method in case we want to specify values for the date parts. Let’s use the gulf time for the fun of it:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_dateTimeDecomposition</span><span class="o">()</span> <span class="o">{</span>
-    <span class="c1">//1550487961686L ie  Mon Feb 18 14:06:01 EAT 2019</span>
-    <span class="n">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
-    <span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
-    <span class="n">cal</span><span class="o">.</span><span class="na">setTimeZone</span><span class="o">(</span><span class="n">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">&quot;Asia/Dubai&quot;</span><span class="o">));</span>
+	<span class="c1">//1550487961686L ie  Mon Feb 18 14:06:01 EAT 2019</span>
+	<span class="nc">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">setTimeZone</span><span class="o">(</span><span class="nc">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">"Asia/Dubai"</span><span class="o">));</span>
 
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">15</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span>
-    <span class="n">cal</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="mi">3</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Tue Feb 19 14:06:01 EAT 2019&quot;</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">15</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="mi">3</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Tue Feb 19 14:06:01 EAT 2019"</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
 
-    <span class="n">cal</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="mi">2018</span><span class="o">,</span> <span class="mi">11</span><span class="o">,</span> <span class="mi">31</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Mon Dec 31 14:06:01 EAT 2018&quot;</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="mi">2018</span><span class="o">,</span> <span class="mi">11</span><span class="o">,</span> <span class="mi">31</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Mon Dec 31 14:06:01 EAT 2018"</span><span class="o">,</span><span class="n">cal</span><span class="o">.</span><span class="na">getTime</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>Dubai is 1 hour ahead of Kampala, hence 14hrs now appears as 15hrs. Notice how we can use the same static identifiers for date parts(<code>Calendar.DAY_OF_WEEK</code> for day of week) to set their values. </p>
+<p>Dubai is 1 hour ahead of Kampala, hence 14hrs now appears as 15hrs. Notice how we can use the same static identifiers for date parts(<code class="language-plaintext highlighter-rouge">Calendar.DAY_OF_WEEK</code> for day of week) to set their values.</p>
 
-<p>In the example above, we have set day of week to 3 which corresponds to tuesday, remember day 1 is Sunday. </p>
+<p>In the example above, we have set day of week to 3 which corresponds to tuesday, remember day 1 is Sunday.</p>
 
-<p>Best practice is to use the built in static identifiers for named parts e.g. instead of writing <code>1</code> for sunday, use <code>Calendar.SUNDAY</code> and instead of using <code>3</code> for <code>April</code>, prefer <code>Calendar.APRIL</code>.</p>
+<p>Best practice is to use the built in static identifiers for named parts e.g. instead of writing <code class="language-plaintext highlighter-rouge">1</code> for sunday, use <code class="language-plaintext highlighter-rouge">Calendar.SUNDAY</code> and instead of using <code class="language-plaintext highlighter-rouge">3</code> for <code class="language-plaintext highlighter-rouge">April</code>, prefer <code class="language-plaintext highlighter-rouge">Calendar.APRIL</code>.</p>
 
-<p>There is also another overloaded <code>set</code> method that takes different, defined parameters at ago. In the examle above, we are able to set year, month and day which backdates our date to 31st December, 2018.</p>
+<p>There is also another overloaded <code class="language-plaintext highlighter-rouge">set</code> method that takes different, defined parameters at ago. In the examle above, we are able to set year, month and day which backdates our date to 31st December, 2018.</p>
 
-<p>You can check more options by playing around with <code>Calendar</code> class. Also remember <code>getTime</code> returns a <code>Date</code> object, which we explored in the previous article.</p>
+<p>You can check more options by playing around with <code class="language-plaintext highlighter-rouge">Calendar</code> class. Also remember <code class="language-plaintext highlighter-rouge">getTime</code> returns a <code class="language-plaintext highlighter-rouge">Date</code> object, which we explored in the previous article.</p>
 
-<h2>Adding and Subtracting Dates</h2>
-
-<p>With <code>Calendar</code> class, we can add days to the current day and get another date in the future or subtract to reset to a date in history. </p>
+<h2 id="adding-and-subtracting-dates">Adding and Subtracting Dates</h2>
+<p>With <code class="language-plaintext highlighter-rouge">Calendar</code> class, we can add days to the current day and get another date in the future or subtract to reset to a date in history.</p>
 
 <p>The same pattern works for months, years, hours and all other components of the date. There are numerous applications of this.</p>
 
 <p>This is great whenever you need to set, say an expiry date on a product in your application that you need to compute from the manufacture date.</p>
 
-<p>Another example could be when you know someone&#39;s birthday and would want to compute their exact date of birth, knowing the age... just subtract that from the current year.</p>
+<p>Another example could be when you know someone’s birthday and would want to compute their exact date of birth, knowing the age… just subtract that from the current year.</p>
 
-<p>Let&#39;s get on with it:</p>
+<p>Let’s get on with it:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_dateAddAndSubtract</span><span class="o">()</span> <span class="o">{</span>
-    <span class="c1">//1550487961686L ie  Mon Feb 18 14:06:01 EAT 2019</span>
+	<span class="c1">//1550487961686L ie  Mon Feb 18 14:06:01 EAT 2019</span>
 
-    <span class="n">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
-    <span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
-    
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MONDAY</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">FEBRUARY</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">18</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">14</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span>
-        
-    <span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">19</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">));</span>
-    <span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">);</span>
-        
-    <span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MARCH</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">));</span>
-    <span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">);</span>
+	<span class="nc">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+	
+	<span class="n">assertEquals</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONDAY</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">FEBRUARY</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">18</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">14</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span>
+		
+	<span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">19</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">));</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">);</span>
+		
+	<span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MARCH</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">));</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">);</span>
 
-    <span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">TUESDAY</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">));</span>
-    <span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">);</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">TUESDAY</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">));</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">);</span>
 
-    <span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">,</span> <span class="mi">24</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">14</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span>
-    <span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">,</span> <span class="o">-</span><span class="mi">24</span><span class="o">);</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">,</span> <span class="mi">24</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">14</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">,</span> <span class="o">-</span><span class="mi">24</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>Notice how we are using <code>add</code> to advance <code>18th</code> to <code>19th</code>, <code>Feb</code> to <code>March</code>, <code>Monday</code> to <code>Tuesday</code> etc. Notice also there is no <code>subtract</code> method but passing a negative offset to <code>add</code> makes it a subtraction. We keep using that to reverse the effect of the earlier additions. Which brings us to another caveat.</p>
+<p>Notice how we are using <code class="language-plaintext highlighter-rouge">add</code> to advance <code class="language-plaintext highlighter-rouge">18th</code> to <code class="language-plaintext highlighter-rouge">19th</code>, <code class="language-plaintext highlighter-rouge">Feb</code> to <code class="language-plaintext highlighter-rouge">March</code>, <code class="language-plaintext highlighter-rouge">Monday</code> to <code class="language-plaintext highlighter-rouge">Tuesday</code> etc. Notice also there is no <code class="language-plaintext highlighter-rouge">subtract</code> method but passing a negative offset to <code class="language-plaintext highlighter-rouge">add</code> makes it a subtraction. We keep using that to reverse the effect of the earlier additions. Which brings us to another caveat.</p>
 
-<p>Whenever you <code>add</code> a value to part of a date, the <code>Calendar</code> object may recompute everything to reflect this. See the example below:</p>
+<p>Whenever you <code class="language-plaintext highlighter-rouge">add</code> a value to part of a date, the <code class="language-plaintext highlighter-rouge">Calendar</code> object may recompute everything to reflect this. See the example below:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_dateAddAndSubtract2</span><span class="o">()</span> <span class="o">{</span>
 <span class="c1">//1550487961686L ie  Mon Feb 18 14:06:01 EAT 2019</span>
 
-    <span class="n">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
-    <span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MONDAY</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">FEBRUARY</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">18</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">14</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span>
-        
-    <span class="n">cal</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">,</span> <span class="mi">28</span><span class="o">);</span>
-        
-    <span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">,</span> <span class="mi">24</span><span class="o">);</span>
-    
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">14</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span> 
-    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MARCH</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">));</span>
+	<span class="nc">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+	<span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONDAY</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">FEBRUARY</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">18</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">14</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span>
+		
+	<span class="n">cal</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">,</span> <span class="mi">28</span><span class="o">);</span>
+		
+	<span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">,</span> <span class="mi">24</span><span class="o">);</span>
+	
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">14</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">HOUR_OF_DAY</span><span class="o">));</span>	
+	<span class="n">assertEquals</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MARCH</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">));</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>Notice that our month is <code>Feb</code> and we have chosen to set it&#39;s day to <code>28th</code> before adding 1 day to it. This results in changes in different components. The hour of the day is still 14 hrs since we moved by a whole day, but the day of the months is now <code>1st</code>, know why? because <code>28</code> is the last day of <code>Feb</code>, so we are moved to the next possible day i.e. <code>1st March</code>, we have also confirmed by testing the month which is now <code>March</code>.</p>
+<p>Notice that our month is <code class="language-plaintext highlighter-rouge">Feb</code> and we have chosen to set it’s day to <code class="language-plaintext highlighter-rouge">28th</code> before adding 1 day to it. This results in changes in different components. The hour of the day is still 14 hrs since we moved by a whole day, but the day of the months is now <code class="language-plaintext highlighter-rouge">1st</code>, know why? because <code class="language-plaintext highlighter-rouge">28</code> is the last day of <code class="language-plaintext highlighter-rouge">Feb</code>, so we are moved to the next possible day i.e. <code class="language-plaintext highlighter-rouge">1st March</code>, we have also confirmed by testing the month which is now <code class="language-plaintext highlighter-rouge">March</code>.</p>
 
-<h2>Internationalization</h2>
-
+<h2 id="internationalization">Internationalization</h2>
 <p>If you are playing with your application on your machine with no hope of deploying it to different countries, then you can ignore this section. However, any noteworthy developer atleast knows not to ignore this.</p>
 
-<p>It&#39;s important to explicitly define the timezone your application is expected to run in and also localize the presentations to suit the main language spoken in that timezone. There are also conventions for display of dates, some use <code>/</code> delimiter, others use <code>-</code> and others use <code>.</code>.</p>
+<p>It’s important to explicitly define the timezone your application is expected to run in and also localize the presentations to suit the main language spoken in that timezone. There are also conventions for display of dates, some use <code class="language-plaintext highlighter-rouge">/</code> delimiter, others use <code class="language-plaintext highlighter-rouge">-</code> and others use <code class="language-plaintext highlighter-rouge">.</code>.</p>
 
 <p>If your application is going to run internally in a French, German or Chinese firm, why would you display the month name in English? Probably the JVM would default to the detected locale and timezone but what if the server is in the US, in a different timezone and locale? So be explicit about this.</p>
 
-<p>One thing some of us may probably not know yet is that <code>Sunday</code> is not the first day of the week in all locale&#39;s, neither is <code>Monday</code>:</p>
+<p>One thing some of us may probably not know yet is that <code class="language-plaintext highlighter-rouge">Sunday</code> is not the first day of the week in all locale’s, neither is <code class="language-plaintext highlighter-rouge">Monday</code>:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_internationalization</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Calendar</span> <span class="n">calBasic</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>   
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">SUNDAY</span><span class="o">,</span> <span class="n">calBasic</span><span class="o">.</span><span class="na">getFirstDayOfWeek</span><span class="o">());</span>
+	<span class="nc">Calendar</span> <span class="n">calBasic</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>	
+	<span class="n">assertEquals</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">SUNDAY</span><span class="o">,</span> <span class="n">calBasic</span><span class="o">.</span><span class="na">getFirstDayOfWeek</span><span class="o">());</span>
 
-    <span class="n">Calendar</span> <span class="n">calTimezone</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">&quot;GMT&quot;</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">SUNDAY</span><span class="o">,</span> <span class="n">calTimezone</span><span class="o">.</span><span class="na">getFirstDayOfWeek</span><span class="o">());</span>
+	<span class="nc">Calendar</span> <span class="n">calTimezone</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="nc">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">"GMT"</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">SUNDAY</span><span class="o">,</span> <span class="n">calTimezone</span><span class="o">.</span><span class="na">getFirstDayOfWeek</span><span class="o">());</span>
 
-    <span class="n">Calendar</span> <span class="n">calLocale</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">Locale</span><span class="o">.</span><span class="na">FRANCE</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MONDAY</span><span class="o">,</span> <span class="n">calLocale</span><span class="o">.</span><span class="na">getFirstDayOfWeek</span><span class="o">());</span>
+	<span class="nc">Calendar</span> <span class="n">calLocale</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="nc">Locale</span><span class="o">.</span><span class="na">FRANCE</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONDAY</span><span class="o">,</span> <span class="n">calLocale</span><span class="o">.</span><span class="na">getFirstDayOfWeek</span><span class="o">());</span>
 
-    <span class="n">Calendar</span> <span class="n">calLocaleAndTimezone</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">&quot;GMT&quot;</span><span class="o">),</span><span class="n">Locale</span><span class="o">.</span><span class="na">FRANCE</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">MONDAY</span><span class="o">,</span> <span class="n">calLocaleAndTimezone</span><span class="o">.</span><span class="na">getFirstDayOfWeek</span><span class="o">());</span>    
+	<span class="nc">Calendar</span> <span class="n">calLocaleAndTimezone</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="nc">TimeZone</span><span class="o">.</span><span class="na">getTimeZone</span><span class="o">(</span><span class="s">"GMT"</span><span class="o">),</span><span class="nc">Locale</span><span class="o">.</span><span class="na">FRANCE</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONDAY</span><span class="o">,</span> <span class="n">calLocaleAndTimezone</span><span class="o">.</span><span class="na">getFirstDayOfWeek</span><span class="o">());</span>	
 <span class="o">}</span></code></pre></figure>
 
-<p>My timezone is <code>EAT</code> so <code>calBasic</code> defaults to that and <code>Sunday</code> is apparently the first day of the week in my side of the world, so if your application made assumptions, it could easily encounter subtle bugs that are hard to detect. Assume your server is in the UK (GMT) and it&#39;s processing weekly salaries for clients in France. </p>
+<p>My timezone is <code class="language-plaintext highlighter-rouge">EAT</code> so <code class="language-plaintext highlighter-rouge">calBasic</code> defaults to that and <code class="language-plaintext highlighter-rouge">Sunday</code> is apparently the first day of the week in my side of the world, so if your application made assumptions, it could easily encounter subtle bugs that are hard to detect. Assume your server is in the UK (GMT) and it’s processing weekly salaries for clients in France.</p>
 
-<p>Salaries should appear on first day of the week, not before and not after, but your application knows Sunday is the first day and not Monday as is known by your French client, I don&#39;t think he would smile and you&#39;d have a hard time figuring this out because, well <code>it runs well on my end</code> you say.</p>
+<p>Salaries should appear on first day of the week, not before and not after, but your application knows Sunday is the first day and not Monday as is known by your French client, I don’t think he would smile and you’d have a hard time figuring this out because, well <code class="language-plaintext highlighter-rouge">it runs well on my end</code> you say.</p>
 
-<p>Say, you are also printing financial reports for clients in France, Germany and China...after parsing your date, you need to convert it to human readable form, without this awareness, you&#39;d either need to write different logic for each country to hack around the displays or you&#39;d encounter several change requests from your clients after failed user acceptance tests.</p>
+<p>Say, you are also printing financial reports for clients in France, Germany and China…after parsing your date, you need to convert it to human readable form, without this awareness, you’d either need to write different logic for each country to hack around the displays or you’d encounter several change requests from your clients after failed user acceptance tests.</p>
 
-<p>Calendar has a <code>getDisplayName</code> method to which we can supply the named date component whose name we want e.g. month and day or week, a style specifier and locale:</p>
+<p>Calendar has a <code class="language-plaintext highlighter-rouge">getDisplayName</code> method to which we can supply the named date component whose name we want e.g. month and day or week, a style specifier and locale:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Test</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_internationalization</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>    
-    <span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Monday&quot;</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getDisplayName</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">LONG</span><span class="o">,</span> <span class="n">Locale</span><span class="o">.</span><span class="na">UK</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;lundi&quot;</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getDisplayName</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">LONG</span><span class="o">,</span> <span class="n">Locale</span><span class="o">.</span><span class="na">FRANCE</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;Montag&quot;</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getDisplayName</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">LONG</span><span class="o">,</span> <span class="n">Locale</span><span class="o">.</span><span class="na">GERMAN</span><span class="o">));</span>
-    <span class="n">assertEquals</span><span class="o">(</span><span class="s">&quot;星期一&quot;</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getDisplayName</span><span class="o">(</span><span class="n">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="n">Calendar</span><span class="o">.</span><span class="na">LONG</span><span class="o">,</span> <span class="n">Locale</span><span class="o">.</span><span class="na">CHINA</span><span class="o">));</span> 
+	<span class="nc">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>	
+	<span class="n">cal</span><span class="o">.</span><span class="na">setTimeInMillis</span><span class="o">(</span><span class="mi">1550487961686L</span><span class="o">);</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Monday"</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getDisplayName</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">LONG</span><span class="o">,</span> <span class="nc">Locale</span><span class="o">.</span><span class="na">UK</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"lundi"</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getDisplayName</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">LONG</span><span class="o">,</span> <span class="nc">Locale</span><span class="o">.</span><span class="na">FRANCE</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Montag"</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getDisplayName</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">LONG</span><span class="o">,</span> <span class="nc">Locale</span><span class="o">.</span><span class="na">GERMAN</span><span class="o">));</span>
+	<span class="n">assertEquals</span><span class="o">(</span><span class="s">"星期一"</span><span class="o">,</span> <span class="n">cal</span><span class="o">.</span><span class="na">getDisplayName</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">,</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">LONG</span><span class="o">,</span> <span class="nc">Locale</span><span class="o">.</span><span class="na">CHINA</span><span class="o">));</span>	
 <span class="o">}</span></code></pre></figure>
 
 <p>For different timezones, the end result is customized.</p>
 
-<h2>Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
-<p>In this article, we have gone through the most important ways of using <code>java.util.Calendar</code> class and how to mix it with <code>Date</code> class. This knowledge takes us a long way in knowing how to handle dates in an idiomatic manner, without hacking around. </p>
+<p>In this article, we have gone through the most important ways of using <code class="language-plaintext highlighter-rouge">java.util.Calendar</code> class and how to mix it with <code class="language-plaintext highlighter-rouge">Date</code> class. This knowledge takes us a long way in knowing how to handle dates in an idiomatic manner, without hacking around.</p>
 
-<p>In the next article, we will take a step back and explore the major weaknesses of <code>java.util.Date</code> class and why it has been deprecated, meaning, why you should prefer not to use it.</p>
+<p>In the next article, we will take a step back and explore the major weaknesses of <code class="language-plaintext highlighter-rouge">java.util.Date</code> class and why it has been deprecated, meaning, why you should prefer not to use it.</p>
 
 </div>
 
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2020/04/03/play-framework-primer-scaffolding/">
+            Play Framework Primer - Scaffolding
+            <small>03 Apr 2020</small>
+          </a>
+        </h3>
+      </li>
     
       <li>
         <h3>
@@ -419,15 +425,6 @@ Since we touched a bit on internationalization, we can use the <code>getTimeZone
           <a href="/2019/02/18/a-simple-guide-for-java-util-date/">
             A Simple Guide for Java.util.Date
             <small>18 Feb 2019</small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/2017/02/07/java-garbage-collector-and-reference-objects/">
-            Java Garbage Collector and Reference Objects
-            <small>07 Feb 2017</small>
           </a>
         </h3>
       </li>

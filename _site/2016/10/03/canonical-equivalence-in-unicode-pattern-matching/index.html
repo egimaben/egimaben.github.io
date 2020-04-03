@@ -117,12 +117,14 @@
         
       
         
+      
+        
           
         
       
       <span class="sidebar-nav-item">Currently v1.0.0</span>
     </nav>
-    <p>&copy; 2019. All rights reserved.</p>
+    <p>&copy; 2020. All rights reserved.</p>
   </div>
 </div>
 
@@ -142,17 +144,16 @@
 <!--more-->
 
 <blockquote>
-<p>In computer science, pattern matching is the act of checking a given sequence of tokens for the presence of the constituents of some pattern. In contrast to pattern recognition, the match usually has to be exact. The patterns generally have the form of either sequences or tree structures.</p>
+  <p>In computer science, pattern matching is the act of checking a given sequence of tokens for the presence of the constituents of some pattern. In contrast to pattern recognition, the match usually has to be exact. The patterns generally have the form of either sequences or tree structures.</p>
 </blockquote>
 
 <p>Notice how it differs from pattern recognition, the word EXACT is key here. Canonical Equivalence is the term used in the <a href="https://en.wikipedia.org/wiki/Unicode_equivalence">Unicode Equivalence specification</a> of the Unicode character encoding system to emphasize the EXACTing nature of its matching system.</p>
 
-<h2><em>Canonical</em> Explained</h2>
+<h2 id="canonical-explained"><em>Canonical</em> Explained</h2>
 
 <p>Wikipedia defines Canonicalization as:</p>
-
 <blockquote>
-<p>A process for converting data that has more than one possible representation into a “standard” canonical representation.</p>
+  <p>A process for converting data that has more than one possible representation into a “standard” canonical representation.</p>
 </blockquote>
 
 <p>In this context, the term Canonical means to have many forms or representations which must all boil down to a single standard value which is hereby known as the canonical value.</p>
@@ -173,15 +174,15 @@
 
 <p>In Java, when we compare two objects:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">a</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">b</span><span class="o">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">a</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">b</span><span class="o">)</span></code></pre></figure>
 
 <p>The JVM will compare them based on different aspects such as hashCode and attribute values to establish their sameness with each other. If there is even one aspect that differs, then the test will fail. If you are sure of their sameness, however, and want a quick test, then you are better off using the == operator:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">a</span><span class="o">==</span><span class="n">b</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">a</span><span class="o">==</span><span class="n">b</span></code></pre></figure>
 
 <p>This comparison is faster because it only bases on the one <strong>canonical truth</strong> that is used to judge the sameness of the two objects and that is the object id.</p>
 
-<h2>Canonical Equivalence In Unicode</h2>
+<h2 id="canonical-equivalence-in-unicode">Canonical Equivalence In Unicode</h2>
 
 <p>Having looked at the term Canonical in depth, it is now easy to conclude that two different characters are canonically equivalent if, and only if what is considered their canonical value is the same.</p>
 
@@ -191,27 +192,27 @@
 
 <p>Let’s take a look at an example:</p>
 
-<p><code>In Unicode, there is a character e, whose code point is u0065. However, Unicode also has a composite character é which is the same character e with an acute accent superimposed on top of it. The code point for the accented e is u00E9. However, the accent character on top of the composite character also has a Unicode code point, u0301. This means that the composite character u00E9 is canonically equivalent to the character sequence u0065 u0301.</code></p>
+<p><code class="language-plaintext highlighter-rouge">In Unicode, there is a character e, whose code point is u0065. However, Unicode also has a composite character é which is the same character e with an acute accent superimposed on top of it. The code point for the accented e is u00E9. However, the accent character on top of the composite character also has a Unicode code point, u0301. This means that the composite character u00E9 is canonically equivalent to the character sequence u0065 u0301.</code></p>
 
-<h2>Canonical Equivalence In Java</h2>
+<h2 id="canonical-equivalence-in-java">Canonical Equivalence In Java</h2>
 
 <p>The concept of Canonical equivalence is encountered in a number of areas in Java programming language. Knowledge of this will save you hair loss. We looked at one example earlier with Object comparison. We can look at some more.</p>
 
-<h3>Java Reflection</h3>
+<h3 id="java-reflection">Java Reflection</h3>
 
 <p>When we are inspecting the different aspects of a Java class using reflection, we can retrieve the class name of an object in different ways. Consider an empty class called Person.java:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">package</span> <span class="nn">com.egima</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">egima</span><span class="o">;</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
     <span class="kd">public</span> <span class="nf">Person</span><span class="o">()</span> <span class="o">{</span>
         <span class="kd">super</span><span class="o">();</span>
     <span class="o">}</span>
-    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
     <span class="o">}</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
     <span class="o">}</span>
     <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
@@ -224,77 +225,76 @@
 
 <p>Let’s run some inspection on this class:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">Person</span> <span class="n">ob</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Person</span><span class="o">();</span>
-    <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
-    <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getSimpleName</span><span class="o">();</span>
-    <span class="n">String</span> <span class="n">canonicalName</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getCanonicalName</span><span class="o">();</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Simple Class Name: &quot;</span> <span class="o">+</span> <span class="n">name</span><span class="o">);</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Canonical Class name= &quot;</span> <span class="o">+</span> <span class="n">canonicalName</span><span class="o">);</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">Person</span> <span class="n">ob</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Person</span><span class="o">();</span>
+    <span class="nc">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getSimpleName</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="n">canonicalName</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getCanonicalName</span><span class="o">();</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Simple Class Name: "</span> <span class="o">+</span> <span class="n">name</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Canonical Class name= "</span> <span class="o">+</span> <span class="n">canonicalName</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>Console output:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Simple</span> <span class="n">Class</span> <span class="n">Name</span><span class="o">:</span> <span class="n">Person</span>
-<span class="n">Canonical</span> <span class="n">Class</span> <span class="n">name</span><span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="na">egima</span><span class="o">.</span><span class="na">Person</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nc">Simple</span> <span class="nc">Class</span> <span class="nl">Name:</span> <span class="nc">Person</span>
+<span class="nc">Canonical</span> <span class="nc">Class</span> <span class="n">name</span><span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="na">egima</span><span class="o">.</span><span class="na">Person</span></code></pre></figure>
 
-<p>Notice that if we don’t really care much about the detailed truth about the class we call the <code>getSimpleName</code> method. We can easily dispute this by having another <code>Person.java</code> class in a different package.</p>
+<p>Notice that if we don’t really care much about the detailed truth about the class we call the <code class="language-plaintext highlighter-rouge">getSimpleName</code> method. We can easily dispute this by having another <code class="language-plaintext highlighter-rouge">Person.java</code> class in a different package.</p>
 
 <p>The JVM is so wise that when you instantiate a class object reflectively, you will only get success when your class name can be traced through an explicitely defined class hierarchy. And this is only possible with the canonical name.</p>
 
-<p>The following code will fail and throw a <code>ClassNotFoundException</code>:</p>
+<p>The following code will fail and throw a <code class="language-plaintext highlighter-rouge">ClassNotFoundException</code>:</p>
 
 <p>The lambda approach:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&quot;Person&quot;</span><span class="o">);</span>
-    <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="o">(</span><span class="n">Person</span><span class="o">)</span> <span class="n">clazz</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"Person"</span><span class="o">);</span>
+    <span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Person</span><span class="o">)</span> <span class="n">clazz</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>While this one will pass:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&quot;com.egima.Person&quot;</span><span class="o">);</span>
-    <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="o">(</span><span class="n">Person</span><span class="o">)</span> <span class="n">clazz</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"com.egima.Person"</span><span class="o">);</span>
+    <span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Person</span><span class="o">)</span> <span class="n">clazz</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
 <span class="o">}</span></code></pre></figure>
 
-<h2>Java Regex</h2>
-
+<h2 id="java-regex">Java Regex</h2>
 <p>When searching Unicode characters with Java Regular Expression API, we must be very informed about the notion of Canonical Equivalence or else we will waste a lot of time and effort with little success.</p>
 
-<p>Let’s consider our earlier example of accented character <code>é</code> . We concluded that it’s unicode code points can be represented as a composite: <code>u00E9</code> or a sequence:  <code>u0065 u0301</code>.</p>
+<p>Let’s consider our earlier example of accented character <code class="language-plaintext highlighter-rouge">é</code> . We concluded that it’s unicode code points can be represented as a composite: <code class="language-plaintext highlighter-rouge">u00E9</code> or a sequence:  <code class="language-plaintext highlighter-rouge">u0065 u0301</code>.</p>
 
 <p>Now let us see this in action:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">Pattern</span> <span class="n">pattern</span> <span class="o">=</span> <span class="n">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">&quot;\u00E9&quot;</span><span class="o">);</span>
-    <span class="n">Matcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="s">&quot;Text with unicode accented character \u0065\u0301&quot;</span><span class="o">);</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">Pattern</span> <span class="n">pattern</span> <span class="o">=</span> <span class="nc">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"\u00E9"</span><span class="o">);</span>
+    <span class="nc">Matcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="s">"Text with unicode accented character \u0065\u0301"</span><span class="o">);</span>
     <span class="kt">boolean</span> <span class="n">found</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="na">find</span><span class="o">();</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Was the character found: &quot;</span> <span class="o">+</span> <span class="n">found</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Was the character found: "</span> <span class="o">+</span> <span class="n">found</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>And the output is:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Was</span> <span class="n">the</span> <span class="n">character</span> <span class="n">found</span><span class="o">:</span> <span class="kc">false</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nc">Was</span> <span class="n">the</span> <span class="n">character</span> <span class="nl">found:</span> <span class="kc">false</span></code></pre></figure>
 
 <p>The character was not found and yet we know the composite character used as the regex pattern and the sequence of characters in the input text are canonically equivalent.</p>
 
-<p>What this means is that the Java regex engine by default does not take into consideration canonical equivalence, so it compares the Unicode character <code>\u00E9</code> against <code>\u0065 \u0301</code> as is without regard to their underlying final values.</p>
+<p>What this means is that the Java regex engine by default does not take into consideration canonical equivalence, so it compares the Unicode character <code class="language-plaintext highlighter-rouge">\u00E9</code> against <code class="language-plaintext highlighter-rouge">\u0065 \u0301</code> as is without regard to their underlying final values.</p>
 
-<p>If we want the engine to take into account the canonical equivalence of Unicode characters while searching, we must specify the <code>Pattern.CANON_EQ</code> flag of the <code>java.util.regex.Pattern</code>  class during regex compilation:</p>
+<p>If we want the engine to take into account the canonical equivalence of Unicode characters while searching, we must specify the <code class="language-plaintext highlighter-rouge">Pattern.CANON_EQ</code> flag of the <code class="language-plaintext highlighter-rouge">java.util.regex.Pattern</code>  class during regex compilation:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">Pattern</span> <span class="n">pattern</span> <span class="o">=</span> <span class="n">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">&quot;\u00E9&quot;</span><span class="o">,</span> <span class="n">Pattern</span><span class="o">.</span><span class="na">CANON_EQ</span><span class="o">);</span>
-    <span class="n">Matcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="s">&quot;Text with unicode accented character \u0065\u0301&quot;</span><span class="o">);</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">Pattern</span> <span class="n">pattern</span> <span class="o">=</span> <span class="nc">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"\u00E9"</span><span class="o">,</span> <span class="nc">Pattern</span><span class="o">.</span><span class="na">CANON_EQ</span><span class="o">);</span>
+    <span class="nc">Matcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="s">"Text with unicode accented character \u0065\u0301"</span><span class="o">);</span>
     <span class="kt">boolean</span> <span class="n">found</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="na">find</span><span class="o">();</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Was the character found: &quot;</span> <span class="o">+</span> <span class="n">found</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Was the character found: "</span> <span class="o">+</span> <span class="n">found</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>Now the output is:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Was</span> <span class="n">the</span> <span class="n">character</span> <span class="n">found</span><span class="o">:</span> <span class="kc">true</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nc">Was</span> <span class="n">the</span> <span class="n">character</span> <span class="nl">found:</span> <span class="kc">true</span></code></pre></figure>
 
-<h2>Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>In this article, we discussed the notion of Canonical Equivalence which is common in Unicode character encoding schemes which automatically makes it common in all programming languages.</p>
 
@@ -303,6 +303,15 @@
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2020/04/03/play-framework-primer-scaffolding/">
+            Play Framework Primer - Scaffolding
+            <small>03 Apr 2020</small>
+          </a>
+        </h3>
+      </li>
     
       <li>
         <h3>
@@ -318,15 +327,6 @@
           <a href="/2019/02/20/manipulating-dates-with-calendar-class/">
             Manipulating Dates with Calendar Class
             <small>20 Feb 2019</small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/2019/02/18/a-simple-guide-for-java-util-date/">
-            A Simple Guide for Java.util.Date
-            <small>18 Feb 2019</small>
           </a>
         </h3>
       </li>

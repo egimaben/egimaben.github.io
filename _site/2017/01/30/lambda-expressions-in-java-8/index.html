@@ -117,12 +117,14 @@
         
       
         
+      
+        
           
         
       
       <span class="sidebar-nav-item">Currently v1.0.0</span>
     </nav>
-    <p>&copy; 2019. All rights reserved.</p>
+    <p>&copy; 2020. All rights reserved.</p>
   </div>
 </div>
 
@@ -135,55 +137,55 @@
   In this post, we will learn what, exactly, lambda expressions are and how they fit into the whole Java ecosystem.
 </div>
 
-<p>Lambda expressions are the most popular feature of Java 8. They introduce functional programming concepts to Java, which is a completely object-oriented and imperative programming language. </p>
+<p>Lambda expressions are the most popular feature of Java 8. They introduce functional programming concepts to Java, which is a completely object-oriented and imperative programming language.</p>
 
 <p>How functional programming languages work is beyond the scope of this article, but we will extract a feature that will make the difference obvious for us who work with OOP.
-&lt;!--more--&gt;
+<!--more-->
 How functional programming languages work is beyond the scope of this article, but we will extract a feature that will make the difference obvious to us who work with OOP.</p>
 
 <p>In this post, we will learn what, exactly, lambda expressions are and how they fit into the whole Java ecosystem. We will also look at example code that works without using lambda expressions and then refactor this code to use lambdas.</p>
 
-<h2>Understanding a Lambda Expression</h2>
+<h2 id="understanding-a-lambda-expression">Understanding a Lambda Expression</h2>
 
-<p>A Lambda expression is a block of code that we can pass around to execute. Passing a block of code to a function is something that we as Java programmers are not used to. </p>
+<p>A Lambda expression is a block of code that we can pass around to execute. Passing a block of code to a function is something that we as Java programmers are not used to.</p>
 
 <p>All our behavior defining code is encapsulated inside method bodies and executed through object references as it is with this code:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LambdaDemo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printSomething</span><span class="o">(</span><span class="n">String</span> <span class="n">something</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">something</span><span class="o">);</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LambdaDemo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printSomething</span><span class="o">(</span><span class="nc">String</span> <span class="n">something</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">something</span><span class="o">);</span>
     <span class="o">}</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LambdaDemo</span><span class="o">();</span>
-        <span class="n">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">&quot;I am learning Lambda&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LambdaDemo</span><span class="o">();</span>
+        <span class="nc">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">"I am learning Lambda"</span><span class="o">;</span>
         <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>This is classic OOP style of hiding method implementations from the caller. The caller simply passes a variable to the method which then does something with the value of the variable and returns another value or produces a side effect as it is in our case.</p>
 
-<p>We are now going to see an equivalent implementation that uses behavior passing other than variable passing. To achieve this, we have to create a functional interface that defines that abstracts the behavior instead of a method. </p>
+<p>We are now going to see an equivalent implementation that uses behavior passing other than variable passing. To achieve this, we have to create a functional interface that defines that abstracts the behavior instead of a method.</p>
 
 <p>A functional interface is an interface that has only one method:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LambdaDemo</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LambdaDemo</span> <span class="o">{</span>
     <span class="kd">interface</span> <span class="nc">Printer</span> <span class="o">{</span>
-        <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">String</span> <span class="n">val</span><span class="o">);</span>
+        <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="nc">String</span> <span class="n">val</span><span class="o">);</span>
     <span class="o">}</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printSomething</span><span class="o">(</span><span class="n">String</span> <span class="n">something</span><span class="o">,</span> <span class="n">Printer</span> <span class="n">printer</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printSomething</span><span class="o">(</span><span class="nc">String</span> <span class="n">something</span><span class="o">,</span> <span class="nc">Printer</span> <span class="n">printer</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">printer</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">something</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>In the above implementation, the <code>Printer</code> interface is responsible for all printing. The method <code>printSomething</code> no longer defines the behavior but rather executes one defined by <code>Printer</code>:</p>
+<p>In the above implementation, the <code class="language-plaintext highlighter-rouge">Printer</code> interface is responsible for all printing. The method <code class="language-plaintext highlighter-rouge">printSomething</code> no longer defines the behavior but rather executes one defined by <code class="language-plaintext highlighter-rouge">Printer</code>:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LambdaDemo</span><span class="o">();</span>
-    <span class="n">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">&quot;I am using a Functional interface&quot;</span><span class="o">;</span>
-    <span class="n">Printer</span> <span class="n">printer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Printer</span><span class="o">()</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LambdaDemo</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">"I am using a Functional interface"</span><span class="o">;</span>
+    <span class="nc">Printer</span> <span class="n">printer</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Printer</span><span class="o">()</span> <span class="o">{</span>
         <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">String</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">val</span><span class="o">);</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="nc">String</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">val</span><span class="o">);</span>
         <span class="o">}</span>
     <span class="o">};</span>
     <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="n">printer</span><span class="o">);</span>
@@ -192,68 +194,67 @@ How functional programming languages work is beyond the scope of this article, b
 <p>We may have noticed we have not done something new here. This is true because we have not applied a lambda expression yet. We simply created a concrete implementation of the Printer interface and passed it to the printSomething method.</p>
 
 <p>The above demo was meant to bring us to a key objective of introducing Lambda expressions in Java:</p>
-
 <blockquote>
-<p>Lambda expressions are used primarily to define inline implementation of a functional interface.
+  <p>Lambda expressions are used primarily to define inline implementation of a functional interface.
 Before we refactor the above example using lambda expressions, let’s learn the necessary syntax:</p>
 </blockquote>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="o">(</span><span class="n">param1</span><span class="o">,</span><span class="n">param2</span><span class="o">,</span><span class="n">param3</span><span class="o">...,</span><span class="n">paramN</span><span class="o">)</span> <span class="o">-</span> <span class="o">&gt;</span> <span class="o">{</span><span class="c1">//block of code;}</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="o">(</span><span class="n">param1</span><span class="o">,</span><span class="n">param2</span><span class="o">,</span><span class="n">param3</span><span class="o">...,</span><span class="n">paramN</span><span class="o">)</span> <span class="o">-</span> <span class="o">&gt;</span> <span class="o">{</span><span class="c1">//block of code;}</span></code></pre></figure>
 
 <p>A lambda constitutes a comma separated list of formal parameters enclosed in parenthesis as we would define in a method declaration, followed by an arrow token pointing to the code to execute. Now let us refactor the above code to use a lambda:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LambdaDemo</span><span class="o">();</span>
-    <span class="n">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">&quot;I am learning Lambda&quot;</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LambdaDemo</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">"I am learning Lambda"</span><span class="o">;</span>
     <span class="cm">/**/</span>
-    <span class="n">Printer</span> <span class="n">printer</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span> <span class="n">toPrint</span><span class="o">)-&gt;{</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">);};</span>
+    <span class="nc">Printer</span> <span class="n">printer</span> <span class="o">=</span> <span class="o">(</span><span class="nc">String</span> <span class="n">toPrint</span><span class="o">)-&gt;{</span><span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">);};</span>
     <span class="cm">/**/</span>
     <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="n">printer</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>I find the above snippet very compact and beautiful to look at. Since the functional interface declares only a single method, the parameters passed in the first part of the lambda are automatically mapped to the method’s parameter list and the code on the right of the arrow is treated as the method’s concrete implementation</p>
 
-<h2>Why Use Lambda Expressions?</h2>
+<h2 id="why-use-lambda-expressions">Why Use Lambda Expressions?</h2>
 
 <p>As pertains the demo in the previous section, lambda expressions enable us to have more compact code, easier to read and follow. There are other benefits in line with performance and multi-core processing, but they can only make sense after understanding the Streams API, therefore beyond the scope of this article.</p>
 
-<p>Comparing the <code>main</code> method implementations with and without lambdas sure shows us the power of lambda expressions when it comes to shortening code:</p>
+<p>Comparing the <code class="language-plaintext highlighter-rouge">main</code> method implementations with and without lambdas sure shows us the power of lambda expressions when it comes to shortening code:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LambdaDemo</span><span class="o">();</span>
-    <span class="n">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">&quot;I am learning Lambda&quot;</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LambdaDemo</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="n">something</span> <span class="o">=</span> <span class="s">"I am learning Lambda"</span><span class="o">;</span>
     <span class="cm">/**/</span>
-    <span class="n">Printer</span> <span class="n">printer</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span> <span class="n">toPrint</span><span class="o">)-&gt;{</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">);};</span>
+    <span class="nc">Printer</span> <span class="n">printer</span> <span class="o">=</span> <span class="o">(</span><span class="nc">String</span> <span class="n">toPrint</span><span class="o">)-&gt;{</span><span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">);};</span>
     <span class="cm">/**/</span>
     <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="n">printer</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>We can make our code more concise than this. It so happens that even without specifying the type of the parameter on the left part of the arrow, its type will be inferred by the compiler from the formal params of the interface method:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Printer</span> <span class="n">printer</span> <span class="o">=</span> <span class="o">(</span><span class="n">toPrint</span><span class="o">)-&gt;{</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">);};</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nc">Printer</span> <span class="n">printer</span> <span class="o">=</span> <span class="o">(</span><span class="n">toPrint</span><span class="o">)-&gt;{</span><span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">);};</span></code></pre></figure>
 
 <p>We can still do better. Another characteristic of lambdas is that: if there is only one parameter, we can eliminate the parenthesis altogether. Similarly, if there is only one statement on the right of the arrow, we can also eliminate the braces:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Printer</span> <span class="n">printer</span> <span class="o">=</span> <span class="n">toPrint</span> <span class="o">-&gt;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">);</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nc">Printer</span> <span class="n">printer</span> <span class="o">=</span> <span class="n">toPrint</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">);</span></code></pre></figure>
 
 <p>Now our code is really starting to look cute. We are just getting started. If our interface method did not take any parameters, we could replace the declaration with empty parenthesis:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="o">()</span> <span class="o">-&gt;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;anything&quot;</span><span class="o">);</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="o">()</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"anything"</span><span class="o">);</span></code></pre></figure>
 
 <p>How about we just inline the lambda without first creating an object and then passing it to the saySomething method:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LambdaDemo</span><span class="o">();</span>
-    <span class="n">String</span> <span class="n">something</span><span class="o">=</span><span class="s">&quot;I am Lambda&quot;</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">LambdaDemo</span> <span class="n">demo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LambdaDemo</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="n">something</span><span class="o">=</span><span class="s">"I am Lambda"</span><span class="o">;</span>
     <span class="cm">/**/</span>
-    <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="n">toPrint</span> <span class="o">-&gt;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">));</span>
+    <span class="n">demo</span><span class="o">.</span><span class="na">printSomething</span><span class="o">(</span><span class="n">something</span><span class="o">,</span> <span class="n">toPrint</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">toPrint</span><span class="o">));</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>Now we are really starting to talk functional programming. Our initial main body of nine lines is now down to only 3 lines. This compactness of code is what makes lambda expressions very appealing to Java programmers.</p>
 
-<h2>Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
-<p>In this post, we have gone through a gentle introduction to Lambda expressions in Java and learned how they can be used to improve the code quality of functional interface implementations. </p>
+<p>In this post, we have gone through a gentle introduction to Lambda expressions in Java and learned how they can be used to improve the code quality of functional interface implementations.</p>
 
 <p>Watch out for more coverage of Lambdas on this site as I will be touching the Stream API and discussing how it gives us more advantages of Lambdas when used together with the Collections framework.</p>
 
@@ -262,6 +263,15 @@ Before we refactor the above example using lambda expressions, let’s learn the
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2020/04/03/play-framework-primer-scaffolding/">
+            Play Framework Primer - Scaffolding
+            <small>03 Apr 2020</small>
+          </a>
+        </h3>
+      </li>
     
       <li>
         <h3>
@@ -277,15 +287,6 @@ Before we refactor the above example using lambda expressions, let’s learn the
           <a href="/2019/02/20/manipulating-dates-with-calendar-class/">
             Manipulating Dates with Calendar Class
             <small>20 Feb 2019</small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/2019/02/18/a-simple-guide-for-java-util-date/">
-            A Simple Guide for Java.util.Date
-            <small>18 Feb 2019</small>
           </a>
         </h3>
       </li>
