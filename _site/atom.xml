@@ -4,7 +4,7 @@
  <title>Benedict Egima</title>
  <link href="https://egimaben.github.io/atom.xml" rel="self"/>
  <link href="https://egimaben.github.io/"/>
- <updated>2020-04-03T03:10:20+03:00</updated>
+ <updated>2020-04-05T02:34:02+03:00</updated>
  <id>https://egimaben.github.io</id>
  <author>
    <name>Benedict Egima Ayiko</name>
@@ -14,9 +14,9 @@
  
  <entry>
    <title>Play Framework Primer - Scaffolding</title>
-   <link href="https://egimaben.github.io/2020/04/03/play-framework-primer-scaffolding/"/>
-   <updated>2020-04-03T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2020/04/03/play-framework-primer-scaffolding</id>
+   <link href="https://egimaben.github.io/2019/05/23/play-framework-primer-scaffolding/"/>
+   <updated>2019-05-23T00:00:00+03:00</updated>
+   <id>https://egimaben.github.io/2019/05/23/play-framework-primer-scaffolding</id>
    <content type="html">&lt;p&gt;In the &lt;a href=&quot;/2019/04/23/play-scala-rest-from-scratch&quot;&gt;previous article&lt;/a&gt;, we created a very stripped down REST application with only one controller end point using Play framework and scala. We assembled it piece by piece while going a little deep into what purpose each component in the final directory structure does.&lt;/p&gt;
 
 &lt;!--more--&gt;
