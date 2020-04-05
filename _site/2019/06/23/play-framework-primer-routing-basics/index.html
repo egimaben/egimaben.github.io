@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Play Framework Primer - Routing &middot; Benedict Egima
+    
+  </title>
+
+  <!-- CSS -->
+  <!-- <link rel="stylesheet" href="//public/css/poole.css">
+  <link rel="stylesheet" href="//public/css/syntax.css">
+  <link rel="stylesheet" href="//public/css/hyde.css"> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href=/public/css/poole.css>
+  <link rel="stylesheet" href=/public/css/syntax.css>
+  <link rel="stylesheet" href=/public/css/hyde.css>
+  <link rel="stylesheet" href=/public/css/profile.css>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href=/public/profile.png>
+                                 <link rel="shortcut icon" href=/public/profile.png>
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+    
+            <div class="profile-container">
+
+  
+  <img class="avatar" src="/public/profile.png" alt="profile picture" />  
+  <h2 class="uname">Benedict Egima Ayiko</h2>
+   
+  
+  <h3 class="tagline">10 years from now, you will regret more the things you didn't do than those you did</h3>
+  
+  
+  <h3 class="role">Senior Software Developer @Andela, Senior Backend Engineer @Coursera</h3>
+  
+</div>
+<div class="contact-container container-block">
+  <ul class="list-unstyled contact-list">
+    
+    <a href="mailto:">
+    <li class="email">
+      <i class="fas fa-envelope"></i>
+    </li>
+    </a>
+     
+     
+    <li class="linkedin">
+      <a href="https://linkedin.com/in/egimaben" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </li>
+     
+    <li class="github">
+      
+      <a href="http://github.com/egimaben" target="_blank"><i class="fab fa-github"></i></a>
+    </li>
+     
+    <li class="twitter">
+      <a href="https://twitter.com/egimaben" target="_blank"><i class="fab fa-twitter"></i></a>
+    </li>
+     
+    <li class="stack-overflow">
+      <a href="https://stackoverflow.com/users/3067615/egimaben" target="_blank"><i class="fab fa-stack-overflow"></i></a>
+    </li>
+    
+  </ul>
+</div>
+      <!-- <h1>
+        <a href="/">
+          Benedict Egima
+        </a>
+      </h1>
+      <p class="lead">10 years from now, you will regret more the things you didn't do than those you did</p> -->
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/archive/">Archive</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+          
+        
+      
+      <span class="sidebar-nav-item">Currently v1.0.0</span>
+    </nav>
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Play Framework Primer - Routing</h1>
+  <span class="post-date">23 Jun 2019</span>
+  <p>This is part 2 of a series about basics of Play framework. In part 1, we scaffolded a play application using the <code class="language-plaintext highlighter-rouge">playframework/play-scala-seed.g8</code> template and discussed the components in the resulting directory structure.</p>
+
+<p>In this article, we will explore the basics of routing in Play. 
+<!--more--></p>
+
+<h2 id="what-is-routing">What is routing</h2>
+
+<p>With any MVC framework like Play, an application follows a pre-defined structure and any component you create falls in one of 3 categories i.e. models, views or controllers.</p>
+
+<p>Models for your domain objects, views for display and user interaction and controllers for business logic that receives input/requests and renders a view to give a response.</p>
+
+<p>Each controller is a file that contains different units of logic called actions. Let’s look at the controller from our <a href="/2019/04/23/play-scala-rest-from-scratch">first article</a>:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">package</span> <span class="nn">controllers</span>
+
+<span class="k">import</span> <span class="nn">javax.inject._</span>
+<span class="k">import</span> <span class="nn">play.api._</span>
+<span class="k">import</span> <span class="nn">play.api.mvc._</span>
+
+<span class="nd">@Singleton</span>
+<span class="k">class</span> <span class="nc">HomeController</span> <span class="nd">@Inject</span><span class="o">()(</span><span class="n">cc</span><span class="k">:</span> <span class="kt">ControllerComponents</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">AbstractController</span><span class="o">(</span><span class="n">cc</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">index</span><span class="o">()</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="s">"Hello world"</span><span class="o">)</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>The method <code class="language-plaintext highlighter-rouge">def index()</code> is a controller action. We can have an arbitrary number of actions in a controller, conventionally processing logic around a particular model.</p>
+
+<p>Depending on the http request coming in, Play has to be able to map or translate it to the right controller action.</p>
+
+<p>How we help Play do this is by creating routes which consist of mainly 3 parts: an http Method, a URI pattern and a call definition respectively on a single line, space delimited.</p>
+
+<p>Below is the content of the routes file in our <a href="/2019/04/23/play-scala-rest-from-scratch">first article</a>:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /                                   controllers.HomeController.index</code></pre></figure>
+
+<p>As you can see, we are telling Play framework that whenever a <code class="language-plaintext highlighter-rouge">GET</code> request comes in at relative URL <code class="language-plaintext highlighter-rouge">/</code> i.e. the root of the page, invoke the <code class="language-plaintext highlighter-rouge">index</code> action on the <code class="language-plaintext highlighter-rouge">HomeController</code>.</p>
+
+<p>Also note that the call definition has to be the fully qualified class name of the controller class.</p>
+
+<p>Each http request is seen as an event to react to by Play framework. The global method <code class="language-plaintext highlighter-rouge">Global.onRouteRequest</code> is the callback method Play invokes to route the request.</p>
+
+<p>This method ultimately uses a compiled version of the routes file along with Play’s in-built router to map request to action. This is a ripe area for customization(future article alert :)).</p>
+
+<h2 id="the-routes-file">The routes file</h2>
+
+<p>In a basic Play application, the <code class="language-plaintext highlighter-rouge">app/conf/routes</code> file is consulted by the play router to know which controller action to invoke when an http request is received.</p>
+
+<p>This file is compiled when the application is building and any errors in it are forwarded directly to the client e.g. browser, curl, postman etc.</p>
+
+<p>Just like in class files, the routes file can contain comments prepended with a pound/hash symbol:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#this is a comment</span>
+GET     /               controllers.HomeController.index</code></pre></figure>
+
+<h2 id="route-types">Route types</h2>
+
+<p>A route declation defines a path the incoming request should follow. Play framework provides different ways we can declare a route to serve both simple and more complex use cases.</p>
+
+<h3 id="static-path">Static path</h3>
+
+<p>A static path matches an exact URI pattern. No further logical processing happens when such a path is matched. This means there can only ever be one URL string in the incoming request that can match this path.</p>
+
+<p>Am assuming your project from the <a href="/2019/04/23/play-scala-rest-from-scratch">first article</a> is running and when you visit <code class="language-plaintext highlighter-rouge">http://localhost:9000</code>, the browser renders <code class="language-plaintext highlighter-rouge">Hello world</code></p>
+
+<p>The path we saw in the previous section is such an example. I think being the root path, it may be a bit confusing as <code class="language-plaintext highlighter-rouge">/</code>. Let’s change this such that our URI pattern is <code class="language-plaintext highlighter-rouge">/home</code>:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home       controllers.HomeController.index</code></pre></figure>
+
+<p>Now when we save in auto-reloading mode and visit <code class="language-plaintext highlighter-rouge">http://localhost:9000/home</code>, we should still see <code class="language-plaintext highlighter-rouge">Hello world</code> rendered.</p>
+
+<p>Only typing <code class="language-plaintext highlighter-rouge">http://localhost:9000/home</code> will ever match this route since it’s static. Contrasting with the dynamic path in the next subsection will make it clearer in case it is not.</p>
+
+<p>Further more, notice that if we now visit <code class="language-plaintext highlighter-rouge">http://localhost:9000</code>, we will see an error in the browser like <code class="language-plaintext highlighter-rouge">Action Not Found</code> since we changed the route declaration.</p>
+
+<h3 id="dynamic-path-single-path-segment">Dynamic path, single path segment</h3>
+
+<p>Remember how we loaded a config value from the <code class="language-plaintext highlighter-rouge">app/conf/Application.conf</code> file in the <a href="/2019/04/23/play-scala-rest-from-scratch">first article</a>? Well that assumed that our config value would not change from request to request.</p>
+
+<p>Now, if we want Play to process the request depending on a value we provide at request time, we can use a dynamic path. For that let us create another controller action to greet people from different planets. New controller code:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">package</span> <span class="nn">controllers</span>
+
+<span class="k">import</span> <span class="nn">javax.inject._</span>
+<span class="k">import</span> <span class="nn">play.api._</span>
+<span class="k">import</span> <span class="nn">play.api.mvc._</span>
+
+<span class="nd">@Singleton</span>
+<span class="k">class</span> <span class="nc">HomeController</span> <span class="nd">@Inject</span><span class="o">()(</span><span class="n">cc</span><span class="k">:</span> <span class="kt">ControllerComponents</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">AbstractController</span><span class="o">(</span><span class="n">cc</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">index</span><span class="o">()</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="s">"Hello world"</span><span class="o">)</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="nf">greet</span><span class="o">(</span><span class="n">planet</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="n">s</span><span class="s">"Hello $planet"</span><span class="o">)</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Declare the new route in the routes file:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home/:planet         controllers.HomeController.greet<span class="o">(</span>planet<span class="o">)</span></code></pre></figure>
+
+<p>When you save and visit <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth</code> in the browser, you should now see <code class="language-plaintext highlighter-rouge">Hello earth</code>. If you replace <code class="language-plaintext highlighter-rouge">earth</code> in the address bar with <code class="language-plaintext highlighter-rouge">moon</code>, you should see <code class="language-plaintext highlighter-rouge">Hello moon</code>.</p>
+
+<p>You can have more than 1 dynamic part in the URI. Let’s update the controller with a new method:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">package</span> <span class="nn">controllers</span>
+
+<span class="k">import</span> <span class="nn">javax.inject._</span>
+<span class="k">import</span> <span class="nn">play.api._</span>
+<span class="k">import</span> <span class="nn">play.api.mvc._</span>
+
+<span class="nd">@Singleton</span>
+<span class="k">class</span> <span class="nc">HomeController</span> <span class="nd">@Inject</span><span class="o">()(</span><span class="n">cc</span><span class="k">:</span> <span class="kt">ControllerComponents</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">AbstractController</span><span class="o">(</span><span class="n">cc</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">index</span><span class="o">()</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="s">"Hello world"</span><span class="o">)</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="nf">greet</span><span class="o">(</span><span class="n">planet</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="n">s</span><span class="s">"Hello $planet"</span><span class="o">)</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="nf">greetI18n</span><span class="o">(</span><span class="n">planet</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">language</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="n">s</span><span class="s">"Hello $planet in $language"</span><span class="o">)</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>And update the routes file with a new dynamic route:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home/:planet/:language     controllers.HomeController.greetI18n<span class="o">(</span>planet,language<span class="o">)</span></code></pre></figure>
+
+<p>Now visit <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/mars/french</code>, the browser should render <code class="language-plaintext highlighter-rouge">Hello mars in french</code>.</p>
+
+<p>Likewise you can mix both dynamic and static parts in the URI in any order, e.g. <code class="language-plaintext highlighter-rouge">/home/:planet/english</code>.</p>
+
+<p>Just make sure the number of parameters in the action match those coming in or provide a default value for parameters not provided in the URI or which are optional.</p>
+
+<h3 id="dynamic-path-arbitrary-path-segments">Dynamic path, arbitrary path segments</h3>
+
+<p>When you we wanted to add language in the path above, we had to declare a parameter in both action and URI declaration.</p>
+
+<p>What if, for some arbitrary reason, we now want to allow the user to specify whether American or British in case the language is English but we don’t want other users that are used to the API to be affected.</p>
+
+<p>We can define the dynamic part using the <code class="language-plaintext highlighter-rouge">*id</code> syntax instead of the <code class="language-plaintext highlighter-rouge">:id</code> syntax. The former accepts any number of path segments.</p>
+
+<p>For instance, with the following route:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home/:planet/:language      controllers.HomeController.greetI18n<span class="o">(</span>planet,language<span class="o">)</span></code></pre></figure>
+
+<p>If we visited <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth/english/american</code>, then we would get the <code class="language-plaintext highlighter-rouge">Action Not Found</code> error rendered in the browser.</p>
+
+<p>But if we changed the route to:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home/:planet/<span class="k">*</span>language      controllers.HomeController.greetI18n<span class="o">(</span>planet,language<span class="o">)</span></code></pre></figure>
+
+<p>Then the browser would render <code class="language-plaintext highlighter-rouge">Hello earth in english/american</code>. This way, we can choose how to process the <code class="language-plaintext highlighter-rouge">english/american</code> in the action while <code class="language-plaintext highlighter-rouge">Hello mars in french</code> greetings remain unaffected.</p>
+
+<p>Note that the <a href="https://www.playframework.com/documentation/2.8.x/ScalaRouting">Play Documentation</a> clearly states that this kind of parameter is not decoded by the router so it’s your responsibility to validate and parse it. For example, it should not contain multiple leading slashes or non-ASCII characters.</p>
+
+<h3 id="dynamic-path-regex">Dynamic path, regex</h3>
+
+<p>Regex is used to match text. Play provides a way for us to restrict what would be a valid path segment using regex.</p>
+
+<p>Let’s say we only want to greet in 2 languages i.e. english and french, and we want to make sure the user provides the whole word i.e. english and not en, french and not fr as <code class="language-plaintext highlighter-rouge">Hello earth in en</code> would not make much sense in this context.</p>
+
+<p>We can use the <code class="language-plaintext highlighter-rouge">/$id&lt;regex&gt;</code> syntax in this case. Let’s update our internationalized greeting route to the following:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET  /home/:planet/<span class="nv">$language</span>&lt;<span class="se">\b</span><span class="o">(</span>english|french<span class="o">)</span><span class="se">\b</span><span class="o">&gt;</span>  controllers.HomeController.greetI18n<span class="o">(</span>planet,language<span class="o">)</span></code></pre></figure>
+
+<p>Now if we visit the site with a different language e.g. <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth/german</code> we will get <code class="language-plaintext highlighter-rouge">Action Not Found for request /home/earth/german</code>, similarly <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth/en</code> will fail.</p>
+
+<p>Only <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth/english</code> and <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth/french</code> will pass.</p>
+
+<h3 id="dynamic-path-assets">Dynamic path, assets</h3>
+
+<p>Play, like any useful web framework, gives us an idiomatic way to declare file download paths. This will enable us to download physical files from the server in the public directory.</p>
+
+<p>Remember from the <a href="/2019/04/23/play-framework-primer-scaffolding">previous article</a>, we discussed the public folder and its content.</p>
+
+<p>As a first example, assume we want to download files from the <code class="language-plaintext highlighter-rouge">app/public/images/</code> directory, we would declare a route using the <code class="language-plaintext highlighter-rouge">/assets/*id</code> syntax.</p>
+
+<p>Remember this syntax enables us to match an arbitrary number of path segments since there could be subdirectories in the <code class="language-plaintext highlighter-rouge">app/public/images/</code> directory e.g. for <code class="language-plaintext highlighter-rouge">app/public/images/avatars</code>. You can organize the <code class="language-plaintext highlighter-rouge">app/public</code> folder the way you prefer:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /assets/<span class="k">*</span>file    controllers.Assets.versioned<span class="o">(</span><span class="nv">path</span><span class="o">=</span><span class="s2">"/public"</span>, file: Asset<span class="o">)</span></code></pre></figure>
+
+<p>Remember the syntax for the call definition? yes, Play ships with an inbuilt controller called Assets, which has an action called <code class="language-plaintext highlighter-rouge">versioned</code> that takes 2 parameters as seen above: a root path which defaults to <code class="language-plaintext highlighter-rouge">/public</code> and a file of param of type <code class="language-plaintext highlighter-rouge">Asset</code>.</p>
+
+<p>Now you can download any file in any subdirectory in the <code class="language-plaintext highlighter-rouge">/public</code> directory e.g. <code class="language-plaintext highlighter-rouge">http://localhost:9000/assets/images/favicon.png</code>.</p>
+
+<h2 id="route-parameters">Route Parameters</h2>
+
+<p>As we saw in the previous section, you can provide parameters in your URL that are searched for by the router to supply the controller action. We only saw path parameters e.g. <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth/english</code>.</p>
+
+<p>Let’s look at another type of URI parameters in the form of query parameters.</p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<p>Just like path parameters, query parameters are used to send dynamic data from the client to the server. However, query parameters are named in the browser URL but path params are named in the URI path in the route definition.</p>
+
+<p>Query parameters take the form of a query string appended to the path using a <code class="language-plaintext highlighter-rouge">?</code> sign, each query param is then added in <code class="language-plaintext highlighter-rouge">name=value</code> form.</p>
+
+<p>Say we want to add language parameter as a query parameter, our URL would be <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth?language=english</code>. To add more query params to the query string, we append the name-value pair with an ampersand (&amp;) e.g. <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth?language=english&amp;variant=american</code>.</p>
+
+<p>Path parameters directly affect the mapping of request to a route. What I mean is that in the previous example, if I loaded <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth/english</code> yet my route is as follows:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home/:planet/   controllers.HomeController.greetI18n<span class="o">(</span>planet,language<span class="o">)</span></code></pre></figure>
+
+<p>then I would get an <code class="language-plaintext highlighter-rouge">Action Not Found</code> error because there is an additional path seqment in my request which is not catered for in the route definition.</p>
+
+<p>However, if I the path parameters are valid e.g. <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth</code> and I add a query string e.g. <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth?language=english</code>, it will not block the request from succeeding, even without any change to our code.</p>
+
+<p>There is nothing special to do so as to access query parameters. Take a look at the following route:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home    controllers.HomeController.greetI18n<span class="o">(</span>planet,language<span class="o">)</span></code></pre></figure>
+
+<p>The call definition has a controller action that takes 2 parameters i.e. <code class="language-plaintext highlighter-rouge">planet</code> and <code class="language-plaintext highlighter-rouge">language</code>, so the router will search for these in both the path and query params. Before invoking the action.</p>
+
+<p>So when we load <code class="language-plaintext highlighter-rouge">http://localhost:9000/home?planet=mars&amp;language=english</code> the browser will render <code class="language-plaintext highlighter-rouge">Hello mars in english</code>. One important fact is that if a param is provided in both path and query params, then the router will take the one in path.</p>
+
+<p>To demonstrate, strip down the routes file to only have one route:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home/:planet   controllers.HomeController.greetI18n<span class="o">(</span>planet,language<span class="o">)</span></code></pre></figure>
+
+<p>So <code class="language-plaintext highlighter-rouge">planet</code> is provided in the URI pattern. Now let’s load <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth?planet=mars&amp;language=english</code>. As you can notice, planet is available in both in path and query, but when it loads, the browser renders <code class="language-plaintext highlighter-rouge">Hello earth in english</code>.</p>
+
+<p>The final thing is that if a parameter is not captured in URI pattern and also does not appear in the query string, then Play will render a <code class="language-plaintext highlighter-rouge">Bad Request</code> error.</p>
+
+<h3 id="typing-parameters">Typing Parameters</h3>
+
+<p>You may have noticed that our parameters in the call definition are not typed:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home     controllers.HomeController.greetI18n<span class="o">(</span>planet,language<span class="o">)</span></code></pre></figure>
+
+<p>Both <code class="language-plaintext highlighter-rouge">planet</code> and <code class="language-plaintext highlighter-rouge">language</code> don’t have type information. The play router will default to <code class="language-plaintext highlighter-rouge">String</code> type. In case you want a specific type, then you may have to declare that in the call definition.</p>
+
+<p>For example, if you added a new action called <code class="language-plaintext highlighter-rouge">sum</code> which adds the 2 parameters it receives, you’d have to add the types as well like below:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home   controllers.HomeController.greetI18n<span class="o">(</span>planet,language<span class="o">)</span>
+GET     /sum    controllers.HomeController.greetI18n<span class="o">(</span>x: Int,y: Int<span class="o">)</span></code></pre></figure>
+
+<p>And invoke them as <code class="language-plaintext highlighter-rouge">http://localhost:9000/sum?x=3&amp;y=8</code></p>
+
+<h3 id="parameters-with-default-values">Parameters with default values</h3>
+
+<p>Sometimes you want to provide a fallback value incase a parameter is not provided, take our internationalized greeting route for example:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home   controllers.HomeController.greetI18n<span class="o">(</span>planet,language<span class="o">)</span></code></pre></figure>
+
+<p>Here, we have to provide both <code class="language-plaintext highlighter-rouge">planet</code> and <code class="language-plaintext highlighter-rouge">language</code> in the query string <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth?planet=mars&amp;language=english</code>.</p>
+
+<p>If we eliminate the language like so <code class="language-plaintext highlighter-rouge">http://localhost:9000/home/earth?planet=mars</code>, we will get an error <code class="language-plaintext highlighter-rouge">Bad Request For request 'GET /home?planet=mars' [Missing parameter: language]</code>.</p>
+
+<p>However, in the real world, we may want to greet in english in case the user does not provide the <code class="language-plaintext highlighter-rouge">language</code> param, in that case, we provide this value in the call definition using the <code class="language-plaintext highlighter-rouge">?=</code> operator:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home   controllers.HomeController.greetI18n<span class="o">(</span>planet,language ?<span class="o">=</span> <span class="s2">"english"</span><span class="o">)</span></code></pre></figure>
+
+<h3 id="parameters-with-fixed-values">Parameters with fixed values</h3>
+
+<p>In case you want to fix a parameter value such that it disregards any user provided value, then it is possible, similar to providing a default value.</p>
+
+<p>Someone would wonder why we’d do that since if we don’t want a user to take a user’s input, we could just not pick the value from a parameter but rather from the config.</p>
+
+<p>One scenario I can think of when this could come in handy is if our internationalized greeting was a public API and several clients were already consuming it.</p>
+
+<p>Assume we wanted to temporarily restrict it only to English perhaps because we are fixing the French language translations. We would not have the luxury to remove it from the param list as this would break all existing clients.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home   controllers.HomeController.greetI18n<span class="o">(</span>planet<span class="o">)</span></code></pre></figure>
+
+<p>We also don’t wan’t to just ignore it in code like so:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">def</span> <span class="nf">greetI18n</span><span class="o">(</span><span class="n">planet</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">language</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="n">s</span><span class="s">"Hello $planet in english"</span><span class="o">)</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>This would work technically but it would cause a lot of confusion especially if there are many developers going to work with the codebase, the confusion is because the error is in routing but we are fixing it in the controller by ignoring a variable.</p>
+
+<p>Secondly unused variables are a code smell.</p>
+
+<p>Why not make the change closer to the error, perhaps with a comment for clarity:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home   controllers.HomeController.greetI18n<span class="o">(</span>planet, language <span class="o">=</span> <span class="s2">"english"</span><span class="o">)</span></code></pre></figure>
+
+<p>Notice that we use <code class="language-plaintext highlighter-rouge">=</code> operator for fixed parameters</p>
+
+<h3 id="optional-parameters">Optional parameters</h3>
+<p>We can also declare a parameter as optional by using Scala’s <code class="language-plaintext highlighter-rouge">Option</code> monadic type such that if a user does not provide a value, the clients don’t break:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">GET     /home   controllers.HomeController.greetI18n<span class="o">(</span>planet, language: Option[String]<span class="o">)</span></code></pre></figure>
+
+<p>We also make a similar change in the controller action:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">def</span> <span class="nf">greetI18n</span><span class="o">(</span><span class="n">planet</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">language</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="n">language</span> <span class="k">match</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">lang</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Ok</span><span class="o">(</span><span class="n">s</span><span class="s">"Hello $planet in $language"</span><span class="o">)</span>
+      <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nc">Ok</span><span class="o">(</span><span class="n">s</span><span class="s">"Hello $planet"</span><span class="o">)</span>   
+    <span class="o">}</span></code></pre></figure>
+
+<p>This way, we can handle a case where the value is not provided in a smart way.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>In this article, we have explored basics of routing in Play framework. You should be able to leverage routing at this stage to handle most common scenarios in a web application.</p>
+
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2019/05/23/play-framework-primer-scaffolding/">
+            Play Framework Primer - Scaffolding
+            <small>23 May 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2019/04/23/play-scala-rest-from-scratch/">
+            Play 2.7 Scala REST API from scratch With SBT
+            <small>23 Apr 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2019/02/20/manipulating-dates-with-calendar-class/">
+            Manipulating Dates with Calendar Class
+            <small>20 Feb 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+var disqus_config = function () {
+this.page.url = "https://egimaben.github.io/2019/06/23/play-framework-primer-routing-basics/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "/2019/06/23/play-framework-primer-routing-basics"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://egimaben-github-io.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  </ul>
+</div>
+
+    </div>
+    
+  </body>
+</html>

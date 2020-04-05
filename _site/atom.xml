@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Benedict Egima</title>
- <link href="https://egimaben.github.io/atom.xml" rel="self"/>
- <link href="https://egimaben.github.io/"/>
- <updated>2020-04-05T02:34:02+03:00</updated>
- <id>https://egimaben.github.io</id>
+ <link href="http://localhost:4000/atom.xml" rel="self"/>
+ <link href="http://localhost:4000/"/>
+ <updated>2020-04-05T15:42:21+03:00</updated>
+ <id>http://localhost:4000</id>
  <author>
    <name>Benedict Egima Ayiko</name>
    <email>benikod@gmail.com</email>
@@ -13,10 +13,320 @@
 
  
  <entry>
+   <title>Play Framework Primer - Routing</title>
+   <link href="http://localhost:4000/2019/06/23/play-framework-primer-routing-basics/"/>
+   <updated>2019-06-23T00:00:00+03:00</updated>
+   <id>http://localhost:4000/2019/06/23/play-framework-primer-routing-basics</id>
+   <content type="html">&lt;p&gt;This is part 2 of a series about basics of Play framework. In part 1, we scaffolded a play application using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;playframework/play-scala-seed.g8&lt;/code&gt; template and discussed the components in the resulting directory structure.&lt;/p&gt;
+
+&lt;p&gt;In this article, we will explore the basics of routing in Play. 
+&lt;!--more--&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;what-is-routing&quot;&gt;What is routing&lt;/h2&gt;
+
+&lt;p&gt;With any MVC framework like Play, an application follows a pre-defined structure and any component you create falls in one of 3 categories i.e. models, views or controllers.&lt;/p&gt;
+
+&lt;p&gt;Models for your domain objects, views for display and user interaction and controllers for business logic that receives input/requests and renders a view to give a response.&lt;/p&gt;
+
+&lt;p&gt;Each controller is a file that contains different units of logic called actions. Let’s look at the controller from our &lt;a href=&quot;/2019/04/23/play-scala-rest-from-scratch&quot;&gt;first article&lt;/a&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;controllers&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;javax.inject._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api.mvc._&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@Singleton&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HomeController&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@Inject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cc&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;ControllerComponents&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AbstractController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Action&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello world&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The method &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;def index()&lt;/code&gt; is a controller action. We can have an arbitrary number of actions in a controller, conventionally processing logic around a particular model.&lt;/p&gt;
+
+&lt;p&gt;Depending on the http request coming in, Play has to be able to map or translate it to the right controller action.&lt;/p&gt;
+
+&lt;p&gt;How we help Play do this is by creating routes which consist of mainly 3 parts: an http Method, a URI pattern and a call definition respectively on a single line, space delimited.&lt;/p&gt;
+
+&lt;p&gt;Below is the content of the routes file in our &lt;a href=&quot;/2019/04/23/play-scala-rest-from-scratch&quot;&gt;first article&lt;/a&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /                                   controllers.HomeController.index&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see, we are telling Play framework that whenever a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GET&lt;/code&gt; request comes in at relative URL &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/&lt;/code&gt; i.e. the root of the page, invoke the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;index&lt;/code&gt; action on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HomeController&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Also note that the call definition has to be the fully qualified class name of the controller class.&lt;/p&gt;
+
+&lt;p&gt;Each http request is seen as an event to react to by Play framework. The global method &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Global.onRouteRequest&lt;/code&gt; is the callback method Play invokes to route the request.&lt;/p&gt;
+
+&lt;p&gt;This method ultimately uses a compiled version of the routes file along with Play’s in-built router to map request to action. This is a ripe area for customization(future article alert :)).&lt;/p&gt;
+
+&lt;h2 id=&quot;the-routes-file&quot;&gt;The routes file&lt;/h2&gt;
+
+&lt;p&gt;In a basic Play application, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/conf/routes&lt;/code&gt; file is consulted by the play router to know which controller action to invoke when an http request is received.&lt;/p&gt;
+
+&lt;p&gt;This file is compiled when the application is building and any errors in it are forwarded directly to the client e.g. browser, curl, postman etc.&lt;/p&gt;
+
+&lt;p&gt;Just like in class files, the routes file can contain comments prepended with a pound/hash symbol:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#this is a comment&lt;/span&gt;
+GET     /               controllers.HomeController.index&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;route-types&quot;&gt;Route types&lt;/h2&gt;
+
+&lt;p&gt;A route declation defines a path the incoming request should follow. Play framework provides different ways we can declare a route to serve both simple and more complex use cases.&lt;/p&gt;
+
+&lt;h3 id=&quot;static-path&quot;&gt;Static path&lt;/h3&gt;
+
+&lt;p&gt;A static path matches an exact URI pattern. No further logical processing happens when such a path is matched. This means there can only ever be one URL string in the incoming request that can match this path.&lt;/p&gt;
+
+&lt;p&gt;Am assuming your project from the &lt;a href=&quot;/2019/04/23/play-scala-rest-from-scratch&quot;&gt;first article&lt;/a&gt; is running and when you visit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000&lt;/code&gt;, the browser renders &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello world&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;The path we saw in the previous section is such an example. I think being the root path, it may be a bit confusing as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/&lt;/code&gt;. Let’s change this such that our URI pattern is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/home&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home       controllers.HomeController.index&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now when we save in auto-reloading mode and visit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home&lt;/code&gt;, we should still see &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello world&lt;/code&gt; rendered.&lt;/p&gt;
+
+&lt;p&gt;Only typing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home&lt;/code&gt; will ever match this route since it’s static. Contrasting with the dynamic path in the next subsection will make it clearer in case it is not.&lt;/p&gt;
+
+&lt;p&gt;Further more, notice that if we now visit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000&lt;/code&gt;, we will see an error in the browser like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Action Not Found&lt;/code&gt; since we changed the route declaration.&lt;/p&gt;
+
+&lt;h3 id=&quot;dynamic-path-single-path-segment&quot;&gt;Dynamic path, single path segment&lt;/h3&gt;
+
+&lt;p&gt;Remember how we loaded a config value from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/conf/Application.conf&lt;/code&gt; file in the &lt;a href=&quot;/2019/04/23/play-scala-rest-from-scratch&quot;&gt;first article&lt;/a&gt;? Well that assumed that our config value would not change from request to request.&lt;/p&gt;
+
+&lt;p&gt;Now, if we want Play to process the request depending on a value we provide at request time, we can use a dynamic path. For that let us create another controller action to greet people from different planets. New controller code:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;controllers&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;javax.inject._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api.mvc._&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@Singleton&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HomeController&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@Inject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cc&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;ControllerComponents&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AbstractController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Action&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello world&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;greet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;planet&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Action&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello $planet&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Declare the new route in the routes file:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home/:planet         controllers.HomeController.greet&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;When you save and visit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth&lt;/code&gt; in the browser, you should now see &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello earth&lt;/code&gt;. If you replace &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;earth&lt;/code&gt; in the address bar with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;moon&lt;/code&gt;, you should see &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello moon&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;You can have more than 1 dynamic part in the URI. Let’s update the controller with a new method:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;controllers&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;javax.inject._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api.mvc._&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@Singleton&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HomeController&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@Inject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cc&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;ControllerComponents&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AbstractController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Action&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello world&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;greet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;planet&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Action&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello $planet&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;greetI18n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;planet&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Action&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello $planet in $language&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And update the routes file with a new dynamic route:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home/:planet/:language     controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet,language&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now visit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/mars/french&lt;/code&gt;, the browser should render &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello mars in french&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Likewise you can mix both dynamic and static parts in the URI in any order, e.g. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/home/:planet/english&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Just make sure the number of parameters in the action match those coming in or provide a default value for parameters not provided in the URI or which are optional.&lt;/p&gt;
+
+&lt;h3 id=&quot;dynamic-path-arbitrary-path-segments&quot;&gt;Dynamic path, arbitrary path segments&lt;/h3&gt;
+
+&lt;p&gt;When you we wanted to add language in the path above, we had to declare a parameter in both action and URI declaration.&lt;/p&gt;
+
+&lt;p&gt;What if, for some arbitrary reason, we now want to allow the user to specify whether American or British in case the language is English but we don’t want other users that are used to the API to be affected.&lt;/p&gt;
+
+&lt;p&gt;We can define the dynamic part using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;*id&lt;/code&gt; syntax instead of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:id&lt;/code&gt; syntax. The former accepts any number of path segments.&lt;/p&gt;
+
+&lt;p&gt;For instance, with the following route:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home/:planet/:language      controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet,language&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If we visited &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth/english/american&lt;/code&gt;, then we would get the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Action Not Found&lt;/code&gt; error rendered in the browser.&lt;/p&gt;
+
+&lt;p&gt;But if we changed the route to:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home/:planet/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;language      controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet,language&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Then the browser would render &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello earth in english/american&lt;/code&gt;. This way, we can choose how to process the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;english/american&lt;/code&gt; in the action while &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello mars in french&lt;/code&gt; greetings remain unaffected.&lt;/p&gt;
+
+&lt;p&gt;Note that the &lt;a href=&quot;https://www.playframework.com/documentation/2.8.x/ScalaRouting&quot;&gt;Play Documentation&lt;/a&gt; clearly states that this kind of parameter is not decoded by the router so it’s your responsibility to validate and parse it. For example, it should not contain multiple leading slashes or non-ASCII characters.&lt;/p&gt;
+
+&lt;h3 id=&quot;dynamic-path-regex&quot;&gt;Dynamic path, regex&lt;/h3&gt;
+
+&lt;p&gt;Regex is used to match text. Play provides a way for us to restrict what would be a valid path segment using regex.&lt;/p&gt;
+
+&lt;p&gt;Let’s say we only want to greet in 2 languages i.e. english and french, and we want to make sure the user provides the whole word i.e. english and not en, french and not fr as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello earth in en&lt;/code&gt; would not make much sense in this context.&lt;/p&gt;
+
+&lt;p&gt;We can use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/$id&amp;lt;regex&amp;gt;&lt;/code&gt; syntax in this case. Let’s update our internationalized greeting route to the following:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET  /home/:planet/&lt;span class=&quot;nv&quot;&gt;$language&lt;/span&gt;&amp;lt;&lt;span class=&quot;se&quot;&gt;\b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;english|french&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;  controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet,language&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now if we visit the site with a different language e.g. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth/german&lt;/code&gt; we will get &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Action Not Found for request /home/earth/german&lt;/code&gt;, similarly &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth/en&lt;/code&gt; will fail.&lt;/p&gt;
+
+&lt;p&gt;Only &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth/english&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth/french&lt;/code&gt; will pass.&lt;/p&gt;
+
+&lt;h3 id=&quot;dynamic-path-assets&quot;&gt;Dynamic path, assets&lt;/h3&gt;
+
+&lt;p&gt;Play, like any useful web framework, gives us an idiomatic way to declare file download paths. This will enable us to download physical files from the server in the public directory.&lt;/p&gt;
+
+&lt;p&gt;Remember from the &lt;a href=&quot;/2019/04/23/play-framework-primer-scaffolding&quot;&gt;previous article&lt;/a&gt;, we discussed the public folder and its content.&lt;/p&gt;
+
+&lt;p&gt;As a first example, assume we want to download files from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/public/images/&lt;/code&gt; directory, we would declare a route using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/assets/*id&lt;/code&gt; syntax.&lt;/p&gt;
+
+&lt;p&gt;Remember this syntax enables us to match an arbitrary number of path segments since there could be subdirectories in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/public/images/&lt;/code&gt; directory e.g. for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/public/images/avatars&lt;/code&gt;. You can organize the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/public&lt;/code&gt; folder the way you prefer:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /assets/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;file    controllers.Assets.versioned&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/public&quot;&lt;/span&gt;, file: Asset&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Remember the syntax for the call definition? yes, Play ships with an inbuilt controller called Assets, which has an action called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;versioned&lt;/code&gt; that takes 2 parameters as seen above: a root path which defaults to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/public&lt;/code&gt; and a file of param of type &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Asset&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now you can download any file in any subdirectory in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/public&lt;/code&gt; directory e.g. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/assets/images/favicon.png&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;route-parameters&quot;&gt;Route Parameters&lt;/h2&gt;
+
+&lt;p&gt;As we saw in the previous section, you can provide parameters in your URL that are searched for by the router to supply the controller action. We only saw path parameters e.g. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth/english&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Let’s look at another type of URI parameters in the form of query parameters.&lt;/p&gt;
+
+&lt;h3 id=&quot;query-parameters&quot;&gt;Query Parameters&lt;/h3&gt;
+
+&lt;p&gt;Just like path parameters, query parameters are used to send dynamic data from the client to the server. However, query parameters are named in the browser URL but path params are named in the URI path in the route definition.&lt;/p&gt;
+
+&lt;p&gt;Query parameters take the form of a query string appended to the path using a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?&lt;/code&gt; sign, each query param is then added in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;name=value&lt;/code&gt; form.&lt;/p&gt;
+
+&lt;p&gt;Say we want to add language parameter as a query parameter, our URL would be &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth?language=english&lt;/code&gt;. To add more query params to the query string, we append the name-value pair with an ampersand (&amp;amp;) e.g. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth?language=english&amp;amp;variant=american&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Path parameters directly affect the mapping of request to a route. What I mean is that in the previous example, if I loaded &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth/english&lt;/code&gt; yet my route is as follows:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home/:planet/   controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet,language&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;then I would get an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Action Not Found&lt;/code&gt; error because there is an additional path seqment in my request which is not catered for in the route definition.&lt;/p&gt;
+
+&lt;p&gt;However, if I the path parameters are valid e.g. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth&lt;/code&gt; and I add a query string e.g. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth?language=english&lt;/code&gt;, it will not block the request from succeeding, even without any change to our code.&lt;/p&gt;
+
+&lt;p&gt;There is nothing special to do so as to access query parameters. Take a look at the following route:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home    controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet,language&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The call definition has a controller action that takes 2 parameters i.e. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;planet&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;language&lt;/code&gt;, so the router will search for these in both the path and query params. Before invoking the action.&lt;/p&gt;
+
+&lt;p&gt;So when we load &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home?planet=mars&amp;amp;language=english&lt;/code&gt; the browser will render &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello mars in english&lt;/code&gt;. One important fact is that if a param is provided in both path and query params, then the router will take the one in path.&lt;/p&gt;
+
+&lt;p&gt;To demonstrate, strip down the routes file to only have one route:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home/:planet   controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet,language&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;So &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;planet&lt;/code&gt; is provided in the URI pattern. Now let’s load &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth?planet=mars&amp;amp;language=english&lt;/code&gt;. As you can notice, planet is available in both in path and query, but when it loads, the browser renders &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hello earth in english&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The final thing is that if a parameter is not captured in URI pattern and also does not appear in the query string, then Play will render a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Bad Request&lt;/code&gt; error.&lt;/p&gt;
+
+&lt;h3 id=&quot;typing-parameters&quot;&gt;Typing Parameters&lt;/h3&gt;
+
+&lt;p&gt;You may have noticed that our parameters in the call definition are not typed:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home     controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet,language&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Both &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;planet&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;language&lt;/code&gt; don’t have type information. The play router will default to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;String&lt;/code&gt; type. In case you want a specific type, then you may have to declare that in the call definition.&lt;/p&gt;
+
+&lt;p&gt;For example, if you added a new action called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sum&lt;/code&gt; which adds the 2 parameters it receives, you’d have to add the types as well like below:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home   controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet,language&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+GET     /sum    controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;x: Int,y: Int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And invoke them as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/sum?x=3&amp;amp;y=8&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;parameters-with-default-values&quot;&gt;Parameters with default values&lt;/h3&gt;
+
+&lt;p&gt;Sometimes you want to provide a fallback value incase a parameter is not provided, take our internationalized greeting route for example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home   controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet,language&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here, we have to provide both &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;planet&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;language&lt;/code&gt; in the query string &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth?planet=mars&amp;amp;language=english&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If we eliminate the language like so &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000/home/earth?planet=mars&lt;/code&gt;, we will get an error &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Bad Request For request 'GET /home?planet=mars' [Missing parameter: language]&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;However, in the real world, we may want to greet in english in case the user does not provide the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;language&lt;/code&gt; param, in that case, we provide this value in the call definition using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?=&lt;/code&gt; operator:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home   controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet,language ?&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;english&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;parameters-with-fixed-values&quot;&gt;Parameters with fixed values&lt;/h3&gt;
+
+&lt;p&gt;In case you want to fix a parameter value such that it disregards any user provided value, then it is possible, similar to providing a default value.&lt;/p&gt;
+
+&lt;p&gt;Someone would wonder why we’d do that since if we don’t want a user to take a user’s input, we could just not pick the value from a parameter but rather from the config.&lt;/p&gt;
+
+&lt;p&gt;One scenario I can think of when this could come in handy is if our internationalized greeting was a public API and several clients were already consuming it.&lt;/p&gt;
+
+&lt;p&gt;Assume we wanted to temporarily restrict it only to English perhaps because we are fixing the French language translations. We would not have the luxury to remove it from the param list as this would break all existing clients.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home   controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We also don’t wan’t to just ignore it in code like so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;greetI18n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;planet&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Action&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello $planet in english&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This would work technically but it would cause a lot of confusion especially if there are many developers going to work with the codebase, the confusion is because the error is in routing but we are fixing it in the controller by ignoring a variable.&lt;/p&gt;
+
+&lt;p&gt;Secondly unused variables are a code smell.&lt;/p&gt;
+
+&lt;p&gt;Why not make the change closer to the error, perhaps with a comment for clarity:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home   controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet, language &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;english&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Notice that we use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;=&lt;/code&gt; operator for fixed parameters&lt;/p&gt;
+
+&lt;h3 id=&quot;optional-parameters&quot;&gt;Optional parameters&lt;/h3&gt;
+&lt;p&gt;We can also declare a parameter as optional by using Scala’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt; monadic type such that if a user does not provide a value, the clients don’t break:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;GET     /home   controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;planet, language: Option[String]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We also make a similar change in the controller action:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;greetI18n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;planet&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Option&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Action&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;language&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Some&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello $planet in $language&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello $planet&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;   
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This way, we can handle a case where the value is not provided in a smart way.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;In this article, we have explored basics of routing in Play framework. You should be able to leverage routing at this stage to handle most common scenarios in a web application.&lt;/p&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
    <title>Play Framework Primer - Scaffolding</title>
-   <link href="https://egimaben.github.io/2019/05/23/play-framework-primer-scaffolding/"/>
+   <link href="http://localhost:4000/2019/05/23/play-framework-primer-scaffolding/"/>
    <updated>2019-05-23T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2019/05/23/play-framework-primer-scaffolding</id>
+   <id>http://localhost:4000/2019/05/23/play-framework-primer-scaffolding</id>
    <content type="html">&lt;p&gt;In the &lt;a href=&quot;/2019/04/23/play-scala-rest-from-scratch&quot;&gt;previous article&lt;/a&gt;, we created a very stripped down REST application with only one controller end point using Play framework and scala. We assembled it piece by piece while going a little deep into what purpose each component in the final directory structure does.&lt;/p&gt;
 
 &lt;!--more--&gt;
@@ -182,9 +492,9 @@ As I said at the beginning, this is part 1 of a series, next, we will cover rout
  
  <entry>
    <title>Play 2.7 Scala REST API from scratch With SBT</title>
-   <link href="https://egimaben.github.io/2019/04/23/play-scala-rest-from-scratch/"/>
+   <link href="http://localhost:4000/2019/04/23/play-scala-rest-from-scratch/"/>
    <updated>2019-04-23T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2019/04/23/play-scala-rest-from-scratch</id>
+   <id>http://localhost:4000/2019/04/23/play-scala-rest-from-scratch</id>
    <content type="html">&lt;p&gt;With the advent of modern web frameworks such as Play, Laravel/PHP, Express/Node, advanced tools have come up to help in scaffolding ready-to-run Web Apps with a single command. In some cases, like with Play, there are even &lt;a href=&quot;https://developer.lightbend.com/start/?group=play&quot;&gt;fully scaffolded examples&lt;/a&gt; to download and run.&lt;/p&gt;
 
 &lt;p&gt;&lt;!--more--&gt;&lt;/p&gt;
@@ -371,9 +681,9 @@ Install &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sbt&l
  
  <entry>
    <title>Manipulating Dates with Calendar Class</title>
-   <link href="https://egimaben.github.io/2019/02/20/manipulating-dates-with-calendar-class/"/>
+   <link href="http://localhost:4000/2019/02/20/manipulating-dates-with-calendar-class/"/>
    <updated>2019-02-20T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2019/02/20/manipulating-dates-with-calendar-class</id>
+   <id>http://localhost:4000/2019/02/20/manipulating-dates-with-calendar-class</id>
    <content type="html">&lt;p&gt;In this article, we will explore &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;java.util.Calendar&lt;/code&gt; class.&lt;/p&gt;
 
 &lt;p&gt;&lt;!--more--&gt;&lt;/p&gt;
@@ -641,9 +951,9 @@ Since we touched a bit on internationalization, we can use the &lt;code class=&q
  
  <entry>
    <title>A Simple Guide for Java.util.Date</title>
-   <link href="https://egimaben.github.io/2019/02/18/a-simple-guide-for-java-util-date/"/>
+   <link href="http://localhost:4000/2019/02/18/a-simple-guide-for-java-util-date/"/>
    <updated>2019-02-18T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2019/02/18/a-simple-guide-for-java-util-date</id>
+   <id>http://localhost:4000/2019/02/18/a-simple-guide-for-java-util-date</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
  In this article, we will explore java.util.Date, consume it as a basic cheatsheet. We will see several examples as it's still used in several code bases and later, I mean really later, we will conspire to throw it out of the window and explore better alternatives for date and time handling in Java. 
 &lt;/div&gt;
@@ -822,9 +1132,9 @@ Another caveat and common cause of bugs is developers confusing upper case and l
  
  <entry>
    <title>Java Garbage Collector and Reference Objects</title>
-   <link href="https://egimaben.github.io/2017/02/07/java-garbage-collector-and-reference-objects/"/>
+   <link href="http://localhost:4000/2017/02/07/java-garbage-collector-and-reference-objects/"/>
    <updated>2017-02-07T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2017/02/07/java-garbage-collector-and-reference-objects</id>
+   <id>http://localhost:4000/2017/02/07/java-garbage-collector-and-reference-objects</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
 We take a look at garbage collector concepts in Java and that various reference object types that can be handled by it, demystifying the Java GC!&lt;/div&gt;
 
@@ -1006,9 +1316,9 @@ This turned out to be an excellent strategy. Talk about iterative problem solvin
  
  <entry>
    <title>Lambda Expressions in Java 8</title>
-   <link href="https://egimaben.github.io/2017/01/30/lambda-expressions-in-java-8/"/>
+   <link href="http://localhost:4000/2017/01/30/lambda-expressions-in-java-8/"/>
    <updated>2017-01-30T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2017/01/30/lambda-expressions-in-java-8</id>
+   <id>http://localhost:4000/2017/01/30/lambda-expressions-in-java-8</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
   In this post, we will learn what, exactly, lambda expressions are and how they fit into the whole Java ecosystem.
 &lt;/div&gt;
@@ -1138,9 +1448,9 @@ Before we refactor the above example using lambda expressions, let’s learn the
  
  <entry>
    <title>Java Method References</title>
-   <link href="https://egimaben.github.io/2017/01/18/java-method-references/"/>
+   <link href="http://localhost:4000/2017/01/18/java-method-references/"/>
    <updated>2017-01-18T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2017/01/18/java-method-references</id>
+   <id>http://localhost:4000/2017/01/18/java-method-references</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
   A double colon might appear so innocently, but there's a lot of things to know about it. In this post, we try to put together the most important of them.
 &lt;/div&gt;
@@ -1379,9 +1689,9 @@ Before we refactor the above example using lambda expressions, let’s learn the
  
  <entry>
    <title>Getting The Most Out of HashMaps</title>
-   <link href="https://egimaben.github.io/2017/01/10/getting-the-most-out-of-hashmaps/"/>
+   <link href="http://localhost:4000/2017/01/10/getting-the-most-out-of-hashmaps/"/>
    <updated>2017-01-10T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2017/01/10/getting-the-most-out-of-hashmaps</id>
+   <id>http://localhost:4000/2017/01/10/getting-the-most-out-of-hashmaps</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
 HashMaps are a great tool, but you need to know the internals to get the best performance from them. This guide covers collisions, iterations, load factors, and more.&lt;/div&gt;
 
@@ -1520,9 +1830,9 @@ What can’t you do with &lt;code class=&quot;language-plaintext highlighter-rou
  
  <entry>
    <title>Canonical Equivalence In Unicode Pattern Matching</title>
-   <link href="https://egimaben.github.io/2016/10/03/canonical-equivalence-in-unicode-pattern-matching/"/>
+   <link href="http://localhost:4000/2016/10/03/canonical-equivalence-in-unicode-pattern-matching/"/>
    <updated>2016-10-03T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2016/10/03/canonical-equivalence-in-unicode-pattern-matching</id>
+   <id>http://localhost:4000/2016/10/03/canonical-equivalence-in-unicode-pattern-matching</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
  In this article, we will define and explain the term Canonical Equivalence as applied to pattern matching according to the Unicode character specification.
 &lt;/div&gt;
