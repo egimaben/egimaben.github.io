@@ -73,7 +73,7 @@ A route declation defines a path the incoming request should follow. Play framew
 A static path matches an exact URI pattern. No further logical processing happens when such a path is matched. This means there can only ever be one URL string in the incoming request that can match this path.
 
 Am assuming your project from the [first article](/2019/04/23/play-scala-rest-from-scratch) is running and when you visit `http://localhost:9000`, the browser renders `Hello world`
-
+ 
 The path we saw in the previous section is such an example. I think being the root path, it may be a bit confusing as `/`. Let's change this such that our URI pattern is `/home`: 
 {% highlight bash %}
 GET     /home       controllers.HomeController.index
@@ -310,7 +310,7 @@ We also make a similar change in the controller action:
 {% highlight scala %}
 def greetI18n(planet: String, language: Option[String]) = Action { implicit request: Request[AnyContent] =>
     language match {
-      case Some(lang) => Ok(s"Hello $planet in $language")
+      case Some(lang) => Ok(s"Hello $planet in $lang")
       case _ => Ok(s"Hello $planet")   
     }
 {% endhighlight %}
