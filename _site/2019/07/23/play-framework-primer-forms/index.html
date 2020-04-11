@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Play Framework Primer - Scala Forms &middot; Benedict Egima
+    
+  </title>
+
+  <!-- CSS -->
+  <!-- <link rel="stylesheet" href="//public/css/poole.css">
+  <link rel="stylesheet" href="//public/css/syntax.css">
+  <link rel="stylesheet" href="//public/css/hyde.css"> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href=/public/css/poole.css>
+  <link rel="stylesheet" href=/public/css/syntax.css>
+  <link rel="stylesheet" href=/public/css/hyde.css>
+  <link rel="stylesheet" href=/public/css/profile.css>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href=/public/profile.png>
+                                 <link rel="shortcut icon" href=/public/profile.png>
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+    
+            <div class="profile-container">
+
+  
+  <img class="avatar" src="/public/profile.png" alt="profile picture" />  
+  <h2 class="uname">Benedict Egima Ayiko</h2>
+   
+  
+  <h3 class="tagline">10 years from now, you will regret more the things you didn't do than those you did</h3>
+  
+  
+  <h3 class="role">Senior Software Developer @Andela, Senior Backend Engineer @Coursera</h3>
+  
+</div>
+<div class="contact-container container-block">
+  <ul class="list-unstyled contact-list">
+    
+    <a href="mailto:">
+    <li class="email">
+      <i class="fas fa-envelope"></i>
+    </li>
+    </a>
+     
+     
+    <li class="linkedin">
+      <a href="https://linkedin.com/in/egimaben" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </li>
+     
+    <li class="github">
+      
+      <a href="http://github.com/egimaben" target="_blank"><i class="fab fa-github"></i></a>
+    </li>
+     
+    <li class="twitter">
+      <a href="https://twitter.com/egimaben" target="_blank"><i class="fab fa-twitter"></i></a>
+    </li>
+     
+    <li class="stack-overflow">
+      <a href="https://stackoverflow.com/users/3067615/egimaben" target="_blank"><i class="fab fa-stack-overflow"></i></a>
+    </li>
+    
+  </ul>
+</div>
+      <!-- <h1>
+        <a href="/">
+          Benedict Egima
+        </a>
+      </h1>
+      <p class="lead">10 years from now, you will regret more the things you didn't do than those you did</p> -->
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/archive/">Archive</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+      <span class="sidebar-nav-item">Currently v1.0.0</span>
+    </nav>
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Play Framework Primer - Scala Forms</h1>
+  <span class="post-date">23 Jul 2019</span>
+  <p>This is part 3 of a series about basics of Play framework. In <a href="/2019/06/23/play-framework-primer-routing-basics">part 2</a>, we covered fundamentals of routing.</p>
+
+<p>In this article, we will cover forms in Play framework. I have personally never seen a functioning web application that does not heavily use forms.</p>
+
+<!--more-->
+
+<p>Forms are very key in collecting both simple and complex user input and Play provides very solid support for implementing forms in your application</p>
+
+<h2 id="concept-of-data-binding">Concept of Data Binding</h2>
+
+<p>Data binding is a general computer programming concept that establishes a two way relationship between two different data presentation formats.</p>
+
+<p>When data changes in one format, it is automatically translated into the other format. In Playframework, these format are the UI format which uses a form and the underlying data in models or case objects.</p>
+
+<p>For data binding to happen in Play, there is a library that takes data from a post request, looks for formatted values and bands to a Form object then populates a case object/model.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+
+<p>Playframework bundles some form handling utilities in the <code class="language-plaintext highlighter-rouge">play.api.data</code> package.</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">play.api.data</code> package and what is there</li>
+  <li><code class="language-plaintext highlighter-rouge">play.api.data.Forms._</code> package and what is there</li>
+  <li>validation and constraints in <code class="language-plaintext highlighter-rouge">play.api.data.validation.Constraints._</code></li>
+</ul>
+
+<h2 id="form-handling-basics">Form handling basics</h2>
+
+<h3 id="introduction">Introduction</h3>
+
+<p>In this section, we will go through the steps of building a simple web application to add users to a list in Playframework that demonstrates the basics of form handling.</p>
+
+<p>Form handling involves form definition, defining constraints as well as validating data against these constraints, displaying the bound form in view templates as well as populating post data in case classes and finally, processing form results/errors in a view template.</p>
+
+<p>We will cover many of these concepts in this article.</p>
+
+<p>First let’s create a new web application using the instructions in <a href="/2019/05/23/play-framework-primer-scaffolding">this article</a> by running:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sbt new playframework/play-scala-seed.g8 <span class="nt">--name</span><span class="o">=</span>play-forms-basic <span class="nt">--organization</span><span class="o">=</span>io.egimaben</code></pre></figure>
+
+<p>when we run the application, we should see <code class="language-plaintext highlighter-rouge">Welcome to Play!</code> when we visit <code class="language-plaintext highlighter-rouge">http://localhost:9000</code>.</p>
+
+<p>We may encounter some new terms and maybe new and confusing concepts here but feel free to ignore these for now or visit the <a href="https://www.playframework.com/documentation/2.8.x/ScalaForms">official docs</a> to get a better idea.</p>
+
+<p>Let’s first create the models directory/package as <code class="language-plaintext highlighter-rouge">app/models</code> as the template may have come with only <code class="language-plaintext highlighter-rouge">app/controllers</code> and <code class="language-plaintext highlighter-rouge">app/views</code>. You can do this using intelliJ or the IDE you use.</p>
+
+<h3 id="form-definition">Form Definition</h3>
+
+<p>Let’s also change the name of the controller from <code class="language-plaintext highlighter-rouge">HomeController</code> to <code class="language-plaintext highlighter-rouge">FormController</code> for consistency with the article, make the appropriate change in the route:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="nc">GET</span>     <span class="o">/</span>                           <span class="nv">controllers</span><span class="o">.</span><span class="py">FormController</span><span class="o">.</span><span class="py">index</span></code></pre></figure>
+
+<p>Create <code class="language-plaintext highlighter-rouge">app/models/User</code> model to hold data in the code:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">package</span> <span class="nn">models</span>
+
+<span class="k">case</span> <span class="k">class</span> <span class="nc">User</span><span class="o">(</span><span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">email</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">age</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span></code></pre></figure>
+
+<p>Add these important imports which form handling depends on:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">import</span> <span class="nn">play.api.data._</span>
+<span class="k">import</span> <span class="nn">play.api.data.Forms._</span></code></pre></figure>
+
+<p>Define a form object in the controller. The form object is a scala object that creates a new form from a mapping(map of field name to data type).</p>
+
+<p>It also takes <code class="language-plaintext highlighter-rouge">apply</code> and <code class="language-plaintext highlighter-rouge">unapply</code> methods, luckily for us, we can use the same for <code class="language-plaintext highlighter-rouge">User</code> since it’s a case class:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">package</span> <span class="nn">controllers</span>
+
+<span class="k">import</span> <span class="nn">javax.inject._</span>
+<span class="k">import</span> <span class="nn">models.User</span>
+<span class="k">import</span> <span class="nn">play.api.mvc._</span>
+<span class="k">import</span> <span class="nn">play.api.data._</span>
+<span class="k">import</span> <span class="nn">play.api.data.Forms._</span>
+
+<span class="nd">@Singleton</span>
+<span class="k">class</span> <span class="nc">FormController</span> <span class="nd">@Inject</span><span class="o">()(</span><span class="k">val</span> <span class="nv">controllerComponents</span><span class="k">:</span> <span class="kt">ControllerComponents</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">BaseController</span> <span class="o">{</span>
+
+  <span class="k">val</span> <span class="nv">userForm</span> <span class="k">=</span> <span class="nc">Form</span><span class="o">(</span>
+    <span class="nf">mapping</span><span class="o">(</span><span class="s">"name"</span> <span class="o">-&gt;</span> <span class="n">text</span><span class="o">,</span>
+      <span class="s">"email"</span> <span class="o">-&gt;</span> <span class="n">email</span><span class="o">,</span>
+      <span class="s">"age"</span> <span class="o">-&gt;</span> <span class="n">number</span>
+    <span class="o">)(</span><span class="nv">User</span><span class="o">.</span><span class="py">apply</span><span class="o">)(</span><span class="nv">User</span><span class="o">.</span><span class="py">unapply</span><span class="o">)</span>
+  <span class="o">)</span>
+  <span class="k">def</span> <span class="nf">index</span><span class="o">()</span> <span class="k">=</span> <span class="nc">Action</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">Request</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="nv">views</span><span class="o">.</span><span class="py">html</span><span class="o">.</span><span class="py">index</span><span class="o">())</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>With the above step, we have nearly completed one leg of data binding, the next leg is on the UI, it involves enabling the <code class="language-plaintext highlighter-rouge">index.scala.html</code> view tempate to display the form.</p>
+
+<h3 id="showing-the-form-in-a-view-template">Showing the form in a view template</h3>
+
+<p>To do this, we need a little bit of information about how view templates work, specifically the fact that they use a combination of a scala variant(with <code class="language-plaintext highlighter-rouge">@</code> directives) and html. They take parameters from the controller.</p>
+
+<p>Take a look at how the view template currently looks:</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">@()
+
+@main("Welcome to Play") {
+  <span class="nt">&lt;h1&gt;</span>Welcome to Play!<span class="nt">&lt;/h1&gt;</span>
+}</code></pre></figure>
+
+<p>The first line has parentheses prefixed with the <code class="language-plaintext highlighter-rouge">@</code> directive and this is where we inject scala params. The first mandatory param is the form object, empty in this case.</p>
+
+<p>we can have multiple parameters in a view template just like in an ordinary scala method. So we will also add a param containing a list of users from the server, so list and form will be in the same view template for simplicity:</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">@(userForm: Form[User],users: List[User])(implicit messages: Messages)
+
+@main("Welcome to Play") {
+  <span class="nt">&lt;h1&gt;</span>Welcome to Play!<span class="nt">&lt;/h1&gt;</span>
+}</code></pre></figure>
+
+<p>As you may have noticed, we have added a second param list which has an implicit parameter: messages. Don’t worry about this for now, we will cover it shortly.</p>
+
+<p>Play provides a suite of helpers for form handling in a view template. This way, we can use scala to create form elements equivalent to html, starting with the <code class="language-plaintext highlighter-rouge">form</code> tag as well as all available form elements like <code class="language-plaintext highlighter-rouge">input</code>, <code class="language-plaintext highlighter-rouge">checkbox</code>, <code class="language-plaintext highlighter-rouge">radio</code> buttons etc.</p>
+
+<p>We are also able to add other html attributes just like in an html form. So let’s provide the view template with what it needs to create a form to collect user input for the <code class="language-plaintext highlighter-rouge">User</code> model as well as a list (<code class="language-plaintext highlighter-rouge">ul</code>) tag to list users:</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">@(userForm: Form[User],users: List[User])(implicit messages: Messages)
+
+@main("Welcome to Play") {
+<span class="nt">&lt;h1&gt;</span>Welcome to User manager<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;h2&gt;</span>New user<span class="nt">&lt;/h2&gt;</span>
+@helper.form(action = routes.FormController.create()) {
+@helper.inputText(userForm("name"))
+@helper.inputText(userForm("email"))
+@helper.inputText(userForm("age"))
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+}
+<span class="nt">&lt;h2&gt;</span>User list<span class="nt">&lt;/h2&gt;</span>
+<span class="nt">&lt;ul&gt;</span>
+  @for(user <span class="nt">&lt;-</span> <span class="na">users</span><span class="err">)</span> <span class="err">{</span>
+  <span class="err">&lt;</span><span class="na">li</span><span class="nt">&gt;</span>@user<span class="nt">&lt;/li&gt;</span>
+  }
+<span class="nt">&lt;/ul&gt;</span>
+}</code></pre></figure>
+
+<p>Notice the minor changes to the headers for consistency with what our page is doing.</p>
+
+<p>The reason we injected <code class="language-plaintext highlighter-rouge">Messages</code> is that the form helpers e.g. <code class="language-plaintext highlighter-rouge">input</code>, <code class="language-plaintext highlighter-rouge">checkbox</code> all take a message provider as an implicit param. This is because they need to provide error messages mapped to the language defined in the request. This is part of play’s internationalization capability.</p>
+
+<h3 id="message-processing-in-formcontroller">Message processing in FormController</h3>
+
+<p>Back to <code class="language-plaintext highlighter-rouge">FormController</code>, we need to make few more changes to complete it. First, let’s modify the controller to make it a real form controller, with the appropriate changes to enable it handle data exchange with the view template.</p>
+
+<p>Inject a <code class="language-plaintext highlighter-rouge">MessagesActionBuilder</code> in the controller and let it extend <code class="language-plaintext highlighter-rouge">AbstractController</code> instead of <code class="language-plaintext highlighter-rouge">BaseController</code> and provide the default injected <code class="language-plaintext highlighter-rouge">ControllerComponents</code> as a param to <code class="language-plaintext highlighter-rouge">AbstractController</code>.</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="nd">@Singleton</span>
+<span class="k">class</span> <span class="nc">FormController</span> <span class="nd">@Inject</span><span class="o">()(</span><span class="n">messagesAction</span><span class="k">:</span> <span class="kt">MessagesActionBuilder</span><span class="o">,</span> <span class="n">cc</span><span class="k">:</span> <span class="kt">ControllerComponents</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">AbstractController</span><span class="o">(</span><span class="n">cc</span><span class="o">)</span></code></pre></figure>
+
+<p>Also, each action handling forms will return the instance of <code class="language-plaintext highlighter-rouge">MessagesActionBuilder</code> we injected in the controller as well as take an implicit <code class="language-plaintext highlighter-rouge">MessagesRequest</code> instance instead of a <code class="language-plaintext highlighter-rouge">Request</code> instance.</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"> <span class="k">def</span> <span class="nf">index</span><span class="o">()</span> <span class="k">=</span> <span class="n">messagesAction</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">MessagesRequest</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="nv">views</span><span class="o">.</span><span class="py">html</span><span class="o">.</span><span class="py">index</span><span class="o">(</span><span class="n">userForm</span><span class="o">,</span><span class="nv">users</span><span class="o">.</span><span class="py">toList</span><span class="o">))</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>We have now amended the view template in the action response and added the parameters we defined earlier.
+Phew!!!</p>
+
+<p>The last 2 paragraphs are really dense and so much information to process, the summary is that form processing needs to be language aware and the components we have injected, broadyly speaking, expose a messages API that taps into Play’s internationalization capability.</p>
+
+<h3 id="processing-post-request-in-controller">Processing POST request in Controller</h3>
+
+<p>We need to create another controller action to process the <code class="language-plaintext highlighter-rouge">POST</code> request from the form and add the new user into an in memory database, we will just use a <code class="language-plaintext highlighter-rouge">ListBuffer</code> which is a mutable scala list:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">def</span> <span class="nf">create</span><span class="o">()</span> <span class="k">=</span> <span class="n">messagesAction</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">MessagesRequest</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nv">userForm</span><span class="o">.</span><span class="py">bindFromRequest</span><span class="o">.</span><span class="py">fold</span><span class="o">(</span>
+      <span class="n">formWithErrors</span> <span class="k">=&gt;</span> 
+        <span class="nc">BadRequest</span><span class="o">(</span><span class="nv">views</span><span class="o">.</span><span class="py">html</span><span class="o">.</span><span class="py">index</span><span class="o">(</span><span class="n">formWithErrors</span><span class="o">,</span> <span class="nv">users</span><span class="o">.</span><span class="py">toList</span><span class="o">)),</span>
+      <span class="n">userData</span> <span class="k">=&gt;</span> <span class="o">{</span>
+          <span class="nv">users</span><span class="o">.</span><span class="py">addOne</span><span class="o">(</span><span class="n">userData</span><span class="o">)</span>
+          <span class="nc">Redirect</span><span class="o">(</span><span class="nv">routes</span><span class="o">.</span><span class="py">FormController</span><span class="o">.</span><span class="py">index</span><span class="o">())</span>
+      <span class="o">}</span>
+    <span class="o">)</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>We are using the <code class="language-plaintext highlighter-rouge">bindFromRequest</code> convenience method of the form object which binds it to the post data. We then process the result using the <code class="language-plaintext highlighter-rouge">fold</code> method that takes 2 parameters for how to handle both the error case where the form fails to bind and the success case where data binding successed.</p>
+
+<p>Finally, the controller looks like this:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">package</span> <span class="nn">controllers</span>
+
+<span class="k">import</span> <span class="nn">javax.inject._</span>
+<span class="k">import</span> <span class="nn">models.User</span>
+<span class="k">import</span> <span class="nn">play.api.mvc._</span>
+<span class="k">import</span> <span class="nn">play.api.data._</span>
+<span class="k">import</span> <span class="nn">play.api.data.Forms._</span>
+
+<span class="k">import</span> <span class="nn">scala.collection.mutable.ListBuffer</span>
+
+<span class="nd">@Singleton</span>
+<span class="k">class</span> <span class="nc">FormController</span> <span class="nd">@Inject</span><span class="o">()(</span><span class="n">messagesAction</span><span class="k">:</span> <span class="kt">MessagesActionBuilder</span><span class="o">,</span> <span class="n">cc</span><span class="k">:</span> <span class="kt">ControllerComponents</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">AbstractController</span><span class="o">(</span><span class="n">cc</span><span class="o">)</span> <span class="o">{</span>
+
+  <span class="k">val</span> <span class="nv">userForm</span> <span class="k">=</span> <span class="nc">Form</span><span class="o">(</span>
+    <span class="nf">mapping</span><span class="o">(</span><span class="s">"name"</span> <span class="o">-&gt;</span> <span class="n">text</span><span class="o">,</span>
+      <span class="s">"email"</span> <span class="o">-&gt;</span> <span class="n">email</span><span class="o">,</span>
+      <span class="s">"age"</span> <span class="o">-&gt;</span> <span class="n">number</span>
+    <span class="o">)(</span><span class="nv">User</span><span class="o">.</span><span class="py">apply</span><span class="o">)(</span><span class="nv">User</span><span class="o">.</span><span class="py">unapply</span><span class="o">)</span>
+  <span class="o">)</span>
+
+  <span class="k">val</span> <span class="nv">users</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">ListBuffer</span><span class="o">[</span><span class="kt">User</span><span class="o">]()</span>
+
+  <span class="k">def</span> <span class="nf">index</span><span class="o">()</span> <span class="k">=</span> <span class="n">messagesAction</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">MessagesRequest</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="nv">views</span><span class="o">.</span><span class="py">html</span><span class="o">.</span><span class="py">index</span><span class="o">(</span><span class="n">userForm</span><span class="o">,</span><span class="nv">users</span><span class="o">.</span><span class="py">toList</span><span class="o">))</span>
+  <span class="o">}</span>
+  <span class="k">def</span> <span class="nf">create</span><span class="o">()</span> <span class="k">=</span> <span class="n">messagesAction</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">request</span><span class="k">:</span> <span class="kt">MessagesRequest</span><span class="o">[</span><span class="kt">AnyContent</span><span class="o">]</span> <span class="k">=&gt;</span>
+    <span class="nv">userForm</span><span class="o">.</span><span class="py">bindFromRequest</span><span class="o">.</span><span class="py">fold</span><span class="o">(</span>
+      <span class="n">formWithErrors</span> <span class="k">=&gt;</span>
+        <span class="nc">BadRequest</span><span class="o">(</span><span class="nv">views</span><span class="o">.</span><span class="py">html</span><span class="o">.</span><span class="py">index</span><span class="o">(</span><span class="n">formWithErrors</span><span class="o">,</span> <span class="nv">users</span><span class="o">.</span><span class="py">toList</span><span class="o">)),</span>
+      <span class="n">userData</span> <span class="k">=&gt;</span> <span class="o">{</span>
+          <span class="nv">users</span><span class="o">.</span><span class="py">addOne</span><span class="o">(</span><span class="n">userData</span><span class="o">)</span>
+          <span class="nc">Redirect</span><span class="o">(</span><span class="nv">routes</span><span class="o">.</span><span class="py">FormController</span><span class="o">.</span><span class="py">index</span><span class="o">())</span>
+      <span class="o">}</span>
+    <span class="o">)</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<h3 id="routing-requests-to-controller">Routing requests to controller</h3>
+
+<p>To complete the implementation, we will add the <code class="language-plaintext highlighter-rouge">POST</code> route in the routes file:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="nc">GET</span>     <span class="o">/</span>                           <span class="nv">controllers</span><span class="o">.</span><span class="py">FormController</span><span class="o">.</span><span class="py">index</span>
+<span class="o">+</span><span class="n">nocsrf</span>
+<span class="nc">POST</span>     <span class="o">/</span><span class="n">create</span>                           <span class="nv">controllers</span><span class="o">.</span><span class="py">FormController</span><span class="o">.</span><span class="py">create</span>
+<span class="nc">GET</span>     <span class="o">/</span><span class="n">assets</span><span class="cm">/*file               controllers.Assets.versioned(path="/public", file: Asset)</span></code></pre></figure>
+
+<p>We have applied a modifier <code class="language-plaintext highlighter-rouge">+nocsrf</code> to the route to by pass the protective check for a <code class="language-plaintext highlighter-rouge">csrf</code> token in the request.</p>
+
+<h2 id="testing">Testing</h2>
+
+<p>We can test the application by visiting <code class="language-plaintext highlighter-rouge">https://localhost:9000</code>. We should be able to add users in the form and when submitted, should be displayed in the user list section.</p>
+
+<p>The page should be looking like this:
+<img src="/public/assets/play-forms-basic.png" alt="play-forms-basic" class="img-responsive" /></p>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>In this article, we have explored basics of forms in Play framework by building a working list application. There may have been several new concepts and things that don’t make sense.</p>
+
+<p>I hope the aspect of building a complete app can act as a starting point to explore more about forms from the <a href="https://www.playframework.com/documentation/2.8.x/ScalaForms">official documentation</a>. The complete source code is <a href="https://github.com/egimaben/play-forms-basic">available on github</a></p>
+
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2019/06/23/play-framework-primer-routing-basics/">
+            Play Framework Primer - Routing
+            <small>23 Jun 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2019/05/23/play-framework-primer-scaffolding/">
+            Play Framework Primer - Scaffolding
+            <small>23 May 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2019/04/23/play-scala-rest-from-scratch/">
+            Play 2.7 Scala REST API from scratch With SBT
+            <small>23 Apr 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+var disqus_config = function () {
+this.page.url = "https://egimaben.github.io/2019/07/23/play-framework-primer-forms/";  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = "/2019/07/23/play-framework-primer-forms"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://egimaben-github-io.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  </ul>
+</div>
+
+    </div>
+    
+  </body>
+</html>

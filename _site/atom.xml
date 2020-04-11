@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Benedict Egima</title>
- <link href="https://egimaben.github.io/atom.xml" rel="self"/>
- <link href="https://egimaben.github.io/"/>
- <updated>2020-04-06T14:26:17+03:00</updated>
- <id>https://egimaben.github.io</id>
+ <link href="http://localhost:4000/atom.xml" rel="self"/>
+ <link href="http://localhost:4000/"/>
+ <updated>2020-04-11T23:18:10+03:00</updated>
+ <id>http://localhost:4000</id>
  <author>
    <name>Benedict Egima Ayiko</name>
    <email>benikod@gmail.com</email>
@@ -13,10 +13,258 @@
 
  
  <entry>
+   <title>Play Framework Primer - Scala Forms</title>
+   <link href="http://localhost:4000/2019/07/23/play-framework-primer-forms/"/>
+   <updated>2019-07-23T00:00:00+03:00</updated>
+   <id>http://localhost:4000/2019/07/23/play-framework-primer-forms</id>
+   <content type="html">&lt;p&gt;This is part 3 of a series about basics of Play framework. In &lt;a href=&quot;/2019/06/23/play-framework-primer-routing-basics&quot;&gt;part 2&lt;/a&gt;, we covered fundamentals of routing.&lt;/p&gt;
+
+&lt;p&gt;In this article, we will cover forms in Play framework. I have personally never seen a functioning web application that does not heavily use forms.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;Forms are very key in collecting both simple and complex user input and Play provides very solid support for implementing forms in your application&lt;/p&gt;
+
+&lt;h2 id=&quot;concept-of-data-binding&quot;&gt;Concept of Data Binding&lt;/h2&gt;
+
+&lt;p&gt;Data binding is a general computer programming concept that establishes a two way relationship between two different data presentation formats.&lt;/p&gt;
+
+&lt;p&gt;When data changes in one format, it is automatically translated into the other format. In Playframework, these format are the UI format which uses a form and the underlying data in models or case objects.&lt;/p&gt;
+
+&lt;p&gt;For data binding to happen in Play, there is a library that takes data from a post request, looks for formatted values and bands to a Form object then populates a case object/model.&lt;/p&gt;
+
+&lt;h2 id=&quot;dependencies&quot;&gt;Dependencies&lt;/h2&gt;
+
+&lt;p&gt;Playframework bundles some form handling utilities in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;play.api.data&lt;/code&gt; package.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;play.api.data&lt;/code&gt; package and what is there&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;play.api.data.Forms._&lt;/code&gt; package and what is there&lt;/li&gt;
+  &lt;li&gt;validation and constraints in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;play.api.data.validation.Constraints._&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;form-handling-basics&quot;&gt;Form handling basics&lt;/h2&gt;
+
+&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt;
+
+&lt;p&gt;In this section, we will go through the steps of building a simple web application to add users to a list in Playframework that demonstrates the basics of form handling.&lt;/p&gt;
+
+&lt;p&gt;Form handling involves form definition, defining constraints as well as validating data against these constraints, displaying the bound form in view templates as well as populating post data in case classes and finally, processing form results/errors in a view template.&lt;/p&gt;
+
+&lt;p&gt;We will cover many of these concepts in this article.&lt;/p&gt;
+
+&lt;p&gt;First let’s create a new web application using the instructions in &lt;a href=&quot;/2019/05/23/play-framework-primer-scaffolding&quot;&gt;this article&lt;/a&gt; by running:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;sbt new playframework/play-scala-seed.g8 &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;play-forms-basic &lt;span class=&quot;nt&quot;&gt;--organization&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;io.egimaben&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;when we run the application, we should see &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Welcome to Play!&lt;/code&gt; when we visit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:9000&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;We may encounter some new terms and maybe new and confusing concepts here but feel free to ignore these for now or visit the &lt;a href=&quot;https://www.playframework.com/documentation/2.8.x/ScalaForms&quot;&gt;official docs&lt;/a&gt; to get a better idea.&lt;/p&gt;
+
+&lt;p&gt;Let’s first create the models directory/package as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/models&lt;/code&gt; as the template may have come with only &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/controllers&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/views&lt;/code&gt;. You can do this using intelliJ or the IDE you use.&lt;/p&gt;
+
+&lt;h3 id=&quot;form-definition&quot;&gt;Form Definition&lt;/h3&gt;
+
+&lt;p&gt;Let’s also change the name of the controller from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HomeController&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FormController&lt;/code&gt; for consistency with the article, make the appropriate change in the route:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;nc&quot;&gt;GET&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;                           &lt;span class=&quot;nv&quot;&gt;controllers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;FormController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;index&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Create &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/models/User&lt;/code&gt; model to hold data in the code:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;models&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Add these important imports which form handling depends on:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api.data._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api.data.Forms._&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Define a form object in the controller. The form object is a scala object that creates a new form from a mapping(map of field name to data type).&lt;/p&gt;
+
+&lt;p&gt;It also takes &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;apply&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unapply&lt;/code&gt; methods, luckily for us, we can use the same for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt; since it’s a case class:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;controllers&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;javax.inject._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;models.User&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api.mvc._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api.data._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api.data.Forms._&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@Singleton&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FormController&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@Inject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;controllerComponents&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;ControllerComponents&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BaseController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;userForm&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Form&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;nf&quot;&gt;mapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;name&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;&quot;email&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;&quot;age&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;number&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;unapply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Action&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;With the above step, we have nearly completed one leg of data binding, the next leg is on the UI, it involves enabling the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;index.scala.html&lt;/code&gt; view tempate to display the form.&lt;/p&gt;
+
+&lt;h3 id=&quot;showing-the-form-in-a-view-template&quot;&gt;Showing the form in a view template&lt;/h3&gt;
+
+&lt;p&gt;To do this, we need a little bit of information about how view templates work, specifically the fact that they use a combination of a scala variant(with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@&lt;/code&gt; directives) and html. They take parameters from the controller.&lt;/p&gt;
+
+&lt;p&gt;Take a look at how the view template currently looks:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;@()
+
+@main(&quot;Welcome to Play&quot;) {
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;Welcome to Play!&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The first line has parentheses prefixed with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@&lt;/code&gt; directive and this is where we inject scala params. The first mandatory param is the form object, empty in this case.&lt;/p&gt;
+
+&lt;p&gt;we can have multiple parameters in a view template just like in an ordinary scala method. So we will also add a param containing a list of users from the server, so list and form will be in the same view template for simplicity:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;@(userForm: Form[User],users: List[User])(implicit messages: Messages)
+
+@main(&quot;Welcome to Play&quot;) {
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;Welcome to Play!&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you may have noticed, we have added a second param list which has an implicit parameter: messages. Don’t worry about this for now, we will cover it shortly.&lt;/p&gt;
+
+&lt;p&gt;Play provides a suite of helpers for form handling in a view template. This way, we can use scala to create form elements equivalent to html, starting with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;form&lt;/code&gt; tag as well as all available form elements like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;input&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;checkbox&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;radio&lt;/code&gt; buttons etc.&lt;/p&gt;
+
+&lt;p&gt;We are also able to add other html attributes just like in an html form. So let’s provide the view template with what it needs to create a form to collect user input for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt; model as well as a list (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ul&lt;/code&gt;) tag to list users:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;@(userForm: Form[User],users: List[User])(implicit messages: Messages)
+
+@main(&quot;Welcome to Play&quot;) {
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;Welcome to User manager&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;h2&amp;gt;&lt;/span&gt;New user&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h2&amp;gt;&lt;/span&gt;
+@helper.form(action = routes.FormController.create()) {
+@helper.inputText(userForm(&quot;name&quot;))
+@helper.inputText(userForm(&quot;email&quot;))
+@helper.inputText(userForm(&quot;age&quot;))
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;submit&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;submit&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+}
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;h2&amp;gt;&lt;/span&gt;User list&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h2&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;ul&amp;gt;&lt;/span&gt;
+  @for(user &lt;span class=&quot;nt&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;err&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;li&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;@user&lt;span class=&quot;nt&quot;&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+  }
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Notice the minor changes to the headers for consistency with what our page is doing.&lt;/p&gt;
+
+&lt;p&gt;The reason we injected &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Messages&lt;/code&gt; is that the form helpers e.g. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;input&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;checkbox&lt;/code&gt; all take a message provider as an implicit param. This is because they need to provide error messages mapped to the language defined in the request. This is part of play’s internationalization capability.&lt;/p&gt;
+
+&lt;h3 id=&quot;message-processing-in-formcontroller&quot;&gt;Message processing in FormController&lt;/h3&gt;
+
+&lt;p&gt;Back to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FormController&lt;/code&gt;, we need to make few more changes to complete it. First, let’s modify the controller to make it a real form controller, with the appropriate changes to enable it handle data exchange with the view template.&lt;/p&gt;
+
+&lt;p&gt;Inject a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MessagesActionBuilder&lt;/code&gt; in the controller and let it extend &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AbstractController&lt;/code&gt; instead of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BaseController&lt;/code&gt; and provide the default injected &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ControllerComponents&lt;/code&gt; as a param to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AbstractController&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;nd&quot;&gt;@Singleton&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FormController&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@Inject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;messagesAction&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MessagesActionBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cc&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;ControllerComponents&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AbstractController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Also, each action handling forms will return the instance of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MessagesActionBuilder&lt;/code&gt; we injected in the controller as well as take an implicit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MessagesRequest&lt;/code&gt; instance instead of a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Request&lt;/code&gt; instance.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagesAction&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MessagesRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;userForm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;toList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We have now amended the view template in the action response and added the parameters we defined earlier.
+Phew!!!&lt;/p&gt;
+
+&lt;p&gt;The last 2 paragraphs are really dense and so much information to process, the summary is that form processing needs to be language aware and the components we have injected, broadyly speaking, expose a messages API that taps into Play’s internationalization capability.&lt;/p&gt;
+
+&lt;h3 id=&quot;processing-post-request-in-controller&quot;&gt;Processing POST request in Controller&lt;/h3&gt;
+
+&lt;p&gt;We need to create another controller action to process the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;POST&lt;/code&gt; request from the form and add the new user into an in memory database, we will just use a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ListBuffer&lt;/code&gt; which is a mutable scala list:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagesAction&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MessagesRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;userForm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;bindFromRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;fold&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;formWithErrors&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; 
+        &lt;span class=&quot;nc&quot;&gt;BadRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formWithErrors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;toList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)),&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;userData&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;addOne&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;userData&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;nc&quot;&gt;Redirect&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;FormController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We are using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bindFromRequest&lt;/code&gt; convenience method of the form object which binds it to the post data. We then process the result using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fold&lt;/code&gt; method that takes 2 parameters for how to handle both the error case where the form fails to bind and the success case where data binding successed.&lt;/p&gt;
+
+&lt;p&gt;Finally, the controller looks like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;controllers&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;javax.inject._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;models.User&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api.mvc._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api.data._&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;play.api.data.Forms._&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scala.collection.mutable.ListBuffer&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@Singleton&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FormController&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@Inject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;messagesAction&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MessagesActionBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cc&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;ControllerComponents&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AbstractController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;userForm&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Form&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;nf&quot;&gt;mapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;name&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;&quot;email&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;&quot;age&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;number&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;unapply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ListBuffer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]()&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagesAction&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MessagesRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Ok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;userForm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;toList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagesAction&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MessagesRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;AnyContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;userForm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;bindFromRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;fold&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;formWithErrors&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;BadRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;views&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formWithErrors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;toList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)),&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;userData&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;addOne&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;userData&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;nc&quot;&gt;Redirect&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;FormController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;routing-requests-to-controller&quot;&gt;Routing requests to controller&lt;/h3&gt;
+
+&lt;p&gt;To complete the implementation, we will add the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;POST&lt;/code&gt; route in the routes file:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scala&quot; data-lang=&quot;scala&quot;&gt;&lt;span class=&quot;nc&quot;&gt;GET&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;                           &lt;span class=&quot;nv&quot;&gt;controllers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;FormController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;index&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nocsrf&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;POST&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create&lt;/span&gt;                           &lt;span class=&quot;nv&quot;&gt;controllers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;FormController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;create&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;GET&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;assets&lt;/span&gt;&lt;span class=&quot;cm&quot;&gt;/*file               controllers.Assets.versioned(path=&quot;/public&quot;, file: Asset)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We have applied a modifier &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;+nocsrf&lt;/code&gt; to the route to by pass the protective check for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csrf&lt;/code&gt; token in the request.&lt;/p&gt;
+
+&lt;h2 id=&quot;testing&quot;&gt;Testing&lt;/h2&gt;
+
+&lt;p&gt;We can test the application by visiting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;https://localhost:9000&lt;/code&gt;. We should be able to add users in the form and when submitted, should be displayed in the user list section.&lt;/p&gt;
+
+&lt;p&gt;The page should be looking like this:
+&lt;img src=&quot;/public/assets/play-forms-basic.png&quot; alt=&quot;play-forms-basic&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;In this article, we have explored basics of forms in Play framework by building a working list application. There may have been several new concepts and things that don’t make sense.&lt;/p&gt;
+
+&lt;p&gt;I hope the aspect of building a complete app can act as a starting point to explore more about forms from the &lt;a href=&quot;https://www.playframework.com/documentation/2.8.x/ScalaForms&quot;&gt;official documentation&lt;/a&gt;. The complete source code is &lt;a href=&quot;https://github.com/egimaben/play-forms-basic&quot;&gt;available on github&lt;/a&gt;&lt;/p&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
    <title>Play Framework Primer - Routing</title>
-   <link href="https://egimaben.github.io/2019/06/23/play-framework-primer-routing-basics/"/>
+   <link href="http://localhost:4000/2019/06/23/play-framework-primer-routing-basics/"/>
    <updated>2019-06-23T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2019/06/23/play-framework-primer-routing-basics</id>
+   <id>http://localhost:4000/2019/06/23/play-framework-primer-routing-basics</id>
    <content type="html">&lt;p&gt;This is part 2 of a series about basics of Play framework. In part 1, we scaffolded a play application using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;playframework/play-scala-seed.g8&lt;/code&gt; template and discussed the components in the resulting directory structure.&lt;/p&gt;
 
 &lt;p&gt;In this article, we will explore the basics of routing in Play. 
@@ -324,9 +572,9 @@ GET     /sum    controllers.HomeController.greetI18n&lt;span class=&quot;o&quot;
  
  <entry>
    <title>Play Framework Primer - Scaffolding</title>
-   <link href="https://egimaben.github.io/2019/05/23/play-framework-primer-scaffolding/"/>
+   <link href="http://localhost:4000/2019/05/23/play-framework-primer-scaffolding/"/>
    <updated>2019-05-23T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2019/05/23/play-framework-primer-scaffolding</id>
+   <id>http://localhost:4000/2019/05/23/play-framework-primer-scaffolding</id>
    <content type="html">&lt;p&gt;In the &lt;a href=&quot;/2019/04/23/play-scala-rest-from-scratch&quot;&gt;previous article&lt;/a&gt;, we created a very stripped down REST application with only one controller end point using Play framework and scala. We assembled it piece by piece while going a little deep into what purpose each component in the final directory structure does.&lt;/p&gt;
 
 &lt;!--more--&gt;
@@ -492,9 +740,9 @@ As I said at the beginning, this is part 1 of a series, next, we will cover rout
  
  <entry>
    <title>Play 2.7 Scala REST API from scratch With SBT</title>
-   <link href="https://egimaben.github.io/2019/04/23/play-scala-rest-from-scratch/"/>
+   <link href="http://localhost:4000/2019/04/23/play-scala-rest-from-scratch/"/>
    <updated>2019-04-23T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2019/04/23/play-scala-rest-from-scratch</id>
+   <id>http://localhost:4000/2019/04/23/play-scala-rest-from-scratch</id>
    <content type="html">&lt;p&gt;With the advent of modern web frameworks such as Play, Laravel/PHP, Express/Node, advanced tools have come up to help in scaffolding ready-to-run Web Apps with a single command. In some cases, like with Play, there are even &lt;a href=&quot;https://developer.lightbend.com/start/?group=play&quot;&gt;fully scaffolded examples&lt;/a&gt; to download and run.&lt;/p&gt;
 
 &lt;p&gt;&lt;!--more--&gt;&lt;/p&gt;
@@ -681,9 +929,9 @@ Install &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sbt&l
  
  <entry>
    <title>Manipulating Dates with Calendar Class</title>
-   <link href="https://egimaben.github.io/2019/02/20/manipulating-dates-with-calendar-class/"/>
+   <link href="http://localhost:4000/2019/02/20/manipulating-dates-with-calendar-class/"/>
    <updated>2019-02-20T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2019/02/20/manipulating-dates-with-calendar-class</id>
+   <id>http://localhost:4000/2019/02/20/manipulating-dates-with-calendar-class</id>
    <content type="html">&lt;p&gt;In this article, we will explore &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;java.util.Calendar&lt;/code&gt; class.&lt;/p&gt;
 
 &lt;p&gt;&lt;!--more--&gt;&lt;/p&gt;
@@ -951,9 +1199,9 @@ Since we touched a bit on internationalization, we can use the &lt;code class=&q
  
  <entry>
    <title>A Simple Guide for Java.util.Date</title>
-   <link href="https://egimaben.github.io/2019/02/18/a-simple-guide-for-java-util-date/"/>
+   <link href="http://localhost:4000/2019/02/18/a-simple-guide-for-java-util-date/"/>
    <updated>2019-02-18T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2019/02/18/a-simple-guide-for-java-util-date</id>
+   <id>http://localhost:4000/2019/02/18/a-simple-guide-for-java-util-date</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
  In this article, we will explore java.util.Date, consume it as a basic cheatsheet. We will see several examples as it's still used in several code bases and later, I mean really later, we will conspire to throw it out of the window and explore better alternatives for date and time handling in Java. 
 &lt;/div&gt;
@@ -1132,9 +1380,9 @@ Another caveat and common cause of bugs is developers confusing upper case and l
  
  <entry>
    <title>Java Garbage Collector and Reference Objects</title>
-   <link href="https://egimaben.github.io/2017/02/07/java-garbage-collector-and-reference-objects/"/>
+   <link href="http://localhost:4000/2017/02/07/java-garbage-collector-and-reference-objects/"/>
    <updated>2017-02-07T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2017/02/07/java-garbage-collector-and-reference-objects</id>
+   <id>http://localhost:4000/2017/02/07/java-garbage-collector-and-reference-objects</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
 We take a look at garbage collector concepts in Java and that various reference object types that can be handled by it, demystifying the Java GC!&lt;/div&gt;
 
@@ -1316,9 +1564,9 @@ This turned out to be an excellent strategy. Talk about iterative problem solvin
  
  <entry>
    <title>Lambda Expressions in Java 8</title>
-   <link href="https://egimaben.github.io/2017/01/30/lambda-expressions-in-java-8/"/>
+   <link href="http://localhost:4000/2017/01/30/lambda-expressions-in-java-8/"/>
    <updated>2017-01-30T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2017/01/30/lambda-expressions-in-java-8</id>
+   <id>http://localhost:4000/2017/01/30/lambda-expressions-in-java-8</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
   In this post, we will learn what, exactly, lambda expressions are and how they fit into the whole Java ecosystem.
 &lt;/div&gt;
@@ -1448,9 +1696,9 @@ Before we refactor the above example using lambda expressions, let’s learn the
  
  <entry>
    <title>Java Method References</title>
-   <link href="https://egimaben.github.io/2017/01/18/java-method-references/"/>
+   <link href="http://localhost:4000/2017/01/18/java-method-references/"/>
    <updated>2017-01-18T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2017/01/18/java-method-references</id>
+   <id>http://localhost:4000/2017/01/18/java-method-references</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
   A double colon might appear so innocently, but there's a lot of things to know about it. In this post, we try to put together the most important of them.
 &lt;/div&gt;
@@ -1689,9 +1937,9 @@ Before we refactor the above example using lambda expressions, let’s learn the
  
  <entry>
    <title>Getting The Most Out of HashMaps</title>
-   <link href="https://egimaben.github.io/2017/01/10/getting-the-most-out-of-hashmaps/"/>
+   <link href="http://localhost:4000/2017/01/10/getting-the-most-out-of-hashmaps/"/>
    <updated>2017-01-10T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2017/01/10/getting-the-most-out-of-hashmaps</id>
+   <id>http://localhost:4000/2017/01/10/getting-the-most-out-of-hashmaps</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
 HashMaps are a great tool, but you need to know the internals to get the best performance from them. This guide covers collisions, iterations, load factors, and more.&lt;/div&gt;
 
@@ -1830,9 +2078,9 @@ What can’t you do with &lt;code class=&quot;language-plaintext highlighter-rou
  
  <entry>
    <title>Canonical Equivalence In Unicode Pattern Matching</title>
-   <link href="https://egimaben.github.io/2016/10/03/canonical-equivalence-in-unicode-pattern-matching/"/>
+   <link href="http://localhost:4000/2016/10/03/canonical-equivalence-in-unicode-pattern-matching/"/>
    <updated>2016-10-03T00:00:00+03:00</updated>
-   <id>https://egimaben.github.io/2016/10/03/canonical-equivalence-in-unicode-pattern-matching</id>
+   <id>http://localhost:4000/2016/10/03/canonical-equivalence-in-unicode-pattern-matching</id>
    <content type="html">&lt;div class=&quot;message&quot;&gt;
  In this article, we will define and explain the term Canonical Equivalence as applied to pattern matching according to the Unicode character specification.
 &lt;/div&gt;
